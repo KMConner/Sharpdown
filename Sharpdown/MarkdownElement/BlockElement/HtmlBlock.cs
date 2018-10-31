@@ -1,0 +1,164 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Linq;
+
+namespace Sharpdown.MarkdownElement.BlockElement
+{
+    class HtmlBlock : LeafElementBase
+    {
+        private static readonly Regex openTag = new Regex(
+            @"\<(?<tag>[a-zA-Z][a-zA-Z0-9-]*)[ \t]*?([ \t][a-zA-Z_\:][a-zA-Z0-9_\.\:\-]*[ \t]*(\=[ \t]*([^ \""\'\=\<\>`\t]+|\""[^\""]*\""|\'[^\']*\'))??)*[ \t]*\/??\>[ \t]*$",
+                RegexOptions.Compiled);
+
+        private static readonly Regex closeTag = new Regex(
+            @"^\<\/(?<tag>[a-zA-Z][a-zA-Z0-9-]*)[ \t]*>[ \t]*$",
+            RegexOptions.Compiled);
+
+        private static readonly string[] htmlTagNames = new[]
+        {
+            "address", "article", "aside", "base", "basefont", "blockquote", "body", "caption",
+            "center", "col", "colgroup", "dd", "details", "dialog", "dir", "div", "dl", "dt",
+            "fieldset", "figcaption", "figure", "footer", "form", "frame", "frameset", "h1", "h2",
+            "h3", "h4", "h5", "h6", "head", "header", "hr", "html", "iframe", "legend", "li", "link",
+            "main", "menu", "menuitem", "meta", "nav", "noframes", "ol", "optgroup",
+            "option", "p", "param", "section", "source", "summary", "table",
+            "tbody", "td", "tfoot", "th", "thead", "title", "tr", "track", "ul",
+        };
+
+        public static bool CanStartBlock(string line)
+        {
+            if (line.GetIndentNum() < 0 || line.GetIndentNum() >= 4)
+            {
+                return false;
+            }
+
+            string lineTrimmed = line.TrimStart(whiteSpaceShars);
+
+            return IsType1HtmlBlock(lineTrimmed)
+                || IsType2HtmlBlock(lineTrimmed)
+                || IsType3HtmlBlock(lineTrimmed)
+                || IsType4HtmlBlock(lineTrimmed)
+                || IsType5HtmlBlock(lineTrimmed)
+                || IsType6HtmlBlock(lineTrimmed)
+                || IsType7HtmlBlock(lineTrimmed);
+        }
+
+        private static bool IsType1HtmlBlock(string line)
+        {
+            int whiteSpace;
+            if (line.StartsWith("<script", StringComparison.OrdinalIgnoreCase))
+            {
+                whiteSpace = 7;
+            }
+            else if (line.StartsWith("<pre", StringComparison.OrdinalIgnoreCase))
+            {
+                whiteSpace = 4;
+            }
+            else if (line.StartsWith("<style", StringComparison.OrdinalIgnoreCase))
+            {
+                whiteSpace = 6;
+            }
+            else
+            {
+                return false;
+            }
+
+            if (line.Length <= whiteSpace
+                || whiteSpaceShars.Contains(line[whiteSpace])
+                || line[whiteSpace] == '>')
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private static bool IsType2HtmlBlock(string line)
+        {
+            return line.StartsWith("<!--");
+        }
+
+        private static bool IsType3HtmlBlock(string line)
+        {
+            return line.StartsWith("<?");
+        }
+
+        private static bool IsType4HtmlBlock(string line)
+        {
+            if (line.Length < 3)
+            {
+                return false;
+            }
+
+            return line.StartsWith("<!")
+                && line[2] >= 0x41
+                && line[2] <= 0x5A;
+        }
+
+        private static bool IsType5HtmlBlock(string line)
+        {
+            return line.StartsWith("<![CDATA[");
+        }
+
+        private static bool IsType6HtmlBlock(string line)
+        {
+            if (line.Length < 2)
+            {
+                return false;
+            }
+
+            if (!line.StartsWith("<"))
+            {
+                return false;
+            }
+
+            string trimmed;
+
+            if (line[1] == '/')
+            {
+                trimmed = line.Substring(2);
+            }
+            else
+            {
+                trimmed = line.Substring(1);
+            }
+
+            foreach (var tagName in htmlTagNames)
+            {
+                if (trimmed.StartsWith(tagName, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (trimmed.Length == tagName.Length)
+                    {
+                        return true;
+                    }
+
+                    var afterTag = trimmed.Substring(tagName.Length);
+                    if (afterTag.StartsWith("/>")||afterTag.StartsWith(">")||whiteSpaceShars.Contains(afterTag[0]))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private static bool IsType7HtmlBlock(string line)
+        {
+            string[] invalidTags = new[] { "script", "style", "pre" };
+            if (openTag.IsMatch(line))
+            {
+                Match match = openTag.Match(line);
+                string tagName = match.Groups["tag"].Value;
+                return !invalidTags.Contains(tagName, StringComparer.OrdinalIgnoreCase);
+            }
+
+            if (closeTag.IsMatch(line))
+            {
+                Match match = closeTag.Match(line);
+                string tagName = match.Groups["tag"].Value;
+                return !invalidTags.Contains(tagName, StringComparer.OrdinalIgnoreCase);
+            }
+            return false;
+        }
+    }
+}
