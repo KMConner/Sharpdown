@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
-    class ListBlock : ContainerElementBase
+    abstract class ListBlock : ContainerElementBase
     {
         private static readonly char[] bullets = new[] { '-', '*', '+' };
         private static readonly char[] deliminators = new[] { '.', ')' };

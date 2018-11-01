@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,6 +6,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
 {
     class AtxHeaderElement : HeaderElementBase
     {
+        public override BlockElementType Type => BlockElementType.AtxHeading;
+
         public static bool CanStartBlock(string line)
         {
             if (line.GetIndentNum() > 4)

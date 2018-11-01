@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
@@ -7,6 +7,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
 {
     class FencedCodeBlock : CodeBlockBase
     {
+        public override BlockElementType Type => BlockElementType.FencedCodeBlock;
+
         public static bool CanStartBlock(string line)
         {
             if (line.GetIndentNum() >= 4)

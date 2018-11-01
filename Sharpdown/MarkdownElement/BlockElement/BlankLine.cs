@@ -1,12 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
-    class BlankLine:LeafElementBase
+    class BlankLine : LeafElementBase
     {
-        public static bool CanStartBlock(string line)
+        public override BlockElementType Type => BlockElementType.BlankLine;
+
         {
             return line.TrimStart(whiteSpaceShars).Length == 0;
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Linq;
@@ -7,6 +7,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 {
     class HtmlBlock : LeafElementBase
     {
+
         private static readonly Regex openTag = new Regex(
             @"\<(?<tag>[a-zA-Z][a-zA-Z0-9-]*)[ \t]*?([ \t][a-zA-Z_\:][a-zA-Z0-9_\.\:\-]*[ \t]*(\=[ \t]*([^ \""\'\=\<\>`\t]+|\""[^\""]*\""|\'[^\']*\'))??)*[ \t]*\/??\>[ \t]*$",
                 RegexOptions.Compiled);
@@ -25,6 +26,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
             "option", "p", "param", "section", "source", "summary", "table",
             "tbody", "td", "tfoot", "th", "thead", "title", "tr", "track", "ul",
         };
+
+        public override BlockElementType Type => BlockElementType.HtmlBlock;
 
         public static bool CanStartBlock(string line)
         {
@@ -133,7 +136,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     }
 
                     var afterTag = trimmed.Substring(tagName.Length);
-                    if (afterTag.StartsWith("/>")||afterTag.StartsWith(">")||whiteSpaceShars.Contains(afterTag[0]))
+                    if (afterTag.StartsWith("/>") || afterTag.StartsWith(">") || whiteSpaceShars.Contains(afterTag[0]))
                     {
                         return true;
                     }
