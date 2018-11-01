@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Linq;
@@ -162,6 +162,24 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 return !invalidTags.Contains(tagName, StringComparer.OrdinalIgnoreCase);
             }
             return false;
+        }
+
+        internal static bool CanInterruptParagraph(string line)
+        {
+            string lineTrimmed = line.TrimStart(whiteSpaceShars);
+
+            return IsType1HtmlBlock(lineTrimmed)
+            || IsType2HtmlBlock(lineTrimmed)
+            || IsType3HtmlBlock(lineTrimmed)
+            || IsType4HtmlBlock(lineTrimmed)
+            || IsType5HtmlBlock(lineTrimmed)
+            || IsType6HtmlBlock(lineTrimmed);
+        }
+
+        internal override AddLineResult AddLine(string line)
+        {
+            // TODO: Implement
+            throw new NotImplementedException();
         }
     }
 }

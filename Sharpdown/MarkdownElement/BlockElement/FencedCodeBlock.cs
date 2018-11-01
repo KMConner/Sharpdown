@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
@@ -41,6 +41,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
             string infoString = trimmed.Substring(fence);
 
             return !infoString.Contains(trimmed[0]);
+        }
+
+        internal override AddLineResult AddLine(string line)
+        {
+            // TODO: Implement
+            throw new NotImplementedException();
         }
     }
 }

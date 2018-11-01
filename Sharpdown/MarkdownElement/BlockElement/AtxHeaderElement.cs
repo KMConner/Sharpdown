@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -31,6 +31,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
 
             return trimmed.Length == level || trimmed[level].IsAsciiWhiteSpace();
+        }
+
+        internal override AddLineResult AddLine(string line)
+        {
+            // TODO :Implement
+            throw new NotImplementedException();
         }
     }
 }

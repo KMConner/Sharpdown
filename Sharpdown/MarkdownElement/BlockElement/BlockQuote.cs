@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -21,6 +21,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
 
             return false;
+        }
+
+        internal override AddLineResult AddLine(string line)
+        {
+            // TODO: Implement
+            throw new NotImplementedException();
         }
     }
 }

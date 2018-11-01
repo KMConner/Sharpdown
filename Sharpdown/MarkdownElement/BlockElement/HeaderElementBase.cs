@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
-    abstract class HeaderElementBase:BlockElementBase
+    abstract class HeaderElementBase:BlockElement
     {
         public virtual int HeaderLevel { get; }
     }

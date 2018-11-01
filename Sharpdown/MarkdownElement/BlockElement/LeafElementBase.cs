@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
-    public abstract class LeafElementBase : BlockElementBase
+    public abstract class LeafElementBase : BlockElement
     {
     }
 }

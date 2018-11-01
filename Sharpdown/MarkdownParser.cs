@@ -6,6 +6,5 @@ namespace Sharpdown
 {
     public class MarkdownParser
     {
-        
     }
 }

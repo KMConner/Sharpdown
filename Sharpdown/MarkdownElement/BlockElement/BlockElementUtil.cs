@@ -88,5 +88,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
             return ret;
         }
+
+        internal static string TrimStartAscii(this string str)
+        {
+            return str.TrimStart(MarkdownElementBase.whiteSpaceShars);
+        }
+
+
     }
 }
