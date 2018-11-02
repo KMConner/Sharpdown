@@ -11,5 +11,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
         internal abstract AddLineResult AddLine(string line);
 
         public abstract BlockElementType Type { get; }
+
+        protected string RemoveIndent(string str, int maxRemoveCount)
+        {
+            if (maxRemoveCount == 0 || str.Length == 0 || str[0] != ' ')
+            {
+                return str;
+            }
+            return RemoveIndent(str.Substring(1), maxRemoveCount - 1);
+        }
     }
 }
