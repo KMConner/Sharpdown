@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Sharpdown.MarkdownElement.BlockElement
+﻿namespace Sharpdown.MarkdownElement.BlockElement
 {
-    class BlankLine : LeafElementBase
+    public class BlankLine : LeafElementBase
     {
         public override BlockElementType Type => BlockElementType.BlankLine;
 
@@ -15,8 +11,11 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         internal override AddLineResult AddLine(string line)
         {
-            // TODO: Implement
-            throw new NotImplementedException();
+            if (!CanStartBlock(line))
+            {
+                throw new InvalidBlockFormatException(BlockElementType.BlankLine);
+            }
+            return AddLineResult.Consumed | AddLineResult.NeedClose;
         }
     }
 }
