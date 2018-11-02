@@ -8,6 +8,17 @@ namespace Sharpdown.MarkdownElement.BlockElement
     {
         public override BlockElementType Type => BlockElementType.IndentedCodeBlock;
 
+        public override string InfoString => string.Empty;
+
+        public override string Content => string.Join("\r\n", contents);
+
+        private List<string> contents;
+
+        internal IndentedCodeBlock()
+        {
+            contents = new List<string>();
+        }
+
         public static bool CanStartBlock(string line)
         {
             return line.GetIndentNum() >= 4;

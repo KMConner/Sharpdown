@@ -1,13 +1,26 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
     class FencedCodeBlock : CodeBlockBase
     {
         public override BlockElementType Type => BlockElementType.FencedCodeBlock;
+
+        public override string InfoString => infoString ?? string.Empty;
+
+        public override string Content => string.Join("\r\n", contents);
+
+        private List<string> contents;
+
+        private string infoString;
+
+        internal FencedCodeBlock()
+        {
+            contents = new List<string>();
+        }
 
         public static bool CanStartBlock(string line)
         {
