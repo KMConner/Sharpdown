@@ -1,12 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text.RegularExpressions;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
-    class AtxHeaderElement : HeaderElementBase
+    public class AtxHeaderElement : HeaderElementBase
     {
         public override BlockElementType Type => BlockElementType.AtxHeading;
+
+        private static readonly Regex headerRegex = new Regex(
+            @"^[ ]{0,3}(?<level>\#{1,6})(?:[ \t]+(?<content>.*?))??(?:[ ]+\#*)??$", RegexOptions.Compiled);
+
+        public int Level { get; private set; }
+
+        public string Content { get; private set; }
 
         public static bool CanStartBlock(string line)
         {
@@ -35,8 +40,22 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         internal override AddLineResult AddLine(string line)
         {
-            // TODO :Implement
-            throw new NotImplementedException();
+            if (!headerRegex.IsMatch(line))
+            {
+                throw new InvalidBlockFormatException(BlockElementType.AtxHeading);
+            }
+
+            Match match = headerRegex.Match(line);
+            Level = match.Groups["level"].Value.Length;
+            if (match.Groups["content"].Success)
+            {
+                Content = match.Groups["content"].Value;
+            }
+            else
+            {
+                Content = string.Empty;
+            }
+            return AddLineResult.Consumed | AddLineResult.NeedClose;
         }
     }
 }
