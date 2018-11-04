@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
-    class IndentedCodeBlock : CodeBlockBase
+    public class IndentedCodeBlock : CodeBlockBase
     {
         public override BlockElementType Type => BlockElementType.IndentedCodeBlock;
 
@@ -12,7 +12,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         public override string Content => string.Join("\r\n", contents);
 
-        private List<string> contents;
+        private readonly List<string> contents;
 
         internal IndentedCodeBlock()
         {
@@ -26,8 +26,46 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         internal override AddLineResult AddLine(string line)
         {
-            // TODO: Implement
-            throw new NotImplementedException();
+            int indent = line.GetIndentNum();
+            if (indent >= 0 && indent < 4)
+            {
+                for (int i = 0; i < contents.Count; i++)
+                {
+                    if (contents[i] == string.Empty)
+                    {
+                        contents.RemoveAt(i);
+                    }
+                }
+                return AddLineResult.NeedClose;
+            }
+
+            string lineTrimmed = removeIndent(line);
+
+            contents.Add(lineTrimmed);
+            return AddLineResult.Consumed;
+        }
+
+        private string removeIndent(string line)
+        {
+            if (line.Length == 0)
+            {
+                return line;
+            }
+            if (line[0] == '\t')
+            {
+                return line.Substring(1);
+            }
+
+            int trimLength = 4;
+            for (int i = 0; i < 4; i++)
+            {
+                if (line.Length < i + 1 || line[i] != ' ')
+                {
+                    trimLength = i;
+                    break;
+                }
+            }
+            return line.Substring(trimLength);
         }
     }
 }
