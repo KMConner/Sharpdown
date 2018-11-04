@@ -19,11 +19,5 @@
             }
             return AddLineResult.Consumed | AddLineResult.NeedClose;
         }
-
-        internal override BlockElement Close()
-        {
-            // TODO: Implement
-            throw new System.NotImplementedException();
-        }
     }
 }

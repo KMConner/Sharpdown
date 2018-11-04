@@ -67,11 +67,5 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
             return line.Substring(trimLength);
         }
-
-        internal override BlockElement Close()
-        {
-            // TODO: Implement
-            throw new NotImplementedException();
-        }
     }
 }
