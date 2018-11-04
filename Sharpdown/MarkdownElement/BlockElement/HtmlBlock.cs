@@ -5,8 +5,18 @@ using System.Linq;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
-    class HtmlBlock : LeafElementBase
+    public class HtmlBlock : LeafElementBase
     {
+        private int blockType;
+
+        private List<string> contents;
+
+        public string Content => string.Join("\r\n", contents);
+
+        internal HtmlBlock()
+        {
+            contents = new List<string>();
+        }
 
         private static readonly Regex openTag = new Regex(
             @"\<(?<tag>[a-zA-Z][a-zA-Z0-9-]*)[ \t]*?([ \t][a-zA-Z_\:][a-zA-Z0-9_\.\:\-]*[ \t]*(\=[ \t]*([^ \""\'\=\<\>`\t]+|\""[^\""]*\""|\'[^\']*\'))??)*[ \t]*\/??\>[ \t]*$",
@@ -176,10 +186,87 @@ namespace Sharpdown.MarkdownElement.BlockElement
             || IsType6HtmlBlock(lineTrimmed);
         }
 
+        private static int DetermineType(string lineTrimmed)
+        {
+            if (IsType1HtmlBlock(lineTrimmed))
+            {
+                return 1;
+            }
+            else if (IsType2HtmlBlock(lineTrimmed))
+            {
+                return 2;
+            }
+            else if (IsType3HtmlBlock(lineTrimmed))
+            {
+                return 3;
+            }
+            else if (IsType4HtmlBlock(lineTrimmed))
+            {
+                return 4;
+            }
+            else if (IsType5HtmlBlock(lineTrimmed))
+            {
+                return 5;
+            }
+            else if (IsType6HtmlBlock(lineTrimmed))
+            {
+                return 6;
+            }
+            else if (IsType7HtmlBlock(lineTrimmed))
+            {
+                return 7;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        private bool NeedClose(string lineTrimmed)
+        {
+            switch (blockType)
+            {
+                case 1:
+                    return lineTrimmed.Contains("</script>")
+                        || lineTrimmed.Contains("</pre>")
+                        || lineTrimmed.Contains("</style>");
+                case 2:
+                    return lineTrimmed.Contains("-->");
+                case 3:
+                    return lineTrimmed.Contains("?>");
+                case 4:
+                    return lineTrimmed.Contains(">");
+                case 5:
+                    return lineTrimmed.Contains("]]>");
+                case 6:
+                case 7:
+                    return lineTrimmed.TrimStartAscii().Length == 0;
+                default:
+                    throw new InvalidBlockFormatException(BlockElementType.HtmlBlock);
+            }
+        }
+
         internal override AddLineResult AddLine(string line)
         {
-            // TODO: Implement
-            throw new NotImplementedException();
+            string lineTrimmed = line.TrimStartAscii();
+            if (contents.Count == 0 && (blockType = DetermineType(lineTrimmed)) < 1)
+            {
+                throw new InvalidBlockFormatException(BlockElementType.HtmlBlock);
+            }
+
+            bool needClose = NeedClose(lineTrimmed);
+            if (!needClose)
+            {
+                contents.Add(line);
+                return AddLineResult.Consumed;
+            }
+            if (blockType < 6)
+            {
+                contents.Add(line);
+                return AddLineResult.NeedClose | AddLineResult.Consumed;
+            }
+
+            return AddLineResult.NeedClose;
         }
     }
 }
