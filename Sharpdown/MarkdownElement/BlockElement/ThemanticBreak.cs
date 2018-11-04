@@ -27,8 +27,11 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         internal override AddLineResult AddLine(string line)
         {
-            // TODO: Implement
-            throw new NotImplementedException();
+            if (!CanStartBlock(line))
+            {
+                throw new InvalidBlockFormatException(BlockElementType.ThemanticBreak);
+            }
+            return AddLineResult.Consumed | AddLineResult.NeedClose;
         }
 
         internal override BlockElement Close()
