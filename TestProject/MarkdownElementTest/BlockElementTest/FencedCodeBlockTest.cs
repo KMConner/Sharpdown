@@ -6,6 +6,9 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
     [TestClass]
     public class FencedCodeBlockTest
     {
+
+        #region AddLine Test
+
         [TestMethod]
         public void AddLineTest_01()
         {
@@ -16,6 +19,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                 block.AddLine("```"));
             Assert.AreEqual("hogehoge", block.Content);
             Assert.AreEqual(string.Empty, block.InfoString);
+            Assert.AreEqual(0, block.Warnings.Count);
         }
 
         [TestMethod]
@@ -28,6 +32,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                 block.AddLine("```"));
             Assert.AreEqual("hogehoge", block.Content);
             Assert.AreEqual(string.Empty, block.InfoString);
+            Assert.AreEqual(0, block.Warnings.Count);
         }
 
         [TestMethod]
@@ -40,6 +45,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                 block.AddLine(" ```"));
             Assert.AreEqual("hogehoge", block.Content);
             Assert.AreEqual(string.Empty, block.InfoString);
+            Assert.AreEqual(0, block.Warnings.Count);
         }
 
         [TestMethod]
@@ -52,6 +58,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                 block.AddLine("   `````"));
             Assert.AreEqual("hogehoge", block.Content);
             Assert.AreEqual(string.Empty, block.InfoString);
+            Assert.AreEqual(0, block.Warnings.Count);
         }
 
         [TestMethod]
@@ -64,6 +71,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                 block.AddLine("`````"));
             Assert.AreEqual(" hogehoge ", block.Content);
             Assert.AreEqual(string.Empty, block.InfoString);
+            Assert.AreEqual(0, block.Warnings.Count);
         }
 
         [TestMethod]
@@ -76,6 +84,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                 block.AddLine("`````"));
             Assert.AreEqual(" hogehoge ", block.Content);
             Assert.AreEqual("python", block.InfoString);
+            Assert.AreEqual(0, block.Warnings.Count);
         }
 
         [TestMethod]
@@ -88,6 +97,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                 block.AddLine("`````"));
             Assert.AreEqual(" hogehoge ", block.Content);
             Assert.AreEqual("python", block.InfoString);
+            Assert.AreEqual(0, block.Warnings.Count);
         }
 
         [TestMethod]
@@ -100,6 +110,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                 block.AddLine("`````"));
             Assert.AreEqual(" hogehoge ", block.Content);
             Assert.AreEqual("python", block.InfoString);
+            Assert.AreEqual(0, block.Warnings.Count);
         }
 
         [TestMethod]
@@ -112,6 +123,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                 block.AddLine("`````"));
             Assert.AreEqual(" hogehoge ", block.Content);
             Assert.AreEqual("p y t h o n", block.InfoString);
+            Assert.AreEqual(0, block.Warnings.Count);
         }
 
         [TestMethod]
@@ -120,6 +132,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
         {
             FencedCodeBlock block = TestUtils.CreateInternal<FencedCodeBlock>();
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("````python`java"));
+            Assert.AreEqual(0, block.Warnings.Count);
         }
 
         [TestMethod]
@@ -128,6 +141,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
         {
             FencedCodeBlock block = TestUtils.CreateInternal<FencedCodeBlock>();
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("``"));
+            Assert.AreEqual(0, block.Warnings.Count);
         }
 
         [TestMethod]
@@ -137,6 +151,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("````"));
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("    hogehoge "));
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("```"));
+            Assert.AreEqual(0, block.Warnings.Count);
         }
 
         [TestMethod]
@@ -149,6 +164,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                 block.AddLine("~~~"));
             Assert.AreEqual(string.Empty, block.InfoString);
             Assert.AreEqual("hogehoge", block.Content);
+            Assert.AreEqual(0, block.Warnings.Count);
         }
 
         [TestMethod]
@@ -161,6 +177,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                 block.AddLine("~~~~~"));
             Assert.AreEqual("foo", block.InfoString);
             Assert.AreEqual("bar baz", block.Content);
+            Assert.AreEqual(0, block.Warnings.Count);
         }
 
         [TestMethod]
@@ -174,6 +191,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                 block.AddLine("~~~~~"));
             Assert.AreEqual("foo", block.InfoString);
             Assert.AreEqual("bar baz\r\n````", block.Content);
+            Assert.AreEqual(0, block.Warnings.Count);
         }
 
         [TestMethod]
@@ -187,6 +205,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                 block.AddLine("```````"));
             Assert.AreEqual("foo", block.InfoString);
             Assert.AreEqual(" bar baz\r\n~~~~", block.Content);
+            Assert.AreEqual(0, block.Warnings.Count);
         }
 
         [TestMethod]
@@ -198,6 +217,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                 block.AddLine("```````"));
             Assert.AreEqual("foo", block.InfoString);
             Assert.AreEqual(string.Empty, block.Content);
+            Assert.AreEqual(0, block.Warnings.Count);
         }
 
         [TestMethod]
@@ -209,6 +229,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                 block.AddLine("~~~~~"));
             Assert.AreEqual("foo", block.InfoString);
             Assert.AreEqual(string.Empty, block.Content);
+            Assert.AreEqual(0, block.Warnings.Count);
         }
 
         [TestMethod]
@@ -221,6 +242,63 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                 block.AddLine("```````"));
             Assert.AreEqual("foo", block.InfoString);
             Assert.AreEqual("```", block.Content);
+            Assert.AreEqual(0, block.Warnings.Count);
         }
+
+        #endregion
+
+        #region Close
+
+        [TestMethod]
+        public void CloseTest_01()
+        {
+            FencedCodeBlock block = TestUtils.CreateInternal<FencedCodeBlock>();
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("```"));
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("hogehoge"));
+            BlockElement element = block.Close();
+            Assert.AreEqual("hogehoge", block.Content);
+            Assert.AreEqual(string.Empty, block.InfoString);
+            Assert.AreNotEqual(0, element.Warnings.Count);
+        }
+
+        [TestMethod]
+        public void CloseTest_02()
+        {
+            FencedCodeBlock block = TestUtils.CreateInternal<FencedCodeBlock>();
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("````"));
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("hogehoge"));
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("```"));
+            Assert.AreEqual("hogehoge\r\n```", block.Content);
+            Assert.AreEqual(string.Empty, block.InfoString);
+            BlockElement element = block.Close();
+            Assert.AreNotEqual(0, element.Warnings.Count);
+        }
+
+        [TestMethod]
+        public void CloseTest_03()
+        {
+            FencedCodeBlock block = TestUtils.CreateInternal<FencedCodeBlock>();
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("~~~"));
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("hogehoge"));
+            Assert.AreEqual("hogehoge", block.Content);
+            Assert.AreEqual(string.Empty, block.InfoString);
+            BlockElement element = block.Close();
+            Assert.AreNotEqual(0, element.Warnings.Count);
+        }
+
+        [TestMethod]
+        public void CloseTest_04()
+        {
+            FencedCodeBlock block = TestUtils.CreateInternal<FencedCodeBlock>();
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("~~~"));
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("hogehoge"));
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("```"));
+            Assert.AreEqual("hogehoge\r\n```", block.Content);
+            Assert.AreEqual(string.Empty, block.InfoString);
+            BlockElement element = block.Close();
+            Assert.AreNotEqual(0, element.Warnings.Count);
+        }
+
+        #endregion
     }
 }

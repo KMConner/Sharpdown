@@ -32,10 +32,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         private bool initialized;
 
+        private bool closed;
+
         internal FencedCodeBlock() : base()
         {
             contents = new List<string>();
             indentNum = -1;
+            closed = false;
         }
 
         public static bool CanStartBlock(string line)
@@ -104,6 +107,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             string closeFence = closeMatch.Groups["fence"].Value;
             if (closeFence[0] == fenceChar && closeFence.Length >= fenceLength)
             {
+                closed = true;
                 return AddLineResult.Consumed | AddLineResult.NeedClose;
             }
             else
@@ -115,8 +119,11 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         internal override BlockElement Close()
         {
-            // TODO: Implement
-            throw new NotImplementedException();
+            if (!closed)
+            {
+                warnings.Add("Code Block is not closed.");
+            }
+            return this;
         }
     }
 }
