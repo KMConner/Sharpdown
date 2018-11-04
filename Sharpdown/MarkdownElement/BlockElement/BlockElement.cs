@@ -8,7 +8,10 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         public abstract BlockElementType Type { get; }
 
-        internal abstract BlockElement Close();
+        internal virtual BlockElement Close()
+        {
+            return this;
+        }
 
         public abstract IReadOnlyList<string> Warnings { get; }
 
