@@ -13,7 +13,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         public string Content => string.Join("\r\n", contents);
 
-        internal HtmlBlock()
+        internal HtmlBlock() : base()
         {
             contents = new List<string>();
         }
@@ -267,6 +267,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
 
             return AddLineResult.NeedClose;
+        }
+
+        internal override BlockElement Close()
+        {
+            // TODO: Implement
+            throw new NotImplementedException();
         }
     }
 }

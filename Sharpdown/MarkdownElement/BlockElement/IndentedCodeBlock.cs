@@ -14,7 +14,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         private readonly List<string> contents;
 
-        internal IndentedCodeBlock()
+        internal IndentedCodeBlock():base()
         {
             contents = new List<string>();
         }
@@ -66,6 +66,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 }
             }
             return line.Substring(trimLength);
+        }
+
+        internal override BlockElement Close()
+        {
+            // TODO: Implement
+            throw new NotImplementedException();
         }
     }
 }

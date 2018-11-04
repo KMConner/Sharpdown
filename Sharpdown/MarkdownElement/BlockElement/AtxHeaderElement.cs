@@ -13,6 +13,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         public string Content { get; private set; }
 
+        internal AtxHeaderElement() : base() { }
+
         public static bool CanStartBlock(string line)
         {
             if (line.GetIndentNum() > 4)
@@ -56,6 +58,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 Content = string.Empty;
             }
             return AddLineResult.Consumed | AddLineResult.NeedClose;
+        }
+
+        internal override BlockElement Close()
+        {
+            // TODO: Implement
+            throw new System.NotImplementedException();
         }
     }
 }

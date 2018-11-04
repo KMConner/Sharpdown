@@ -8,5 +8,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
     {
         public abstract string InfoString { get; }
         public abstract string Content { get; }
+        internal CodeBlockBase() : base() { }
     }
 }

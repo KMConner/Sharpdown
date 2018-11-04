@@ -4,6 +4,8 @@
     {
         public override BlockElementType Type => BlockElementType.BlankLine;
 
+        internal BlankLine() : base() { }
+
         internal static bool CanStartBlock(string line)
         {
             return line.TrimStart(whiteSpaceShars).Length == 0;
@@ -16,6 +18,12 @@
                 throw new InvalidBlockFormatException(BlockElementType.BlankLine);
             }
             return AddLineResult.Consumed | AddLineResult.NeedClose;
+        }
+
+        internal override BlockElement Close()
+        {
+            // TODO: Implement
+            throw new System.NotImplementedException();
         }
     }
 }

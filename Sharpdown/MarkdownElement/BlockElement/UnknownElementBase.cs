@@ -16,7 +16,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         private List<string> content;
         private bool mayBeLinkReferenceDefinition;
-        internal UnknownElement()
+        internal UnknownElement() : base()
         {
             content = new List<string>();
             actualType = BlockElementType.Unknown;
@@ -145,6 +145,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 }
             }
             return depth == 0;
+        }
+
+        internal override BlockElement Close()
+        {
+            // TODO: Implement
+            throw new NotImplementedException();
         }
     }
 }

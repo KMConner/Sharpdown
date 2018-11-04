@@ -32,7 +32,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         private bool initialized;
 
-        internal FencedCodeBlock()
+        internal FencedCodeBlock() : base()
         {
             contents = new List<string>();
             indentNum = -1;
@@ -111,6 +111,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 contents.Add(RemoveIndent(line, indentNum));
                 return AddLineResult.Consumed;
             }
+        }
+
+        internal override BlockElement Close()
+        {
+            // TODO: Implement
+            throw new NotImplementedException();
         }
     }
 }
