@@ -39,13 +39,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 return AddLineResult.NeedClose;
             }
 
-            string lineTrimmed = removeIndent(line);
+            string lineTrimmed = RemoveIndent(line);
 
             contents.Add(lineTrimmed);
             return AddLineResult.Consumed;
         }
 
-        private string removeIndent(string line)
+        private string RemoveIndent(string line)
         {
             if (line.Length == 0)
             {
