@@ -2,6 +2,8 @@
 {
     public abstract class HeaderElementBase : LeafElementBase
     {
-        public virtual int HeaderLevel { get; }
+        public int HeaderLevel { get; protected set; }
+
+        public string Content { get; protected set; }
     }
 }

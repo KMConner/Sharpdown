@@ -9,10 +9,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
         private static readonly Regex headerRegex = new Regex(
             @"^[ ]{0,3}(?<level>\#{1,6})(?:[ \t]+(?<content>.*?))??(?:[ ]+\#*)??$", RegexOptions.Compiled);
 
-        public int Level { get; private set; }
-
-        public string Content { get; private set; }
-
         internal AtxHeaderElement() : base() { }
 
         public static bool CanStartBlock(string line)
@@ -48,7 +44,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
 
             Match match = headerRegex.Match(line);
-            Level = match.Groups["level"].Value.Length;
+            HeaderLevel = match.Groups["level"].Value.Length;
             if (match.Groups["content"].Success)
             {
                 Content = match.Groups["content"].Value;

@@ -14,7 +14,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
             @"^\[(?<label>(?:[^\]]|\\\]){1,999})\]\:[ \t]*(?:\r|\r\n|\n)??[ \t]*(?<destination>\<(?:[^ \t\r\n\<\>]|\\\<|\\\>)+\>|[^ \t\r\n]+)([ \t]*(?: |\t|\r|\r\n|\n)[ \t]*(?<title>\""(?:[^\""]|\\\"")*\""|\'(?:[^\']|\\\')*\'|\((?:[^\)]|\\\))*\)))??[ \t]*$",
             RegexOptions.Compiled);
 
-        private List<string> content;
+        internal List<string> content;
+        private int headerLevel;
         private bool mayBeLinkReferenceDefinition;
         internal UnknownElement() : base()
         {
@@ -51,6 +52,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     && removed.All(c => removed[0] == c))
                 {
                     actualType = BlockElementType.SetextHeading;
+                    headerLevel = removed[0] == '=' ? 1 : 2;
                     return AddLineResult.Consumed | AddLineResult.NeedClose;
                 }
             }
@@ -147,10 +149,74 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return depth == 0;
         }
 
+        private string ExtractTitle(string titleString)
+        {
+            if (string.IsNullOrEmpty(titleString))
+            {
+                return titleString;
+            }
+
+            if ((titleString[0] == '"' && titleString[titleString.Length - 1] == '"')
+                || (titleString[0] == '\'' && titleString[titleString.Length - 1] == '\''))
+            {
+                return titleString.Substring(1, titleString.Length - 2);
+            }
+            return titleString;
+        }
+
+        private string ExtractDestination(string destString)
+        {
+            if (string.IsNullOrEmpty(destString))
+            {
+                return destString;
+            }
+            if (destString[0] == '<' && destString[destString.Length - 1] == '>')
+            {
+                return destString.Substring(1, destString.Length - 2);
+            }
+            return destString;
+        }
+
         internal override BlockElement Close()
         {
-            // TODO: Implement
-            throw new NotImplementedException();
+            switch (actualType)
+            {
+                case BlockElementType.SetextHeading:
+                    return new SetextHeader(this, headerLevel);
+
+                case BlockElementType.LinkReferenceDefinition:
+                    {
+
+                        Match match = linkDefinitionRegex.Match(string.Join("\n", content));
+                        if (!match.Success)
+                        {
+                            throw new InvalidBlockFormatException(BlockElementType.LinkReferenceDefinition);
+                        }
+                        return new LinkReferenceDefinition(match.Groups["label"].Value, ExtractDestination(match.Groups["destination"].Value), ExtractTitle(match.Groups["title"].Value), this);
+                    }
+
+                case BlockElementType.Paragraph:
+                    return new Paragraph(this);
+
+                case BlockElementType.Unknown:
+                    {
+                        if (mayBeLinkReferenceDefinition)
+                        {
+                            string joined = string.Join("\n", content);
+                            if (linkDefinitionRegex.IsMatch(joined))
+                            {
+                                Match match = linkDefinitionRegex.Match(joined);
+                                if (AreParenthesesBalanced(match.Groups["destination"].Value))
+                                {
+                                    return new LinkReferenceDefinition(match.Groups["label"].Value, ExtractDestination(match.Groups["destination"].Value), ExtractTitle(match.Groups["title"].Value), this);
+                                }
+                            }
+                        }
+                        return new Paragraph(this);
+                    }
+                default:
+                    throw new InvalidBlockFormatException(BlockElementType.Unknown);
+            }
         }
     }
 }

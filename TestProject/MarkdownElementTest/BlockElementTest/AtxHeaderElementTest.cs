@@ -12,7 +12,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             AtxHeaderElement elem = TestUtils.CreateInternal<AtxHeaderElement>();
             var ret = elem.AddLine("# hoge");
             Assert.AreEqual(AddLineResult.Consumed | AddLineResult.NeedClose, ret);
-            Assert.AreEqual(1, elem.Level);
+            Assert.AreEqual(1, elem.HeaderLevel);
             Assert.AreEqual("hoge", elem.Content);
         }
 
@@ -22,7 +22,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             AtxHeaderElement elem = TestUtils.CreateInternal<AtxHeaderElement>();
             var ret = elem.AddLine("#");
             Assert.AreEqual(AddLineResult.Consumed | AddLineResult.NeedClose, ret);
-            Assert.AreEqual(1, elem.Level);
+            Assert.AreEqual(1, elem.HeaderLevel);
             Assert.AreEqual(string.Empty, elem.Content);
         }
 
@@ -32,7 +32,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             AtxHeaderElement elem = TestUtils.CreateInternal<AtxHeaderElement>();
             var ret = elem.AddLine("###    hogehoge");
             Assert.AreEqual(AddLineResult.Consumed | AddLineResult.NeedClose, ret);
-            Assert.AreEqual(3, elem.Level);
+            Assert.AreEqual(3, elem.HeaderLevel);
             Assert.AreEqual("hogehoge", elem.Content);
         }
 
@@ -42,7 +42,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             AtxHeaderElement elem = TestUtils.CreateInternal<AtxHeaderElement>();
             var ret = elem.AddLine("###    hogehoge  ###");
             Assert.AreEqual(AddLineResult.Consumed | AddLineResult.NeedClose, ret);
-            Assert.AreEqual(3, elem.Level);
+            Assert.AreEqual(3, elem.HeaderLevel);
             Assert.AreEqual("hogehoge", elem.Content);
         }
 
@@ -52,7 +52,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             AtxHeaderElement elem = TestUtils.CreateInternal<AtxHeaderElement>();
             var ret = elem.AddLine("######    hogehoge");
             Assert.AreEqual(AddLineResult.Consumed | AddLineResult.NeedClose, ret);
-            Assert.AreEqual(6, elem.Level);
+            Assert.AreEqual(6, elem.HeaderLevel);
             Assert.AreEqual("hogehoge", elem.Content);
         }
 
@@ -86,7 +86,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             AtxHeaderElement elem = TestUtils.CreateInternal<AtxHeaderElement>();
             var ret = elem.AddLine("   ### hoge");
             Assert.AreEqual(AddLineResult.Consumed | AddLineResult.NeedClose, ret);
-            Assert.AreEqual(3, elem.Level);
+            Assert.AreEqual(3, elem.HeaderLevel);
             Assert.AreEqual("hoge", elem.Content);
         }
 
@@ -96,7 +96,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             AtxHeaderElement elem = TestUtils.CreateInternal<AtxHeaderElement>();
             var ret = elem.AddLine("   ### hoge ####  ###");
             Assert.AreEqual(AddLineResult.Consumed | AddLineResult.NeedClose, ret);
-            Assert.AreEqual(3, elem.Level);
+            Assert.AreEqual(3, elem.HeaderLevel);
             Assert.AreEqual("hoge ####", elem.Content);
         }
 
@@ -106,7 +106,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             AtxHeaderElement elem = TestUtils.CreateInternal<AtxHeaderElement>();
             var ret = elem.AddLine("   ### foo bar ");
             Assert.AreEqual(AddLineResult.Consumed | AddLineResult.NeedClose, ret);
-            Assert.AreEqual(3, elem.Level);
+            Assert.AreEqual(3, elem.HeaderLevel);
             Assert.AreEqual("foo bar", elem.Content);
         }
     }

@@ -543,6 +543,173 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
 
         #endregion
 
+        #region Close
+
+        [TestMethod]
+        public void CloseTest_01()
+        {
+            UnknownElement element = TestUtils.CreateInternal<UnknownElement>();
+            var ret = element.AddLine("Hello");
+            Assert.AreEqual(AddLineResult.Consumed, ret);
+            var closed = element.Close();
+            Assert.AreEqual(BlockElementType.Paragraph, closed.Type);
+            Assert.AreEqual("Hello", ((Paragraph)closed).Content);
+        }
+
+        [TestMethod]
+        public void CloseTest_02()
+        {
+            UnknownElement element = TestUtils.CreateInternal<UnknownElement>();
+            var ret1 = element.AddLine("Foo");
+            Assert.AreEqual(AddLineResult.Consumed, ret1);
+            var ret2 = element.AddLine("");
+            Assert.AreEqual(AddLineResult.NeedClose, ret2);
+            var closed = element.Close();
+            Assert.AreEqual(BlockElementType.Paragraph, closed.Type);
+            Assert.AreEqual("Foo", ((Paragraph)closed).Content);
+        }
+
+        [TestMethod]
+        public void CloseTest_03()
+        {
+            UnknownElement element = TestUtils.CreateInternal<UnknownElement>();
+            var ret1 = element.AddLine("Foo");
+            Assert.AreEqual(AddLineResult.Consumed, ret1);
+            var ret2 = element.AddLine("---");
+            Assert.AreEqual(AddLineResult.NeedClose | AddLineResult.Consumed, ret2);
+            var actualType = GetActualType(element);
+            Assert.AreEqual(BlockElementType.SetextHeading, actualType);
+            var closed = element.Close();
+            Assert.AreEqual(BlockElementType.SetextHeading, closed.Type);
+            Assert.AreEqual(2, ((SetextHeader)closed).HeaderLevel);
+            Assert.AreEqual("Foo", ((SetextHeader)closed).Content);
+        }
+
+        [TestMethod]
+        public void CloseTest_04()
+        {
+            UnknownElement element = TestUtils.CreateInternal<UnknownElement>();
+            var ret1 = element.AddLine("Foo");
+            Assert.AreEqual(AddLineResult.Consumed, ret1);
+            var ret2 = element.AddLine("===");
+            Assert.AreEqual(AddLineResult.NeedClose | AddLineResult.Consumed, ret2);
+            var actualType = GetActualType(element);
+            Assert.AreEqual(BlockElementType.SetextHeading, actualType);
+            var closed = element.Close();
+            Assert.AreEqual(BlockElementType.SetextHeading, closed.Type);
+            Assert.AreEqual(1, ((SetextHeader)closed).HeaderLevel);
+            Assert.AreEqual("Foo", ((SetextHeader)closed).Content);
+        }
+
+        [TestMethod]
+        public void CloseTest_05()
+        {
+            UnknownElement element = TestUtils.CreateInternal<UnknownElement>();
+            var ret1 = element.AddLine("   Foo");
+            Assert.AreEqual(AddLineResult.Consumed, ret1);
+            var ret2 = element.AddLine("---");
+            Assert.AreEqual(AddLineResult.NeedClose | AddLineResult.Consumed, ret2);
+            var actualType = GetActualType(element);
+            Assert.AreEqual(BlockElementType.SetextHeading, actualType);
+            var closed = element.Close();
+            Assert.AreEqual(BlockElementType.SetextHeading, closed.Type);
+            Assert.AreEqual(2, ((SetextHeader)closed).HeaderLevel);
+            Assert.AreEqual("Foo", ((SetextHeader)closed).Content);
+        }
+
+        [TestMethod]
+        public void CloseTest_06()
+        {
+            UnknownElement element = TestUtils.CreateInternal<UnknownElement>();
+            var ret1 = element.AddLine("Foo");
+            Assert.AreEqual(AddLineResult.Consumed, ret1);
+            ret1 = element.AddLine("Bar");
+            Assert.AreEqual(AddLineResult.Consumed, ret1);
+            var ret2 = element.AddLine("  ---  ");
+            Assert.AreEqual(AddLineResult.Consumed | AddLineResult.NeedClose, ret2);
+            var actualType = GetActualType(element);
+            Assert.AreEqual(BlockElementType.SetextHeading, actualType);
+            var closed = element.Close();
+            Assert.AreEqual(BlockElementType.SetextHeading, closed.Type);
+            Assert.AreEqual(2, ((SetextHeader)closed).HeaderLevel);
+            Assert.AreEqual("Foo\r\nBar", ((SetextHeader)closed).Content);
+        }
+
+        [TestMethod]
+        public void CloseTest_07()
+        {
+            UnknownElement element = TestUtils.CreateInternal<UnknownElement>();
+            var ret1 = element.AddLine("[foo]: bar 'baz'");
+            Assert.AreEqual(AddLineResult.Consumed | AddLineResult.NeedClose, ret1);
+            var closed = element.Close();
+            Assert.AreEqual(BlockElementType.LinkReferenceDefinition, closed.Type);
+            Assert.AreEqual("foo", ((LinkReferenceDefinition)closed).Label);
+            Assert.AreEqual("bar", ((LinkReferenceDefinition)closed).Destination);
+            Assert.AreEqual("baz", ((LinkReferenceDefinition)closed).Title);
+        }
+
+        [TestMethod]
+        public void CloseTest_08()
+        {
+            UnknownElement element = TestUtils.CreateInternal<UnknownElement>();
+            var ret1 = element.AddLine("[foo]: <bar> \"baz\"");
+            Assert.AreEqual(AddLineResult.Consumed | AddLineResult.NeedClose, ret1);
+            var closed = element.Close();
+            Assert.AreEqual(BlockElementType.LinkReferenceDefinition, closed.Type);
+            Assert.AreEqual("foo", ((LinkReferenceDefinition)closed).Label);
+            Assert.AreEqual("bar", ((LinkReferenceDefinition)closed).Destination);
+            Assert.AreEqual("baz", ((LinkReferenceDefinition)closed).Title);
+        }
+
+        [TestMethod]
+        public void CloseTest_09()
+        {
+            UnknownElement element = TestUtils.CreateInternal<UnknownElement>();
+            var ret1 = element.AddLine("[foo]: <bar> 'baz");
+            Assert.AreEqual(AddLineResult.Consumed, ret1);
+            ret1 = element.AddLine("boo'");
+            Assert.AreEqual(AddLineResult.Consumed|AddLineResult.NeedClose, ret1);
+            var closed = element.Close();
+            Assert.AreEqual(BlockElementType.LinkReferenceDefinition, closed.Type);
+            Assert.AreEqual("foo", ((LinkReferenceDefinition)closed).Label);
+            Assert.AreEqual("bar", ((LinkReferenceDefinition)closed).Destination);
+            Assert.AreEqual("baz\nboo", ((LinkReferenceDefinition)closed).Title);
+        }
+
+
+        [TestMethod]
+        public void CloseTest_10()
+        {
+            UnknownElement element = TestUtils.CreateInternal<UnknownElement>();
+            var ret1 = element.AddLine("[foo]: <bar>");
+            Assert.AreEqual(AddLineResult.Consumed, ret1);
+            ret1 = element.AddLine("'baz'");
+            Assert.AreEqual(AddLineResult.Consumed | AddLineResult.NeedClose, ret1);
+            var actualType = GetActualType(element);
+            Assert.AreEqual(BlockElementType.LinkReferenceDefinition, actualType);
+            var closed = element.Close();
+            Assert.AreEqual(BlockElementType.LinkReferenceDefinition, closed.Type);
+            Assert.AreEqual("foo", ((LinkReferenceDefinition)closed).Label);
+            Assert.AreEqual("bar", ((LinkReferenceDefinition)closed).Destination);
+            Assert.AreEqual("baz", ((LinkReferenceDefinition)closed).Title);
+        }
+
+        [TestMethod]
+        public void CloseTest_11()
+        {
+            UnknownElement element = TestUtils.CreateInternal<UnknownElement>();
+            var ret1 = element.AddLine("[foo]: <bar>");
+            Assert.AreEqual(AddLineResult.Consumed, ret1);
+            var actualType = GetActualType(element);
+            var closed = element.Close();
+            Assert.AreEqual(BlockElementType.LinkReferenceDefinition, closed.Type);
+            Assert.AreEqual("foo", ((LinkReferenceDefinition)closed).Label);
+            Assert.AreEqual("bar", ((LinkReferenceDefinition)closed).Destination);
+            Assert.AreEqual(string.Empty, ((LinkReferenceDefinition)closed).Title);
+        }
+
+        #endregion
+
         private BlockElementType GetActualType(UnknownElement elem)
         {
             Type elemType = elem.GetType();
