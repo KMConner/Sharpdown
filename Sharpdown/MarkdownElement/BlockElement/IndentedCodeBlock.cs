@@ -14,7 +14,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         private readonly List<string> contents;
 
-        internal IndentedCodeBlock():base()
+        internal IndentedCodeBlock() : base()
         {
             contents = new List<string>();
         }
@@ -29,7 +29,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             int indent = line.GetIndentNum();
             if (indent >= 0 && indent < 4)
             {
-                for (int i = 0; i < contents.Count; i++)
+                for (int i = contents.Count - 1; i >= 0; i--)
                 {
                     if (contents[i] == string.Empty)
                     {

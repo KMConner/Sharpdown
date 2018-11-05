@@ -88,5 +88,19 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.NeedClose, block.AddLine("Baz"));
             Assert.AreEqual("Foo\r\nBar\r\n\t", block.Content);
         }
+
+        [TestMethod]
+        public void AddLineTest_09()
+        {
+            IndentedCodeBlock block = TestUtils.CreateInternal<IndentedCodeBlock>();
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("\tFoo"));
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("\tBar"));
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine(""));
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine(""));
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine(""));
+            Assert.AreEqual(AddLineResult.NeedClose, block.AddLine("Baz"));
+            Assert.AreEqual("Foo\r\nBar", block.Content);
+        }
+
     }
 }
