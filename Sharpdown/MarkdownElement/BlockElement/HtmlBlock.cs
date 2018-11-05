@@ -12,10 +12,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
         private List<string> contents;
 
         public string Content => string.Join("\r\n", contents);
+        private bool isClosed;
 
         internal HtmlBlock() : base()
         {
             contents = new List<string>();
+            isClosed = false;
         }
 
         private static readonly Regex openTag = new Regex(
@@ -260,6 +262,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 contents.Add(line);
                 return AddLineResult.Consumed;
             }
+            isClosed = true;
             if (blockType < 6)
             {
                 contents.Add(line);
@@ -271,8 +274,22 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         internal override BlockElement Close()
         {
-            // TODO: Implement
-            throw new NotImplementedException();
+            if (!isClosed)
+            {
+                if (blockType < 6)
+                {
+                    warnings.Add("HTML Block is not closed.");
+                }
+
+                for (int i = contents.Count - 1; i >= 0; i--)
+                {
+                    if (contents[i].TrimStartAscii() == string.Empty)
+                    {
+                        contents.RemoveAt(i);
+                    }
+                }
+            }
+            return this;
         }
     }
 }
