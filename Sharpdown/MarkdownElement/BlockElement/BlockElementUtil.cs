@@ -1,55 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Sharpdown.MarkdownElement.BlockElement
+﻿namespace Sharpdown.MarkdownElement.BlockElement
 {
     public class BlockElementUtil
     {
-        public static BlockElementType DetermineNewBlockType(string line)
+        public static BlockElement CreateBlockFromLine(string line)
         {
             if (IndentedCodeBlock.CanStartBlock(line))
             {
-                return BlockElementType.IndentedCodeBlock;
+                return new IndentedCodeBlock();
             }
 
             if (ThemanticBreak.CanStartBlock(line))
             {
-                return BlockElementType.ThemanticBreak;
+                return new ThemanticBreak();
             }
 
             if (AtxHeaderElement.CanStartBlock(line))
             {
-                return BlockElementType.AtxHeading;
+                return new AtxHeaderElement();
             }
 
             if (FencedCodeBlock.CanStartBlock(line))
             {
-                return BlockElementType.FencedCodeBlock;
+                return new FencedCodeBlock();
             }
 
             if (HtmlBlock.CanStartBlock(line))
             {
-                return BlockElementType.HtmlBlock;
+                return new HtmlBlock();
             }
 
             if (BlockQuote.CanStartBlock(line))
             {
-                return BlockElementType.BlockQuote;
+                return new BlockQuote();
             }
 
             if (ListBlock.CanStartBlock(line))
             {
-                return BlockElementType.List;
+                return new ListBlock();
             }
 
             if (BlankLine.CanStartBlock(line))
             {
-                return BlockElementType.BlankLine;
+                return new BlankLine();
             }
 
-            return BlockElementType.Unknown;
+            return new UnknownElement();
         }
     }
 
