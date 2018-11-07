@@ -1,6 +1,6 @@
 ﻿namespace Sharpdown.MarkdownElement.BlockElement
 {
-    public class BlankLine : LeafElementBase
+    public class BlankLine : LeafElement
     {
         public override BlockElementType Type => BlockElementType.BlankLine;
 

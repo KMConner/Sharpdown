@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
-    class ThemanticBreak : LeafElementBase
+    class ThemanticBreak : LeafElement
     {
         private static readonly char[] ThemanticBreakChars = new[] { '-', '_', '*' };
 

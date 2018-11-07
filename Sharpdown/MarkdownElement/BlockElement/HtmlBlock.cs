@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
-    public class HtmlBlock : LeafElementBase
+    public class HtmlBlock : LeafElement
     {
         private int blockType;
 
@@ -28,6 +28,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
             @"^\<\/(?<tag>[a-zA-Z][a-zA-Z0-9-]*)[ \t]*>[ \t]*$",
             RegexOptions.Compiled);
 
+        public override BlockElementType Type => BlockElementType.HtmlBlock;
+
         private static readonly string[] htmlTagNames = new[]
         {
             "address", "article", "aside", "base", "basefont", "blockquote", "body", "caption",
@@ -38,8 +40,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
             "option", "p", "param", "section", "source", "summary", "table",
             "tbody", "td", "tfoot", "th", "thead", "title", "tr", "track", "ul",
         };
-
-        public override BlockElementType Type => BlockElementType.HtmlBlock;
 
         public static bool CanStartBlock(string line)
         {

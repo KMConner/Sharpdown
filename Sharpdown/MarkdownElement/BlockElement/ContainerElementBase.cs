@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
@@ -14,7 +14,10 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         public IReadOnlyList<BlockElement> Children => children.AsReadOnly();
 
-        public override IReadOnlyList<string> Warnings => new List<string>(children.Select(c => c.Warnings.AsEnumerable()).Aggregate((l1, l2) => l1.Union(l2)).Union(warnings)).AsReadOnly();
+        public override IReadOnlyList<string> Warnings =>
+            new List<string>(children.Select(c => c.Warnings.AsEnumerable())
+                .Aggregate((l1, l2) => l1.Union(l2)).Union(warnings))
+            .AsReadOnly();
 
         protected void CloseOpenlement()
         {

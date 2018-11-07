@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Reflection;
 using Sharpdown.MarkdownElement.BlockElement;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Reflection;
 
 namespace TestProject.MarkdownElementTest.BlockElementTest
 {

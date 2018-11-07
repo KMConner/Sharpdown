@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Sharpdown.MarkdownElement.BlockElement
+﻿namespace Sharpdown.MarkdownElement.BlockElement
 {
-    public abstract class CodeBlockBase : LeafElementBase
+    public abstract class CodeBlockBase : LeafElement
     {
         public abstract string InfoString { get; }
         public abstract string Content { get; }

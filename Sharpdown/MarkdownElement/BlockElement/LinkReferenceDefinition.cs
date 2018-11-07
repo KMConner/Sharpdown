@@ -2,9 +2,8 @@
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
-    public class LinkReferenceDefinition : LeafElementBase
+    public class LinkReferenceDefinition : LeafElement
     {
-
         public string Label { get; private set; }
         public string Destination { get; private set; }
         public string Title { get; private set; }

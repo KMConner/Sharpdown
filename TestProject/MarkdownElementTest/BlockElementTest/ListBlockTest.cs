@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sharpdown.MarkdownElement.BlockElement;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TestProject.MarkdownElementTest.BlockElementTest
 {
@@ -286,7 +283,5 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                     new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Unknown));
             structure.AssertTypeEqual(block);
         }
-
-
     }
 }

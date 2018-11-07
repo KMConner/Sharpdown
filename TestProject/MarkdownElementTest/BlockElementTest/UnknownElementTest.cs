@@ -1,7 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Sharpdown.MarkdownElement.BlockElement;
-using System;
+﻿using System;
 using System.Reflection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Sharpdown.MarkdownElement.BlockElement;
 
 namespace TestProject.MarkdownElementTest.BlockElementTest
 {
@@ -25,7 +25,6 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             UnknownElement element = TestUtils.CreateInternal<UnknownElement>();
             var ret = element.AddLine("");
         }
-
 
         [TestMethod]
         [ExpectedException(typeof(InvalidBlockFormatException))]
@@ -84,7 +83,6 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             var actualType = GetActualType(element);
             Assert.AreEqual(BlockElementType.Paragraph, actualType);
         }
-
 
         [TestMethod]
         public void AddLineTest_09()
@@ -517,7 +515,6 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(BlockElementType.Paragraph, actualType);
         }
 
-
         [TestMethod]
         public void AddLineTest_46()
         {
@@ -539,7 +536,6 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             ret1 = element.AddLine("123456. bar");
             Assert.AreEqual(AddLineResult.Consumed, ret1);
         }
-
 
         #endregion
 
@@ -668,14 +664,13 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             var ret1 = element.AddLine("[foo]: <bar> 'baz");
             Assert.AreEqual(AddLineResult.Consumed, ret1);
             ret1 = element.AddLine("boo'");
-            Assert.AreEqual(AddLineResult.Consumed|AddLineResult.NeedClose, ret1);
+            Assert.AreEqual(AddLineResult.Consumed | AddLineResult.NeedClose, ret1);
             var closed = element.Close();
             Assert.AreEqual(BlockElementType.LinkReferenceDefinition, closed.Type);
             Assert.AreEqual("foo", ((LinkReferenceDefinition)closed).Label);
             Assert.AreEqual("bar", ((LinkReferenceDefinition)closed).Destination);
             Assert.AreEqual("baz\nboo", ((LinkReferenceDefinition)closed).Title);
         }
-
 
         [TestMethod]
         public void CloseTest_10()

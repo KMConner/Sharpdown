@@ -6,7 +6,6 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
     [TestClass]
     public class FencedCodeBlockTest
     {
-
         #region AddLine Test
 
         [TestMethod]

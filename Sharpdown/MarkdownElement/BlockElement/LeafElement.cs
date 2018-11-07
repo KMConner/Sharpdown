@@ -2,10 +2,10 @@
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
-    public abstract class LeafElementBase : BlockElement
+    public abstract class LeafElement : BlockElement
     {
         public override IReadOnlyList<string> Warnings => warnings.AsReadOnly();
 
-        internal LeafElementBase() : base() { }
+        internal LeafElement() : base() { }
     }
 }

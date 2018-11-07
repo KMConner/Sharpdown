@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -11,12 +10,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
         private static readonly char[] deliminators = new[] { '.', ')' };
         internal static readonly Regex blankItemRegex = new Regex(@"^([\-\*\+]|\d{1,9}[\.\)])[ \t\r\n]*$", RegexOptions.Compiled);
         internal static readonly Regex orderdList = new Regex(@"^(?<index>\d{1,9})(?<delim>[\.\)])(?:(?<spaces>[ \t]+)(?<content>.*))??$", RegexOptions.Compiled);
-
-        //private int? startIndex;
-        //private char? mark;
-
-        //private int lastIndent;
-
         public override BlockElementType Type => BlockElementType.List;
 
         public static bool CanStartBlock(string line)

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Sharpdown.MarkdownElement
+﻿namespace Sharpdown.MarkdownElement
 {
     public abstract class MarkdownElementBase
     {

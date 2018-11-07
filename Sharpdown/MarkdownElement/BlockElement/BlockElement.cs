@@ -8,20 +8,19 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         public abstract BlockElementType Type { get; }
 
+        public abstract IReadOnlyList<string> Warnings { get; }
+
+        protected readonly List<string> warnings;
+
         internal virtual BlockElement Close()
         {
             return this;
         }
 
-        public abstract IReadOnlyList<string> Warnings { get; }
-
-        protected readonly List<string> warnings;
-
         internal BlockElement()
         {
             warnings = new List<string>();
         }
-
 
         protected string RemoveIndent(string str, int maxRemoveCount)
         {

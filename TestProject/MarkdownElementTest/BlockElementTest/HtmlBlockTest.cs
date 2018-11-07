@@ -7,7 +7,6 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
     [TestClass]
     public class HtmlBlockTest
     {
-
         #region AddLine
 
         [TestMethod]
@@ -424,8 +423,6 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(0, closed.Warnings.Count);
         }
 
-
-
         #endregion
 
         private int GetBlockType(HtmlBlock html)
@@ -435,6 +432,4 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                 .GetValue(html);
         }
     }
-
-
 }

@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
-    public class UnknownElement : LeafElementBase
+    public class UnknownElement : LeafElement
     {
         private static readonly Regex linkLabelRegex = new Regex(
             @"^\[(?:[^\]]|\\\]){1,999}\]\:", RegexOptions.Compiled);
@@ -14,17 +13,17 @@ namespace Sharpdown.MarkdownElement.BlockElement
             @"^\[(?<label>(?:[^\]]|\\\]){1,999})\]\:[ \t]*(?:\r|\r\n|\n)??[ \t]*(?<destination>\<(?:[^ \t\r\n\<\>]|\\\<|\\\>)+\>|[^ \t\r\n]+)([ \t]*(?: |\t|\r|\r\n|\n)[ \t]*(?<title>\""(?:[^\""]|\\\"")*\""|\'(?:[^\']|\\\')*\'|\((?:[^\)]|\\\))*\)))??[ \t]*$",
             RegexOptions.Compiled);
 
+        private BlockElementType actualType;
         internal List<string> content;
         private int headerLevel;
+        public override BlockElementType Type => BlockElementType.Unknown;
         private bool mayBeLinkReferenceDefinition;
+
         internal UnknownElement() : base()
         {
             content = new List<string>();
             actualType = BlockElementType.Unknown;
         }
-        private BlockElementType actualType;
-
-        public override BlockElementType Type => BlockElementType.Unknown;
 
         internal override AddLineResult AddLine(string line)
         {

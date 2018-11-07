@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sharpdown.MarkdownElement.BlockElement;
 
 namespace TestProject.MarkdownElementTest.BlockElementTest
@@ -101,6 +98,5 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.NeedClose, block.AddLine("Baz"));
             Assert.AreEqual("Foo\r\nBar", block.Content);
         }
-
     }
 }

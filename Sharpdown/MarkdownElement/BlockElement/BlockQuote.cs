@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Sharpdown.MarkdownElement.BlockElement
+﻿namespace Sharpdown.MarkdownElement.BlockElement
 {
     public class BlockQuote : ContainerElementBase
     {
