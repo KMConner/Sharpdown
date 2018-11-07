@@ -2,7 +2,7 @@
 {
     public class BlockElementUtil
     {
-        public static BlockElement CreateBlockFromLine(string line)
+        public static BlockElement CreateBlockFromLine(string line, bool createListItem = false)
         {
             if (IndentedCodeBlock.CanStartBlock(line))
             {
@@ -36,7 +36,7 @@
 
             if (ListBlock.CanStartBlock(line))
             {
-                return new ListBlock();
+                return createListItem ? (BlockElement)new ListItem() : new ListBlock();
             }
 
             if (BlankLine.CanStartBlock(line))

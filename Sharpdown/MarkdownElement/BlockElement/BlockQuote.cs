@@ -4,12 +4,9 @@ using System.Text;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
-    class BlockQuote : ContainerElementBase
+    public class BlockQuote : ContainerElementBase
     {
         public override BlockElementType Type => BlockElementType.BlockQuote;
-
-        // TODO: Implement
-        public override IReadOnlyList<string> Warnings => throw new NotImplementedException();
 
         public static bool CanStartBlock(string line)
         {
@@ -26,16 +23,30 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return false;
         }
 
-        internal override AddLineResult AddLine(string line)
+        internal override bool HasMark(string line, out string markRemoved)
         {
-            // TODO: Implement
-            throw new NotImplementedException();
-        }
+            markRemoved = null;
+            if (line.GetIndentNum() > 4)
+            {
+                return false;
+            }
+            string trimmed = line.TrimStartAscii();
 
-        internal override BlockElement Close()
-        {
-            // TODO: Implement
-            throw new NotImplementedException();
+            if (!trimmed.StartsWith(">"))
+            {
+                return false;
+            }
+
+            if (trimmed.StartsWith("> "))
+            {
+                markRemoved = trimmed.Substring(2);
+                return true;
+            }
+            else
+            {
+                markRemoved = trimmed.Substring(1);
+                return true;
+            }
         }
     }
 }

@@ -13,6 +13,7 @@
         BlankLine,
         BlockQuote,
         List,
+        ListItem,
         Unknown,
     }
 }

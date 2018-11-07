@@ -15,6 +15,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         public abstract IReadOnlyList<string> Warnings { get; }
 
+        protected readonly List<string> warnings;
+
+        internal BlockElement()
+        {
+            warnings = new List<string>();
+        }
+
+
         protected string RemoveIndent(string str, int maxRemoveCount)
         {
             if (maxRemoveCount == 0 || str.Length == 0 || str[0] != ' ')
