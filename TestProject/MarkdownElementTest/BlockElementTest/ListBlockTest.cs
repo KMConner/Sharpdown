@@ -50,7 +50,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("1. foo"));
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("   1.  bar"));
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("       1.  baz"));
-            BlockElementStructure structure = 
+            BlockElementStructure structure =
                 new BlockElementStructure(BlockElementType.List,
                     new BlockElementStructure(BlockElementType.ListItem,
                         BlockElementType.Paragraph,
@@ -270,7 +270,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
         public void AddLineTest_18()
         {
             ListBlock block = TestUtils.CreateInternal<ListBlock>();
-            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("  1. foo"));
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("  1234. foo"));
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("    2. bar"));
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("       - baz"));
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("   4. boo"));
@@ -278,7 +278,10 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             BlockElementStructure structure =
                 new BlockElementStructure(BlockElementType.List,
                     new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Paragraph),
-                    new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Paragraph),
+                    new BlockElementStructure(BlockElementType.ListItem,
+                        BlockElementType.Paragraph,
+                        new BlockElementStructure(BlockElementType.List,
+                            new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Paragraph))),
                     new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Paragraph),
                     new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Unknown));
             structure.AssertTypeEqual(block);

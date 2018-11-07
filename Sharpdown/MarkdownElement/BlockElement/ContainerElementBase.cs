@@ -16,6 +16,25 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         public override IReadOnlyList<string> Warnings => new List<string>(children.Select(c => c.Warnings.AsEnumerable()).Aggregate((l1, l2) => l1.Union(l2)).Union(warnings)).AsReadOnly();
 
+        protected void CloseOpenlement()
+        {
+            if (openElement != null)
+            {
+                children[children.Count - 1] = openElement.Close();
+                openElement = null;
+            }
+        }
+
+        protected void AddChild(BlockElement elem)
+        {
+            if (openElement != null)
+            {
+                throw new InvalidOperationException("openElement is not null.");
+            }
+            openElement = elem;
+            children.Add(elem);
+        }
+
         protected bool CanLazyContinue()
         {
             if (children.Count == 0)
