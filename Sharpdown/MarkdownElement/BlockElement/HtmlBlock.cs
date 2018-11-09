@@ -5,31 +5,39 @@ using System.Text.RegularExpressions;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
+    /// <summary>
+    /// Represents HTML blocks in markdown documents.
+    /// </summary>
+    /// <remarks>
+    /// The typical html block is following.
+    /// 
+    /// <![CDATA[
+    /// <script>
+    /// alert("Foo");
+    /// </sctipt>
+    /// 
+    /// <div>Bar</div>
+    /// ]]>
+    /// </remarks>
     public class HtmlBlock : LeafElement
     {
-        private int blockType;
-
-        private List<string> contents;
-
-        public string Content => string.Join("\r\n", contents);
-        private bool isClosed;
-
-        internal HtmlBlock() : base()
-        {
-            contents = new List<string>();
-            isClosed = false;
-        }
-
+        /// <summary>
+        /// Regular expression which matches open tags.
+        /// </summary>
         private static readonly Regex openTag = new Regex(
             @"\<(?<tag>[a-zA-Z][a-zA-Z0-9-]*)[ \t]*?([ \t][a-zA-Z_\:][a-zA-Z0-9_\.\:\-]*[ \t]*(\=[ \t]*([^ \""\'\=\<\>`\t]+|\""[^\""]*\""|\'[^\']*\'))??)*[ \t]*\/??\>[ \t]*$",
                 RegexOptions.Compiled);
 
+        /// <summary>
+        /// Regular expression which matches close tags.
+        /// </summary>
         private static readonly Regex closeTag = new Regex(
             @"^\<\/(?<tag>[a-zA-Z][a-zA-Z0-9-]*)[ \t]*>[ \t]*$",
             RegexOptions.Compiled);
 
-        public override BlockElementType Type => BlockElementType.HtmlBlock;
-
+        /// <summary>
+        /// HTML tag names which constitutes type 6 HTML block.
+        /// </summary>
         private static readonly string[] htmlTagNames = new[]
         {
             "address", "article", "aside", "base", "basefont", "blockquote", "body", "caption",
@@ -41,6 +49,48 @@ namespace Sharpdown.MarkdownElement.BlockElement
             "tbody", "td", "tfoot", "th", "thead", "title", "tr", "track", "ul",
         };
 
+        /// <summary>
+        /// The type of this html block. (1-7)
+        /// </summary>
+        private int blockType;
+
+        /// <summary>
+        /// The contents of this block.
+        /// </summary>
+        private List<string> contents;
+
+        /// <summary>
+        /// Wether a line which satisfies the close condition of each type has appeard.
+        /// </summary>
+        private bool isClosed;
+
+        /// <summary>
+        /// Gets the type of this block.
+        /// </summary>
+        public override BlockElementType Type => BlockElementType.HtmlBlock;
+
+        /// <summary>
+        /// Gets the contents of this block.
+        /// </summary>
+        public string Content => string.Join("\r\n", contents);
+
+        internal HtmlBlock() : base()
+        {
+            contents = new List<string>();
+            isClosed = false;
+        }
+
+        /// <summary>
+        /// Returns whether the specified line can be a start line of <see cref="HtmlBlock"/>.
+        /// </summary>
+        /// <remarks>
+        /// To be the start line, one of 1-6 condition must be satisfied.
+        /// </remarks>
+        /// <param name="line">Single line string.</param>
+        /// <returns>
+        /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="HtmlBlock"/>.
+        /// Otherwise, returns <c>false</c>.
+        /// </returns>
         public static bool CanStartBlock(string line)
         {
             if (line.GetIndentNum() < 0 || line.GetIndentNum() >= 4)
@@ -50,15 +100,30 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
             string lineTrimmed = line.TrimStart(whiteSpaceShars);
 
-            return IsType1HtmlBlock(lineTrimmed)
-                || IsType2HtmlBlock(lineTrimmed)
-                || IsType3HtmlBlock(lineTrimmed)
-                || IsType4HtmlBlock(lineTrimmed)
-                || IsType5HtmlBlock(lineTrimmed)
-                || IsType6HtmlBlock(lineTrimmed)
-                || IsType7HtmlBlock(lineTrimmed);
+            return DetermineType(lineTrimmed) > 0;
         }
 
+        /// <summary>
+        /// Returns wether the specified line can be the first line of type 1 <see cref="HtmlBlock"/>.
+        /// </summary>
+        /// <remarks>
+        /// These requirements must be satisfied to be the start line.
+        /// 
+        /// <list type="bullet">
+        /// <item>
+        /// Begins with &lt;script , &lt;pre or &lt;style (case insensitive),
+        /// followed by whitespace, the string &gt; or the end of the line.
+        /// </item>
+        /// <item>
+        /// The open tag must be indented with 0-3 spaces.
+        /// </item>
+        /// </list>
+        /// </remarks>
+        /// <param name="line">A line of string.</param>
+        /// <returns>
+        /// Returns <c>true</c> if <paramref name="line"/> can be a start line of type 1 <see cref="HtmlBlock"/>.
+        /// Otherwise, returns <c>false</c>.
+        /// </returns>
         private static bool IsType1HtmlBlock(string line)
         {
             int whiteSpace;
@@ -88,16 +153,76 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return false;
         }
 
+        /// <summary>
+        /// Returns wether the specified line can be the first line of type 2 <see cref="HtmlBlock"/>.
+        /// </summary>
+        /// <remarks>
+        /// These requirements must be satisfied to be the start line.
+        /// 
+        /// <list type="bullet">
+        /// <item>
+        /// Begins with &lt;!--
+        /// </item>
+        /// <item>
+        /// The comment must be indented with 0-3 spaces.
+        /// </item>
+        /// </list>
+        /// </remarks>
+        /// <param name="line">A line of string.</param>
+        /// <returns>
+        /// Returns <c>true</c> if <paramref name="line"/> can be a start line of type 2 <see cref="HtmlBlock"/>.
+        /// Otherwise, returns <c>false</c>.
+        /// </returns>
         private static bool IsType2HtmlBlock(string line)
         {
             return line.StartsWith("<!--");
         }
 
+        /// <summary>
+        /// Returns wether the specified line can be the first line of type 3 <see cref="HtmlBlock"/>.
+        /// </summary>
+        /// <remarks>
+        /// These requirements must be satisfied to be the start line.
+        /// 
+        /// <list type="bullet">
+        /// <item>
+        /// Begins with &lt;?
+        /// </item>
+        /// <item>
+        /// The processing instructions must be indented with 0-3 spaces.
+        /// </item>
+        /// </list>
+        /// </remarks>
+        /// <param name="line">A line of string.</param>
+        /// <returns>
+        /// Returns <c>true</c> if <paramref name="line"/> can be a start line of type 3 <see cref="HtmlBlock"/>.
+        /// Otherwise, returns <c>false</c>.
+        /// </returns>
         private static bool IsType3HtmlBlock(string line)
         {
             return line.StartsWith("<?");
         }
 
+        /// <summary>
+        /// Returns wether the specified line can be the first line of type 4 <see cref="HtmlBlock"/>.
+        /// </summary>
+        /// <remarks>
+        /// These requirements must be satisfied to be the start line.
+        /// 
+        /// <list type="bullet">
+        /// <item>
+        /// Begins with &lt;! fllowed by a upper case ascii letter.
+        /// </item>
+        /// <item>
+        /// The doctype declaration must be indented with 0-3 spaces.
+        /// </item>
+        /// </list>
+        /// </remarks>
+        /// <param name="line">A line of string.</param>
+        /// <returns>
+        /// Returns <c>true</c> if <paramref name="line"/> can be a start line of type 4 <see cref="HtmlBlock"/>.
+        /// Otherwise, returns <c>false</c>.
+        /// </returns>
         private static bool IsType4HtmlBlock(string line)
         {
             if (line.Length < 3)
@@ -110,11 +235,52 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 && line[2] <= 0x5A;
         }
 
+        /// <summary>
+        /// Returns wether the specified line can be the first line of type 5 <see cref="HtmlBlock"/>.
+        /// </summary>
+        /// <remarks>
+        /// These requirements must be satisfied to be the start line.
+        /// 
+        /// <list type="bullet">
+        /// <item>
+        /// Begins with &lt;[!CDATA[.
+        /// </item>
+        /// <item>
+        /// The CDATA tag must be indented with 0-3 spaces.
+        /// </item>
+        /// </list>
+        /// </remarks>
+        /// <param name="line">A line of string.</param>
+        /// <returns>
+        /// Returns <c>true</c> if <paramref name="line"/> can be a start line of type 5 <see cref="HtmlBlock"/>.
+        /// Otherwise, returns <c>false</c>.
+        /// </returns>
         private static bool IsType5HtmlBlock(string line)
         {
             return line.StartsWith("<![CDATA[");
         }
 
+        /// <summary>
+        /// Returns wether the specified line can be the first line of type 6 <see cref="HtmlBlock"/>.
+        /// </summary>
+        /// <remarks>
+        /// These requirements must be satisfied to be the start line.
+        /// 
+        /// <list type="bullet">
+        /// <item>
+        /// Begins with &lt;or &lt;/ followed by one of the strings in <see cref="htmlTagNames"/>
+        /// followed by whitespace, the end of the line, \gt; or /\gt;.
+        /// </item>
+        /// <item>
+        /// The html tags must be indented with 0-3 spaces.
+        /// </item>
+        /// </list>
+        /// </remarks>
+        /// <param name="line">A line of string.</param>
+        /// <returns>
+        /// Returns <c>true</c> if <paramref name="line"/> can be a start line of type 6 <see cref="HtmlBlock"/>.
+        /// Otherwise, returns <c>false</c>.
+        /// </returns>
         private static bool IsType6HtmlBlock(string line)
         {
             if (line.Length < 2)
@@ -157,6 +323,26 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return false;
         }
 
+        /// <summary>
+        /// Returns wether the specified line can be the first line of type 7 <see cref="HtmlBlock"/>.
+        /// </summary>
+        /// <remarks>
+        /// These requirements must be satisfied to be the start line.
+        /// 
+        /// <list type="bullet">
+        /// <item>
+        /// Line must begin with complete open tag or closing tag.
+        /// </item>
+        /// <item>
+        /// The processing instructions must be indented with 0-3 spaces.
+        /// </item>
+        /// </list>
+        /// </remarks>
+        /// <param name="line">A line of string.</param>
+        /// <returns>
+        /// Returns <c>true</c> if <paramref name="line"/> can be a start line of type 7 <see cref="HtmlBlock"/>.
+        /// Otherwise, returns <c>false</c>.
+        /// </returns>
         private static bool IsType7HtmlBlock(string line)
         {
             string[] invalidTags = new[] { "script", "style", "pre" };
@@ -176,6 +362,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return false;
         }
 
+        /// <summary>
+        /// Wether the specified line can interrupt <see cref="Paragraph"/>.
+        /// </summary>
+        /// <param name="line">A single line of string.</param>
+        /// <returns>
+        /// If the line is the start line of type 1-6 <see cref="HtmlBlock"/>,
+        /// returns <c>true</c>, otherwise <c>false.</c></returns>
         internal static bool CanInterruptParagraph(string line)
         {
             string lineTrimmed = line.TrimStart(whiteSpaceShars);
@@ -188,6 +381,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
             || IsType6HtmlBlock(lineTrimmed);
         }
 
+        /// <summary>
+        /// Determines which type the specified line is.
+        /// </summary>
+        /// <param name="lineTrimmed">The single line of string.</param>
+        /// <returns>
+        /// The type of htnl block,
+        /// if no srequirements of any types are satisfied, return -1.
+        /// </returns>
         private static int DetermineType(string lineTrimmed)
         {
             if (IsType1HtmlBlock(lineTrimmed))
@@ -224,6 +425,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
         }
 
+        /// <summary>
+        /// Returns wether the specified line satisfies the end condition of the current block.
+        /// </summary>
+        /// <param name="lineTrimmed">A line of string. (After remove indent.)</param>
+        /// <returns>
+        /// Return <c>true</c> if the specified line satisfies the end condition
+        /// of the current block, otherwise, <c>false</c>.
+        /// </returns>
         private bool NeedClose(string lineTrimmed)
         {
             switch (blockType)
@@ -248,6 +457,15 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
         }
 
+        /// <summary>
+        /// Adds a line of string to the current block.
+        /// </summary>
+        /// <param name="line">A single line to add to this element.</param>
+        /// <returns>
+        /// Returns <c>AddLineResult.NeedClose | AddLineResult.Consumed</c> when
+        /// <see cref="NeedClose(string)"/> returns <c>true</c>,
+        /// <c>AddLineResult.Consumed</c> otherwise.
+        /// </returns>
         internal override AddLineResult AddLine(string line)
         {
             string lineTrimmed = line.TrimStartAscii();
@@ -272,6 +490,16 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return AddLineResult.NeedClose;
         }
 
+        /// <summary>
+        /// Closes this <see cref="BlockElement"/> after closes all children
+        /// and removing all <see cref="BlankLine"/> elements.
+        /// 
+        /// If <see cref="Type"/> is 1-5 and no line which satisfies the end condition
+        /// has appeared, a warning message is added.
+        /// </summary>
+        /// <returns>
+        /// Ths current block after close process.
+        /// </returns>
         internal override BlockElement Close()
         {
             if (!isClosed)

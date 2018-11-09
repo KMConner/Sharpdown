@@ -4,14 +4,71 @@ using System.Text.RegularExpressions;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
-    public class ListBlock : ContainerElementBase
+    /// <summary>
+    /// Represents lists int markdown documents.
+    /// </summary>
+    /// <remarks>
+    /// The typical list is following.
+    /// 
+    /// <![CDATA[
+    /// - Foo
+    /// 
+    /// - Bar
+    /// 
+    /// 1. Baz
+    /// 2. Boo
+    /// ]]>
+    /// </remarks>
+    public class ListBlock : ContainerElement
     {
+        /// <summary>
+        /// Characters which can be used as bullet list markers.
+        /// </summary>
         private static readonly char[] bullets = new[] { '-', '*', '+' };
+
+        /// <summary>
+        /// Characters which can be used as ordered list deliminators.
+        /// </summary>
         private static readonly char[] deliminators = new[] { '.', ')' };
-        internal static readonly Regex blankItemRegex = new Regex(@"^([\-\*\+]|\d{1,9}[\.\)])[ \t\r\n]*$", RegexOptions.Compiled);
-        internal static readonly Regex orderdList = new Regex(@"^(?<index>\d{1,9})(?<delim>[\.\)])(?:(?<spaces>[ \t]+)(?<content>.*))??$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regular expression which matches the first line of list item which starts with a
+        /// blank line.
+        /// </summary>
+        private static readonly Regex blankItemRegex = new Regex(
+            @"^([\-\*\+]|\d{1,9}[\.\)])[ \t\r\n]*$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regular expression which matches the first line of orderd list items.
+        /// </summary>
+        private static readonly Regex orderdList = new Regex(
+            @"^(?<index>\d{1,9})(?<delim>[\.\)])(?:(?<spaces>[ \t]+)(?<content>.*))??$",
+            RegexOptions.Compiled);
+
+        /// <summary>
+        /// Gets the type of this block.
+        /// </summary>
         public override BlockElementType Type => BlockElementType.List;
 
+        /// <summary>
+        /// Returns whether the specified line can be a start line of <see cref="ListBlock"/>.
+        /// </summary>
+        /// <remarks>
+        /// These requirements must be satisfied to be the start line.
+        /// 
+        /// <list type="bullet">
+        /// <item>
+        /// The specified line of string must be the first line of orderd or bullet
+        /// list item.
+        /// </item>
+        /// <item>Open fence must be indented with 0-3 speces.</item>
+        /// </list>
+        /// </remarks>
+        /// <param name="line">Single line string.</param>
+        /// <returns>
+        /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="ListBlock"/>.
+        /// Otherwise, returns <c>false</c>.
+        /// </returns>
         public static bool CanStartBlock(string line)
         {
             if (line.GetIndentNum() >= 4)
@@ -23,6 +80,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return IsBulletList(trimmed).isBulletList || IsOrderdList(trimmed).isOrderdList;
         }
 
+        /// <summary>
+        /// Retuens wether the specified line can be athe first line of a bullet list item.
+        /// </summary>
+        /// <param name="line">A line of string. (Indent removal is necessary.)</param>
+        /// <returns>
+        /// Returns <c>true</c> if <paramref name="line"/> can be a start line of bullet list item.
+        /// Otherwise, returns <c>false</c>.
+        /// </returns>
         private static (bool isBulletList, char mark) IsBulletList(string line)
         {
             if (line.Length == 0)
@@ -42,6 +107,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return (false, '\0');
         }
 
+        /// <summary>
+        /// Retuens wether the specified line can be athe first line of a ordered list item.
+        /// </summary>
+        /// <param name="line">A line of string. (Indent removal is necessary.)</param>
+        /// <returns>
+        /// Returns <c>true</c> if <paramref name="line"/> can be a start line of ordered list item.
+        /// Otherwise, returns <c>false</c>.
+        /// </returns>
         private static (bool isOrderdList, int index, char deliminator) IsOrderdList(string line)
         {
             if (!orderdList.IsMatch(line))
@@ -57,7 +130,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return (true, index, match.Groups["delim"].Value[0]);
         }
 
-        private static ListItem CreateItem(string line)
+        /// <summary>
+        /// Creates a new <see cref="ListItem"/> from the specified line.
+        /// </summary>
+        /// <param name="line">A single line of string.</param>
+        /// <returns>
+        /// <see cref="ListItem"/> which is created from <paramref name="line"/>.
+        /// </returns>
+        private ListItem CreateItem(string line)
         {
             if (line.Length == 0)
             {
@@ -113,6 +193,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
             throw new InvalidBlockFormatException(BlockElementType.List);
         }
 
+        /// <summary>
+        /// Wether the specified line can interrupt <see cref="Paragraph"/>.
+        /// </summary>
+        /// <param name="line">A single line of string.</param>
+        /// <returns>
+        /// If the line is the start line of bullet list which does not starts with blank
+        /// line, 
+        /// </returns>
         internal static bool CanInterruptParagraph(string line)
         {
             if (line.GetIndentNum() >= 4)
@@ -126,6 +214,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 && !blankItemRegex.IsMatch(trimmed);
         }
 
+        /// <summary>
+        /// Adds a line of string to this <see cref="AtxHeaderElement"/>.
+        /// </summary>
+        /// <param name="line">A single line to add to this element.</param>
+        /// <returns>
+        /// Returns <c>AddLineResult.Consumed | AddLineResult.NeedClose</c>
+        /// except when this block need to be insterrupted.
+        /// </returns>
         internal override AddLineResult AddLine(string line)
         {
             int lineIndent = line.GetIndentNum();
@@ -185,6 +281,17 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
         }
 
+        /// <summary>
+        /// This method is not used in this class.
+        /// 
+        /// In some other class which inherites <see cref="ContainerElement"/>
+        /// uses this method in <see cref="ContainerElement.AddLine(string)"/>.
+        /// However <see cref="ListBlock.AddLine(string)"/> does not use this.
+        /// </summary>
+        /// <param name="line">Ignored.</param>
+        /// <param name="markRemoved">Ignored.</param>
+        /// <returns>Always throws <see cref="InvalidOperationException"/>.</returns>
+        /// <exception cref="InvalidOperationException">Always.</exception>
         internal override bool HasMark(string line, out string markRemoved)
         {
             throw new InvalidOperationException();

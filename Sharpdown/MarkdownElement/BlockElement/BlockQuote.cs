@@ -1,13 +1,50 @@
 ﻿namespace Sharpdown.MarkdownElement.BlockElement
 {
-    public class BlockQuote : ContainerElementBase
+    /// <summary>
+    /// Represents Block Quotes in markdown documents.
+    /// </summary>
+    /// <remarks>
+    /// The typical example is following.
+    /// <![CDATA[
+    /// > Foo
+    /// > - bar
+    /// > - baz
+    /// ]]>
+    /// </remarks>
+    public class BlockQuote : ContainerElement
     {
+        /// <summary>
+        /// Gets the type of this block.
+        /// </summary>
         public override BlockElementType Type => BlockElementType.BlockQuote;
 
+        /// <summary>
+        /// Initialzies a new instance of <see cref="BlockQuote"/>.
+        /// </summary>
+        internal BlockQuote() : base() { }
+
+        /// <summary>
+        /// Returns wether the specified line can be a start line of <see cref="BlockQuote"/>.
+        /// </summary>
+        /// <param name="line">Single line string.</param>
+        /// <remarks>
+        /// These requirements must be satisfied to be the start line.
+        /// 
+        /// <list type="bullet">
+        /// <item>Starts with 0-3 spaces of initial indent.</item>
+        /// <item>
+        /// After initial indent, '>' character with or without a following space must appear.
+        /// </item>
+        /// </list>
+        /// </remarks>
+        /// <returns>
+        /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="BlockQuote"/>.
+        /// Otherwise, returns <c>false</c>.
+        /// </returns>
         public static bool CanStartBlock(string line)
         {
             if (line.GetIndentNum() >= 4)
-            {
+            { // Too many indent
                 return false;
             }
 

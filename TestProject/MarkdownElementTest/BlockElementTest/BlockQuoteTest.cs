@@ -13,7 +13,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("> foo"));
             Assert.AreEqual(1, block.Children.Count);
             Assert.AreEqual(BlockElementType.Unknown, block.Children[0].Type);
-            var closed = (ContainerElementBase)block.Close();
+            var closed = (ContainerElement)block.Close();
             Assert.AreEqual(BlockElementType.Paragraph, closed.Children[0].Type);
             var para = (Paragraph)closed.Children[0];
             Assert.AreEqual("foo", para.Content);
@@ -26,7 +26,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine(">foo"));
             Assert.AreEqual(1, block.Children.Count);
             Assert.AreEqual(BlockElementType.Unknown, block.Children[0].Type);
-            var closed = (ContainerElementBase)block.Close();
+            var closed = (ContainerElement)block.Close();
             Assert.AreEqual(BlockElementType.Paragraph, closed.Children[0].Type);
             var para = (Paragraph)closed.Children[0];
             Assert.AreEqual("foo", para.Content);
@@ -39,7 +39,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("   >   foo"));
             Assert.AreEqual(1, block.Children.Count);
             Assert.AreEqual(BlockElementType.Unknown, block.Children[0].Type);
-            var closed = (ContainerElementBase)block.Close();
+            var closed = (ContainerElement)block.Close();
             Assert.AreEqual(BlockElementType.Paragraph, closed.Children[0].Type);
             var para = (Paragraph)closed.Children[0];
             Assert.AreEqual("foo", para.Content);
@@ -57,7 +57,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(BlockElementType.Paragraph, block.Children[0].Type);
             Assert.AreEqual(BlockElementType.BlankLine, block.Children[1].Type);
             Assert.AreEqual(BlockElementType.Unknown, block.Children[2].Type);
-            var closed = (ContainerElementBase)block.Close();
+            var closed = (ContainerElement)block.Close();
             Assert.AreEqual(BlockElementType.Paragraph, closed.Children[0].Type);
             Assert.AreEqual(BlockElementType.Paragraph, closed.Children[1].Type);
             var para1 = (Paragraph)closed.Children[0];
@@ -75,7 +75,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("> Baz"));
             Assert.AreEqual(2, block.Children.Count);
             Assert.AreEqual(BlockElementType.Unknown, block.Children[1].Type);
-            var closed = (ContainerElementBase)block.Close();
+            var closed = (ContainerElement)block.Close();
             Assert.AreEqual(BlockElementType.AtxHeading, closed.Children[0].Type);
             Assert.AreEqual(BlockElementType.Paragraph, closed.Children[1].Type);
             var head = (AtxHeaderElement)closed.Children[0];
@@ -94,7 +94,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("Baz"));
             Assert.AreEqual(2, block.Children.Count);
             Assert.AreEqual(BlockElementType.Unknown, block.Children[1].Type);
-            var closed = (ContainerElementBase)block.Close();
+            var closed = (ContainerElement)block.Close();
             Assert.AreEqual(BlockElementType.AtxHeading, closed.Children[0].Type);
             Assert.AreEqual(BlockElementType.Paragraph, closed.Children[1].Type);
             var head = (AtxHeaderElement)closed.Children[0];
@@ -113,7 +113,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("Baz"));
             Assert.AreEqual(1, block.Children.Count);
             Assert.AreEqual(BlockElementType.Unknown, block.Children[0].Type);
-            var closed = (ContainerElementBase)block.Close();
+            var closed = (ContainerElement)block.Close();
             Assert.AreEqual(BlockElementType.Paragraph, closed.Children[0].Type);
             var para = (Paragraph)closed.Children[0];
             Assert.AreEqual("Foo\r\nBar\r\nBaz", para.Content);
@@ -128,7 +128,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("> Baz"));
             Assert.AreEqual(1, block.Children.Count);
             Assert.AreEqual(BlockElementType.Unknown, block.Children[0].Type);
-            var closed = (ContainerElementBase)block.Close();
+            var closed = (ContainerElement)block.Close();
             Assert.AreEqual(BlockElementType.Paragraph, closed.Children[0].Type);
             var para = (Paragraph)closed.Children[0];
             Assert.AreEqual("Foo\r\nBar\r\nBaz", para.Content);
@@ -143,7 +143,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("Baz"));
             Assert.AreEqual(1, block.Children.Count);
             Assert.AreEqual(BlockElementType.Unknown, block.Children[0].Type);
-            var closed = (ContainerElementBase)block.Close();
+            var closed = (ContainerElement)block.Close();
             Assert.AreEqual(BlockElementType.Paragraph, closed.Children[0].Type);
             var para = (Paragraph)closed.Children[0];
             Assert.AreEqual("Foo\r\nBar\r\nBaz", para.Content);
@@ -158,7 +158,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("> ----"));
             Assert.AreEqual(1, block.Children.Count);
             Assert.AreEqual(BlockElementType.SetextHeading, block.Children[0].Type);
-            var closed = (ContainerElementBase)block.Close();
+            var closed = (ContainerElement)block.Close();
             Assert.AreEqual(BlockElementType.SetextHeading, closed.Children[0].Type);
             var para = (SetextHeader)closed.Children[0];
             Assert.AreEqual("Foo\r\nBar", para.Content);
@@ -173,7 +173,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.NeedClose, block.AddLine("----"));
             Assert.AreEqual(1, block.Children.Count);
             Assert.AreEqual(BlockElementType.Unknown, block.Children[0].Type);
-            var closed = (ContainerElementBase)block.Close();
+            var closed = (ContainerElement)block.Close();
             Assert.AreEqual(BlockElementType.Paragraph, closed.Children[0].Type);
             var para = (Paragraph)closed.Children[0];
             Assert.AreEqual("Foo\r\nBar", para.Content);
@@ -187,7 +187,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine(">      Bar"));
             Assert.AreEqual(1, block.Children.Count);
             Assert.AreEqual(BlockElementType.IndentedCodeBlock, block.Children[0].Type);
-            var closed = (ContainerElementBase)block.Close();
+            var closed = (ContainerElement)block.Close();
             Assert.AreEqual(BlockElementType.IndentedCodeBlock, closed.Children[0].Type);
             var child1 = (IndentedCodeBlock)closed.Children[0];
             Assert.AreEqual("Foo\r\n Bar", child1.Content);
@@ -201,7 +201,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.NeedClose, block.AddLine("     Bar"));
             Assert.AreEqual(1, block.Children.Count);
             Assert.AreEqual(BlockElementType.IndentedCodeBlock, block.Children[0].Type);
-            var closed = (ContainerElementBase)block.Close();
+            var closed = (ContainerElement)block.Close();
             Assert.AreEqual(BlockElementType.IndentedCodeBlock, closed.Children[0].Type);
             var child1 = (IndentedCodeBlock)closed.Children[0];
             Assert.AreEqual("Foo", child1.Content);
@@ -217,7 +217,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("> ```"));
             Assert.AreEqual(1, block.Children.Count);
             Assert.AreEqual(BlockElementType.FencedCodeBlock, block.Children[0].Type);
-            var closed = (ContainerElementBase)block.Close();
+            var closed = (ContainerElement)block.Close();
             Assert.AreEqual(BlockElementType.FencedCodeBlock, closed.Children[0].Type);
             var child1 = (FencedCodeBlock)closed.Children[0];
             Assert.AreEqual("java", child1.InfoString);
@@ -232,7 +232,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.NeedClose, block.AddLine("foo"));
             Assert.AreEqual(1, block.Children.Count);
             Assert.AreEqual(BlockElementType.FencedCodeBlock, block.Children[0].Type);
-            var closed = (ContainerElementBase)block.Close();
+            var closed = (ContainerElement)block.Close();
             Assert.AreEqual(BlockElementType.FencedCodeBlock, closed.Children[0].Type);
             var child1 = (FencedCodeBlock)closed.Children[0];
             Assert.AreEqual("java", child1.InfoString);
@@ -247,7 +247,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine(">"));
             Assert.AreEqual(1, block.Children.Count);
             Assert.AreEqual(BlockElementType.BlankLine, block.Children[0].Type);
-            var closed = (ContainerElementBase)block.Close();
+            var closed = (ContainerElement)block.Close();
             Assert.AreEqual(0, closed.Children.Count);
         }
 
@@ -260,7 +260,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("> "));
             Assert.AreEqual(3, block.Children.Count);
             Assert.AreEqual(BlockElementType.BlankLine, block.Children[0].Type);
-            var closed = (ContainerElementBase)block.Close();
+            var closed = (ContainerElement)block.Close();
             Assert.AreEqual(0, closed.Children.Count);
         }
 
@@ -273,22 +273,22 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("> Baz"));
             Assert.AreEqual(1, block.Children.Count);
             Assert.AreEqual(BlockElementType.BlockQuote, block.Children[0].Type);
-            Assert.AreEqual(2, ((ContainerElementBase)block.Children[0]).Children.Count);
+            Assert.AreEqual(2, ((ContainerElement)block.Children[0]).Children.Count);
             Assert.AreEqual(BlockElementType.Paragraph,
-                ((ContainerElementBase)block.Children[0]).Children[0].Type);
+                ((ContainerElement)block.Children[0]).Children[0].Type);
             Assert.AreEqual(BlockElementType.BlockQuote,
-                ((ContainerElementBase)block.Children[0]).Children[1].Type);
+                ((ContainerElement)block.Children[0]).Children[1].Type);
 
-            var closed = (ContainerElementBase)block.Close();
+            var closed = (ContainerElement)block.Close();
             Assert.AreEqual(1, closed.Children.Count);
             Assert.AreEqual(BlockElementType.BlockQuote, closed.Children[0].Type);
-            Assert.AreEqual(2, ((ContainerElementBase)closed.Children[0]).Children.Count);
+            Assert.AreEqual(2, ((ContainerElement)closed.Children[0]).Children.Count);
             Assert.AreEqual(BlockElementType.Paragraph,
-                ((ContainerElementBase)closed.Children[0]).Children[0].Type);
+                ((ContainerElement)closed.Children[0]).Children[0].Type);
             Assert.AreEqual("Foo",
-                ((Paragraph)((ContainerElementBase)closed.Children[0]).Children[0]).Content);
+                ((Paragraph)((ContainerElement)closed.Children[0]).Children[0]).Content);
             Assert.AreEqual(BlockElementType.BlockQuote,
-                ((ContainerElementBase)closed.Children[0]).Children[1].Type);
+                ((ContainerElement)closed.Children[0]).Children[1].Type);
         }
 
         [TestMethod]

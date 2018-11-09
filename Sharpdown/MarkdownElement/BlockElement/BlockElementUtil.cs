@@ -1,7 +1,19 @@
 ﻿namespace Sharpdown.MarkdownElement.BlockElement
 {
+    /// <summary>
+    /// Provides methods which commonly used in <see cref="BlockElement"/> and its inheritances.
+    /// </summary>
     public class BlockElementUtil
     {
+        /// <summary>
+        /// Creates a new instance of <see cref="BlockElement"/>.
+        /// Its type will be determined with the specified first line.
+        /// </summary>
+        /// <param name="line">The line which is the first line of the block.</param>
+        /// <param name="createListItem">
+        /// Creates a <see cref="ListItem"/> instead of <see cref="ListBlock"/> when <c>true</c> is specified.
+        /// </param>
+        /// <returns>The new element that the type corresponds to <paramref name="line"/>.</returns>
         public static BlockElement CreateBlockFromLine(string line, bool createListItem = false)
         {
             if (IndentedCodeBlock.CanStartBlock(line))
@@ -48,47 +60,4 @@
         }
     }
 
-    public static class ExtendMethods
-    {
-        internal static string Remove(this string str, string remove)
-        {
-            return str.Replace(remove, string.Empty);
-        }
-
-        internal static bool IsAsciiWhiteSpace(this char ch)
-        {
-            return ch == ' ' || ch == '\t' || ch == '\x000B' || ch == '\x000C';
-        }
-
-        internal static int GetIndentNum(this string line)
-        {
-            if (line.TrimStart(MarkdownElementBase.whiteSpaceShars).Length == 0)
-            {
-                return -1;
-            }
-            int ret = 0;
-            foreach (var item in line)
-            {
-                switch (item)
-                {
-                    case ' ':
-                        ret++;
-                        break;
-                    case '\t':
-                        ret += 4;
-                        break;
-                    default:
-                        return ret;
-                }
-            }
-            return ret;
-        }
-
-        internal static string TrimStartAscii(this string str)
-        {
-            return str.TrimStart(MarkdownElementBase.whiteSpaceShars);
-        }
-
-
-    }
 }

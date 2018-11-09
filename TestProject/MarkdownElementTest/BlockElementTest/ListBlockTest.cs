@@ -144,7 +144,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("  * bar"));
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("   + baz"));
             Assert.AreEqual(1, block.Children.Count);
-            Assert.AreEqual(3, ((ContainerElementBase)block.Children[0]).Children.Count);
+            Assert.AreEqual(3, ((ContainerElement)block.Children[0]).Children.Count);
         }
 
         [TestMethod]

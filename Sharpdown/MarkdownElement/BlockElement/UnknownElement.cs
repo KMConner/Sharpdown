@@ -4,20 +4,51 @@ using System.Text.RegularExpressions;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
+    /// <summary>
+    /// Represents markdown elements that the type cannnot be determined
+    /// from only the first line.
+    /// </summary>
+    /// <seealso cref="Paragraph"/>
+    /// <seealso cref="LinkReferenceDefinition"/>
+    /// <seealso cref="SetextHeader"/>
     public class UnknownElement : LeafElement
     {
+        /// <summary>
+        /// A regular expression which matches link label.
+        /// </summary>
         private static readonly Regex linkLabelRegex = new Regex(
             @"^\[(?:[^\]]|\\\]){1,999}\]\:", RegexOptions.Compiled);
 
+
+        /// <summary>
+        /// A regular expression which matches link reference definition.
+        /// </summary>
         private static readonly Regex linkDefinitionRegex = new Regex(
             @"^\[(?<label>(?:[^\]]|\\\]){1,999})\]\:[ \t]*(?:\r|\r\n|\n)??[ \t]*(?<destination>\<(?:[^ \t\r\n\<\>]|\\\<|\\\>)+\>|[^ \t\r\n]+)([ \t]*(?: |\t|\r|\r\n|\n)[ \t]*(?<title>\""(?:[^\""]|\\\"")*\""|\'(?:[^\']|\\\')*\'|\((?:[^\)]|\\\))*\)))??[ \t]*$",
             RegexOptions.Compiled);
 
+        /// <summary>
+        /// The actual type of the current object.
+        /// </summary>
         private BlockElementType actualType;
+
+        /// <summary>
+        /// The content in this object.
+        /// </summary>
         internal List<string> content;
+
+        /// <summary>
+        /// The header level.(Used when this object is SetextHeading.)
+        /// </summary>
         private int headerLevel;
-        public override BlockElementType Type => BlockElementType.Unknown;
+
+        /// <summary>
+        /// Wether this block can be a link reference definition.
+        /// </summary>
         private bool mayBeLinkReferenceDefinition;
+
+
+        public override BlockElementType Type => BlockElementType.Unknown;
 
         internal UnknownElement() : base()
         {
@@ -25,6 +56,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
             actualType = BlockElementType.Unknown;
         }
 
+        /// <summary>
+        /// Gets the type of this block.
+        /// </summary>
         internal override AddLineResult AddLine(string line)
         {
             var trimmed = line.TrimStartAscii();
@@ -106,6 +140,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return AddLineResult.Consumed;
         }
 
+        /// <summary>
+        /// Returns wether the paragraph needs to be interrupted.
+        /// </summary>
+        /// <param name="line">The single line of string.</param>
+        /// <returns>
+        /// <c>true</c> if the paragraph needs to be interrupted,
+        /// otherwise, <c>false</c>.
+        /// </returns>
         private bool Interrupted(string line)
         {
             if (BlockQuote.CanStartBlock(line)
@@ -120,6 +162,16 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return false;
         }
 
+        /// <summary>
+        /// Returns wether parentheses in the specified string is balanecd.
+        /// </summary>
+        /// <param name="str">
+        /// String object to determine wether the parentheses are balanecd.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if  parentheses in the specified string is balanecd,
+        /// otherwise, <c>false</c>.
+        /// </returns>
         private bool AreParenthesesBalanced(string str)
         {
             int depth = 0;
@@ -148,6 +200,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return depth == 0;
         }
 
+        /// <summary>
+        /// Removes ", or ' from link title.
+        /// </summary>
+        /// <param name="titleString">Link title.</param>
+        /// <returns>
+        /// Title string without quote characters at the begging or the end.
+        /// </returns>
         private string ExtractTitle(string titleString)
         {
             if (string.IsNullOrEmpty(titleString))
@@ -163,6 +222,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return titleString;
         }
 
+        /// <summary>
+        /// Removes &lt;, &gt; from link destination.
+        /// </summary>
+        /// <param name="destString">Link destination.</param>
+        /// <returns>
+        /// Link destination string without &lt; or &gt; character at the beginning or the end.
+        /// </returns>
         private string ExtractDestination(string destString)
         {
             if (string.IsNullOrEmpty(destString))
@@ -176,6 +242,24 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return destString;
         }
 
+        /// <summary>
+        /// Closes this <see cref="UnknownElement"/>.
+        /// </summary>
+        /// <returns>
+        /// Ths closed block.
+        /// The <see cref="Type"/> is determined in this phase.
+        /// 
+        /// <para>
+        /// If <see cref="actualType"/> is one of <see cref="BlockElementType.Paragraph"/>,
+        /// <see cref="BlockElementType.SetextHeading"/> or
+        /// <see cref="BlockElementType.LinkReferenceDefinition"/>, the type of returned block
+        /// will be the same type of <see cref="actualType"/>.
+        /// Otherwise (<see cref="actualType"/> is <see cref="BlockElementType.Unknown"/>),
+        /// if <see cref="content"/> matches <see cref="linkDefinitionRegex"/>, the type will
+        /// be <see cref="BlockElementType.LinkReferenceDefinition"/>, if not matched,
+        /// the type will be <see cref="BlockElementType.Paragraph"/>.
+        /// </para>
+        /// </returns>
         internal override BlockElement Close()
         {
             switch (actualType)

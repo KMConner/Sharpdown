@@ -24,7 +24,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
         public void AssertTypeEqual(BlockElement element)
         {
             Assert.AreEqual(Content, element.Type);
-            if (element is ContainerElementBase container)
+            if (element is ContainerElement container)
             {
                 Assert.AreEqual(Children.Length, container.Children.Count);
                 for (int i = 0; i < Children.Length; i++)
