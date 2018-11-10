@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Sharpdown.MarkdownElement.InlineElement
+﻿namespace Sharpdown.MarkdownElement.InlineElement
 {
-    class LiteralText : InlineElementBase
+    public class LiteralText : InlineElementBase
     {
+        public string Content { get; private set; }
+
+        internal LiteralText(string text)
+        {
+            Content = text;
+        }
     }
 }
