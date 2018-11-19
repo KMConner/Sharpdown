@@ -6,5 +6,6 @@ namespace Sharpdown.MarkdownElement.InlineElement
 {
     class SoftLineBreak : InlineElementBase
     {
+        public override InlineElementType Type => InlineElementType.SoftLineBreak;
     }
 }

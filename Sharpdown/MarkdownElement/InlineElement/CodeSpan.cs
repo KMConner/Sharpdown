@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Sharpdown.MarkdownElement.InlineElement
 {
-    class CodeSpan : InlineElementBase
+    class CodeSpan : ContainerInlineElement
     {
+        public override InlineElementType Type => InlineElementType.CodeSpan;
     }
 }

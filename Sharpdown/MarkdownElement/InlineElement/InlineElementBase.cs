@@ -4,9 +4,11 @@ using System.Text;
 
 namespace Sharpdown.MarkdownElement.InlineElement
 {
-    public class InlineElementBase : MarkdownElementBase
+    public abstract class InlineElementBase : MarkdownElementBase
     {
-        protected static readonly char[] asciiPunctuationChars = new[]
+        public abstract InlineElementType Type { get; }
+
+        protected internal static readonly char[] asciiPunctuationChars = new[]
         {
             '!', '"', '#', '$', '%', '&','\'',
             '(', ')', '*', '+', ',', '-', '.',

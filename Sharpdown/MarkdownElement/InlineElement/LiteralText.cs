@@ -4,6 +4,8 @@
     {
         public string Content { get; private set; }
 
+        public override InlineElementType Type => InlineElementType.LiteralText;
+
         internal LiteralText(string text)
         {
             Content = text;

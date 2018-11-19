@@ -4,7 +4,12 @@ using System.Text;
 
 namespace Sharpdown.MarkdownElement.InlineElement
 {
-    class Link : InlineElementBase
+    public class Link : ContainerInlineElement
     {
+        public override InlineElementType Type => InlineElementType.Link;
+        public Link(InlineElementBase[] linkText)
+        {
+            Children = linkText;
+        }
     }
 }

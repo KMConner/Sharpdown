@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Sharpdown.MarkdownElement.InlineElement
 {
-    class InlineHtml : ContainerInlineElement
+    public abstract class ContainerInlineElement : InlineElementBase
     {
-        public override InlineElementType Type => InlineElementType.InlineHtml;
+        public InlineElementBase[] Children { get; protected set; }
     }
 }

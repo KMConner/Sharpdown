@@ -2147,6 +2147,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// </summary>
         public string Content { get; private set; }
 
+        public override InlineElementType Type => InlineElementType.InlineText;
+
         /// <summary>
         /// Initializes new instance of <see cref="InlineText"/>.
         /// </summary>
