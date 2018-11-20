@@ -335,5 +335,35 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
             structure.AssertEqual(ret);
         }
 
+        [TestMethod]
+        public void ParseLinkEmphasisTest_030()
+        {
+            var ret = InlineElementUtils.ParseLinkEmphasis("foo\r\nbar  \nbaz", new string[0]).ToArray();
+            var structure = new InlineStructure(InlineElementType.Emphasis,
+                new InlineStructure(InlineElementType.InlineText, "foo"),
+                new InlineStructure(InlineElementType.SoftLineBreak, ""),
+                new InlineStructure(InlineElementType.InlineText, "bar"),
+                new InlineStructure(InlineElementType.HardLineBreak, ""),
+                new InlineStructure(InlineElementType.InlineText, "baz")
+                );
+            structure.AssertEqual(ret);
+        }
+
+        [TestMethod]
+        public void ParseLinkEmphasisTest_031()
+        {
+            var ret = InlineElementUtils.ParseLinkEmphasis("*foo*\n**bar  \nbaz**", new string[0]).ToArray();
+            var structure = new InlineStructure(InlineElementType.Emphasis,
+                new InlineStructure(InlineElementType.Emphasis,
+                    new InlineStructure(InlineElementType.InlineText, "foo")),
+                new InlineStructure(InlineElementType.SoftLineBreak, ""),
+                new InlineStructure(InlineElementType.StrongEmphasis, 
+                    new InlineStructure(InlineElementType.InlineText,"bar"),
+                    new InlineStructure(InlineElementType.HardLineBreak,""),
+                    new InlineStructure(InlineElementType.InlineText, "baz"))
+                );
+            structure.AssertEqual(ret);
+        }
+
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Diagnostics;
 
 namespace Sharpdown.MarkdownElement.InlineElement
 {
@@ -67,6 +67,29 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 return false;
             }
             return InlineElementBase.asciiPunctuationChars.Contains(text[info.Index - 1]);
+        }
+
+        private static IEnumerable<InlineElementBase> ParseLineBreak(string text)
+        {
+            string[] lines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (i < lines.Length - 1)
+                {
+                    yield return InlineText.CreateFromText(lines[i].TrimEnd(new[] { ' ' }));
+                    yield return lines[i].EndsWith("  ") ?
+                        (InlineElementBase)new HardLineBreak() : new SoftLineBreak();
+                }
+                else
+                {
+                    yield return InlineText.CreateFromText(lines[i]);
+                }
+            }
+            if (text.EndsWith("\r") || text.EndsWith("\n"))
+            {
+                yield return lines.Length > 0 && lines[lines.Length - 1].EndsWith("  ") ?
+                    (InlineElementBase)new HardLineBreak() : new SoftLineBreak();
+            }
         }
 
         private class DeliminatorInfo
@@ -154,14 +177,14 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     DelimSpan delimSpan = item.Value;
                     if (lastEnd < delimSpan.Begin)
                     {
-                        newChildren.Add(InlineText.CreateFromText(text.Substring(lastEnd, delimSpan.Begin - lastEnd)));
+                        newChildren.AddRange(ParseLineBreak(text.Substring(lastEnd, delimSpan.Begin - lastEnd)));
                     }
                     newChildren.AddRange(ToInlines(delimSpan));
                     lastEnd = delimSpan.End;
                 }
                 if (lastEnd < delim.ParseEnd)
                 {
-                    newChildren.Add(InlineText.CreateFromText(text.Substring(lastEnd, delim.ParseEnd - lastEnd)));
+                    newChildren.AddRange(ParseLineBreak(text.Substring(lastEnd, delim.ParseEnd - lastEnd)));
                 }
 
                 switch (delim.DeliminatorType)
@@ -236,7 +259,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 {
                     if (infoNode.Value.CanOpen
                         && infoNode.Value.Type == firstClose.Value.Type
-                        && ((infoNode.Value.DeliminatorLength + firstClose.Value.DeliminatorLength) % 3 != 0 
+                        && ((infoNode.Value.DeliminatorLength + firstClose.Value.DeliminatorLength) % 3 != 0
                         || !firstClose.Value.CanOpen))
                     {
                         startDelimNode = infoNode;
