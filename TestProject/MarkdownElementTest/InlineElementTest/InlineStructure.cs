@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Sharpdown.MarkdownElement.InlineElement;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Sharpdown.MarkdownElement.InlineElement;
 
 namespace TestProject.MarkdownElementTest.InlineElementTest
 {
@@ -29,15 +27,20 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
         public void AssertEqual(InlineElementBase element)
         {
             Assert.AreEqual(Content, element.Type);
-            if (element is LiteralText literal)
-            {
-                Assert.AreEqual(0, Children?.Length ?? 0);
-                Assert.AreEqual(Text, literal.Content);
-            }
-            else if (element is InlineText text)
+            if (element is InlineText text)
             {
                 Assert.AreEqual(0, Children?.Length ?? 0);
                 Assert.AreEqual(Text, text.Content);
+            }
+            else if(element is CodeSpan code)
+            {
+                Assert.AreEqual(0, Children?.Length ?? 0);
+                Assert.AreEqual(Text, code.Code);
+            }
+            else if (element is InlineHtml html)
+            {
+                Assert.AreEqual(0, Children?.Length ?? 0);
+                Assert.AreEqual(Text, html.Content);
             }
             else if (element is ContainerInlineElement container)
             {

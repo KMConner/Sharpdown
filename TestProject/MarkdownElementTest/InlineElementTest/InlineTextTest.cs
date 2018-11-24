@@ -95,7 +95,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
             MethodInfo method = type.GetMethod("CreateFromText", BindingFlags.NonPublic | BindingFlags.Static);
             try
             {
-                return (InlineText)method.Invoke(null, new object[] { text });
+                return (InlineText)method.Invoke(null, new object[] { text, true });
             }
             catch (TargetInvocationException ex)
             {

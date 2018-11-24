@@ -13,8 +13,9 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <summary>
         /// Regular expression which matches InlineLink.
         /// </summary>
-        private static readonly Regex inlineLinkRegex = new Regex(
-            @"!??\[(?<label>(?:[^\]]|\\\]){1,999})\]\([ \t]*(?:\r|\r\n|\n)??[ \t]*(?<destination>\<(?:[^ \t\r\n\<\>]|\\\<|\\\>)+\>|[^ \t\r\n]+)([ \t]*(?: |\t|\r|\r\n|\n)[ \t]*(?<title>\""(?:[^\""]|\\\"")*\""|\'(?:[^\']|\\\')*\'|\((?:[^\)]|\\\))*\)))??[ \t]*\)",
+        private static readonly Regex inlineLinkRegex = new Regex(@"!??\[(?<label>(?:[^\]]|\\\]){1,999})\]\([ \t]*(?:\r|\r\n|\n)??[ \t]*"
+            + @"(?<destination>\<(?:[^ \t\r\n\<\>]|\\\<|\\\>)+\>|[^ \t\r\n]+)([ \t]*(?: |\t|\r|\r\n|\n)[ \t]*"
+            + @"(?<title>\""(?:[^\""]|\\\"")*\""|\'(?:[^\']|\\\')*\'|\((?:[^\)]|\\\))*\)))??[ \t]*\)",
             RegexOptions.Compiled);
 
         /// <summary>
@@ -22,6 +23,31 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// </summary>
         private static readonly Regex linkLabelRegex = new Regex(
             @"\[(?<label>(?:[^\]]|\\\]){1,999})\]", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regular expression which matches urls in autolinnks.
+        /// </summary>
+        private static readonly Regex urlRegex = new Regex(@"\<(?<url>[a-zA-Z][a-zA-Z0-9\+\.\-]{1,31}\:[^\<\> \r\n\t]*)\>",
+            RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regular expression which matches email address in autolinks.
+        /// </summary>
+        private static readonly Regex mailAddressRegex = new Regex(
+            @"\<(?<addr>[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+\@"
+            + @"[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])??(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])??)*)\>",
+            RegexOptions.Compiled);
+
+        /// <summary>
+        /// Regular expression which matches raw html.
+        /// </summary>
+        private static readonly Regex htmlTagRegex = new Regex(
+            @"\<[a-zA-Z][0-9a-z-A-Z\-]*(?:[ \t\r\n]+[a-zA-Z_\:][a-zA-Z0-9_\.\:\-]*[ \t\r\n]*(?:=[ \t\r\n]*(?:[^ \r\n\t\""\'=\<\>`]*|'[^ ']*?' |\""[^\""]*\""))??)*[ \t\r\n]*\/??\>"
+            + @"|\<\/[a-zA-Z][0-9a-z-A-Z\-]*[ \t\r\n]*\>"
+            + @"|<\?.*?\?>|<![A-Z]+(?:[ \t\r\n]+[^>]*)??>"
+            + @"|<!\[CDATA\[(?s:.*?)\]\]>"
+            + @"|<!--(?!>)(?!-\>)(?s:.(.(?<!--))*)(?<!-)-->",
+            RegexOptions.Compiled);
 
         /// <summary>
         /// Returns wether the specified deliminator is left flanking.
@@ -446,7 +472,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <param name="text">The string object to @arse.</param>
         /// <param name="linkReferences">Link reference definitions.</param>
         /// <returns>The parse result.</returns>
-        public static IEnumerable<InlineElementBase> ParseLinkEmphasis(string text, IEnumerable<string> linkReferences)
+        private static IEnumerable<InlineElementBase> ParseLinkEmphasis(string text, IEnumerable<string> linkReferences)
         {
             var deliminators = new LinkedList<DeliminatorInfo>();
             var delimSpans = new SortedList<int, DelimSpan>();
@@ -630,6 +656,144 @@ namespace Sharpdown.MarkdownElement.InlineElement
             var tree = GetInlineTree(delimSpans, text.Length);
 
             return ToInlines(text, tree);
+        }
+
+        /// <summary>
+        /// Returns a code span which starts the specified index.
+        /// </summary>
+        /// <param name="text">The string which contains the code span.</param>
+        /// <param name="index">The index of the first character of the span.</param>
+        /// <param name="currentIndex">Updates this value to the index of the next character of the span end.</param>
+        /// <returns>The code span which starts with the specified index.</returns>
+        private static CodeSpan GetCodeSpan(string text, int index, ref int currentIndex)
+        {
+            int openLength = CountSameChars(text, index);
+            int closeIndex = index + openLength;
+
+            do
+            {
+                closeIndex = text.IndexOf(new string('`', openLength), closeIndex);
+                if (closeIndex >= 0)
+                {
+                    int closeLength = CountSameChars(text, closeIndex);
+                    if (closeLength == openLength)
+                    {
+                        currentIndex = closeIndex + closeLength;
+                        return new CodeSpan(
+                            text.Substring(index + openLength, closeIndex - index - openLength));
+                    }
+                    else
+                    {
+                        closeIndex += closeLength;
+                    }
+                }
+            } while (closeIndex >= 0 && closeIndex < text.Length);
+            return null;
+        }
+
+        /// <summary>
+        /// Parses raw html or autolinks which starts with the specified index.
+        /// </summary>
+        /// <param name="text">String object which contains autolinks or raw html.</param>
+        /// <param name="index">The index where the element starts.</param>
+        /// <param name="currentIndex">Updates this value to the index of the next character of the span end.</param>
+        /// <returns>The autolinks or raw html if one is found, otherwise <c>null</c>.</returns>
+        private static InlineElementBase GetInlineHtmlOrLink(string text, int index, ref int currentIndex)
+        {
+            // Auto link (URL)
+            Match urlMatch = urlRegex.Match(text, index);
+            if (urlMatch.Success
+                && urlMatch.Index == index
+                && urlMatch.Value.All(c => !char.IsControl(c)))
+            {
+                currentIndex += urlMatch.Length;
+                return new Link(new[] { InlineText.CreateFromText(urlMatch.Groups["url"].Value, false) });
+            }
+
+            // Auto link (E-Mail)
+            Match emailMatch = mailAddressRegex.Match(text, index);
+            if (emailMatch.Success && emailMatch.Index == index)
+            {
+                currentIndex += emailMatch.Length;
+                return new Link(new[] { InlineText.CreateFromText("mailto:" + emailMatch.Groups["addr"].Value, false) });
+            }
+
+            // Inline html
+            Match htmlTagMatch = htmlTagRegex.Match(text, index);
+            if (htmlTagMatch.Success && htmlTagMatch.Index == index)
+            {
+                currentIndex += htmlTagMatch.Length;
+                return new InlineHtml(htmlTagMatch.Value);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Parses inline elements and returns them.
+        /// </summary>
+        /// <param name="text">The text to parse.</param>
+        /// <param name="linkRefernces">Reference definitions in this document.</param>
+        /// <returns>Inline elements in <paramref name="text"/>.</returns>
+        public static IEnumerable<InlineElementBase> ParseInlineElements(string text, IEnumerable<string> linkRefernces)
+        {
+            int currentIndex = 0;
+            int nextBacktick = text.IndexOf('`');
+            int nextLessThan = text.IndexOf('<');
+            while (currentIndex < text.Length)
+            {
+                var newIndex = currentIndex;
+                int nextElemIndex;
+                InlineElementBase newInline = null;
+
+                // Find `
+                if (nextBacktick >= 0 && (nextLessThan < 0 || nextBacktick < nextLessThan))
+                {
+                    nextElemIndex = nextBacktick;
+                    newIndex = nextElemIndex;
+                    newInline = GetCodeSpan(text, nextBacktick, ref newIndex);
+                }
+                // Find <
+                else if (nextLessThan >= 0 && (nextBacktick < 0 || nextLessThan < nextBacktick))
+                {
+                    nextElemIndex = nextLessThan;
+                    newIndex = nextElemIndex;
+                    newInline = GetInlineHtmlOrLink(text, nextLessThan, ref newIndex);
+                }
+                else // Find neigher ` nor <
+                {
+                    break;
+                }
+                if (newInline != null)
+                {
+                    foreach (var element in
+                        ParseLinkEmphasis(text.Substring(currentIndex, nextElemIndex - currentIndex),
+                        linkRefernces))
+                    {
+                        yield return element;
+                    }
+                    currentIndex = newIndex;
+                    nextBacktick = text.IndexOf('`', currentIndex);
+                    nextLessThan = text.IndexOf('<', currentIndex);
+                    yield return newInline;
+                }
+                else
+                {
+                    nextElemIndex += CountSameChars(text, nextElemIndex);
+                    nextBacktick = text.IndexOf('`', nextElemIndex);
+                    nextLessThan = text.IndexOf('<', nextElemIndex);
+                }
+            }
+
+            if (currentIndex < text.Length)
+            {
+                foreach (var element in
+                    ParseLinkEmphasis(text.Substring(currentIndex, text.Length - currentIndex),
+                    linkRefernces))
+                {
+                    yield return element;
+                }
+            }
         }
     }
 }

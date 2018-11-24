@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Sharpdown.MarkdownElement.InlineElement
+﻿namespace Sharpdown.MarkdownElement.InlineElement
 {
-    class InlineHtml : ContainerInlineElement
+    public class InlineHtml : ContainerInlineElement
     {
         public override InlineElementType Type => InlineElementType.InlineHtml;
+
+        public string Content { get; private set; }
+
+        public InlineHtml(string html)
+        {
+            Content = html;
+        }
     }
 }

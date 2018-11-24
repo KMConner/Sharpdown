@@ -2165,7 +2165,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <exception cref="ArgumentException">
         /// Thrown when <paramref name="text"/> contains new line character.
         /// </exception>
-        internal static InlineText CreateFromText(string text)
+        internal static InlineText CreateFromText(string text, bool backslashEscapeEnabled = true)
         {
             if (text.IndexOf('\r') != -1 || text.IndexOf('\n') != -1)
             {
@@ -2182,7 +2182,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 }
 
                 // BackSlash Escape
-                if (text[i] == '\\' && Array.IndexOf(asciiPunctuationChars, text[i + 1]) >= 0)
+                if (backslashEscapeEnabled && text[i] == '\\' && Array.IndexOf(asciiPunctuationChars, text[i + 1]) >= 0)
                 {
                     builder.Append(text[i + 1]);
                     i++;
