@@ -1,4 +1,7 @@
-﻿namespace Sharpdown.MarkdownElement.BlockElement
+﻿using System.Collections.Generic;
+using Sharpdown.MarkdownElement.InlineElement;
+
+namespace Sharpdown.MarkdownElement.BlockElement
 {
     /// <summary>
     /// Represents the Header elements in markdown document.
@@ -16,5 +19,10 @@
         /// The content of this header.
         /// </summary>
         public string Content { get; protected set; }
+
+        internal override void ParseInline(IEnumerable<string> linkDefinitions)
+        {
+            inlines.AddRange(InlineElementUtils.ParseInlineElements(Content, linkDefinitions));
+        }
     }
 }

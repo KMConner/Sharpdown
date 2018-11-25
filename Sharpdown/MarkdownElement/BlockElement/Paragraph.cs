@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Sharpdown.MarkdownElement.InlineElement;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
@@ -68,6 +69,11 @@ namespace Sharpdown.MarkdownElement.BlockElement
         internal override BlockElement Close()
         {
             throw new InvalidOperationException();
+        }
+
+        internal override void ParseInline(IEnumerable<string> linkDefinitions)
+        {
+            inlines.AddRange(InlineElementUtils.ParseInlineElements(Content, linkDefinitions));
         }
     }
 }

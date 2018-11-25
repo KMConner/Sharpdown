@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
@@ -81,5 +82,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
             return AddLineResult.Consumed | AddLineResult.NeedClose;
         }
+
+        internal override void ParseInline(IEnumerable<string> linkDefinitions) { }
     }
 }

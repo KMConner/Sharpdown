@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -300,6 +301,11 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 default:
                     throw new InvalidBlockFormatException(BlockElementType.Unknown);
             }
+        }
+
+        internal override void ParseInline(IEnumerable<string> linkDefinitions)
+        {
+            throw new InvalidOperationException();
         }
     }
 }

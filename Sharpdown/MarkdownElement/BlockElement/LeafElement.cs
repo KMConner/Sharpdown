@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Sharpdown.MarkdownElement.InlineElement;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
@@ -12,9 +13,16 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         public override IReadOnlyList<string> Warnings => warnings.AsReadOnly();
 
+        public IReadOnlyList<InlineElementBase> Inlines => inlines.AsReadOnly();
+
+        protected List<InlineElementBase> inlines;
+
         /// <summary>
         /// Initializes a new instance of <see cref="LeafElement"/>.
         /// </summary>
-        internal LeafElement() : base() { }
+        internal LeafElement() : base()
+        {
+            inlines = new List<InlineElementBase>();
+        }
     }
 }

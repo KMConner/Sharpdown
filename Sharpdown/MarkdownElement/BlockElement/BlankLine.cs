@@ -1,4 +1,6 @@
-﻿namespace Sharpdown.MarkdownElement.BlockElement
+﻿using System.Collections.Generic;
+
+namespace Sharpdown.MarkdownElement.BlockElement
 {
     /// <summary>
     /// Represents blank lines in markdown documents.
@@ -43,5 +45,7 @@
             }
             return AddLineResult.Consumed | AddLineResult.NeedClose;
         }
+
+        internal override void ParseInline(IEnumerable<string> linkDefinitions) { }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
@@ -73,5 +74,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         {
             throw new InvalidCastException();
         }
+
+        internal override void ParseInline(IEnumerable<string> linkDefinitions) { }
     }
 }

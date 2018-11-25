@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sharpdown.MarkdownElement.InlineElement;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace TestProject.MarkdownElementTest.InlineElementTest
 {
@@ -32,7 +34,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
                 Assert.AreEqual(0, Children?.Length ?? 0);
                 Assert.AreEqual(Text, text.Content);
             }
-            else if(element is CodeSpan code)
+            else if (element is CodeSpan code)
             {
                 Assert.AreEqual(0, Children?.Length ?? 0);
                 Assert.AreEqual(Text, code.Code);
@@ -52,18 +54,18 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
             }
         }
 
-        public void AssertEqual(InlineElementBase[] element)
+        public void AssertEqual(IEnumerable<InlineElementBase> element)
         {
-            if (element.Length == 1)
+            if (element.Count() == 1)
             {
-                AssertEqual(element[0]);
+                AssertEqual(element.First());
             }
             else
             {
-                Assert.AreEqual(Children.Length, element.Length);
+                Assert.AreEqual(Children.Length, element.Count());
                 for (int i = 0; i < Children.Length; i++)
                 {
-                    Children[i].AssertEqual(element[i]);
+                    Children[i].AssertEqual(element.ElementAt(i));
                 }
             }
         }

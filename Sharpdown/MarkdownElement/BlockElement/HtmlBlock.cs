@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Sharpdown.MarkdownElement.InlineElement;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
@@ -518,6 +519,11 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 }
             }
             return this;
+        }
+
+        internal override void ParseInline(IEnumerable<string> linkDefinitions)
+        {
+            inlines.Add(new LiteralText(Content));
         }
     }
 }

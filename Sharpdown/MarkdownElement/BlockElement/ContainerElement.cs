@@ -30,7 +30,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         public IReadOnlyList<BlockElement> Children => children.AsReadOnly();
 
-
         /// <summary>
         /// Warning raised while parsing.
         /// </summary>
@@ -180,6 +179,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
 
             return openElement?.AddLine(line) ?? throw new Exception();
+        }
+
+        internal override void ParseInline(IEnumerable<string> linkDefinitions)
+        {
+            foreach (var child in children)
+            {
+                child.ParseInline(linkDefinitions);
+            }
         }
     }
 }
