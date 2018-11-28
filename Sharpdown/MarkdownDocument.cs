@@ -50,9 +50,12 @@ namespace Sharpdown
                 var def = (LinkReferenceDefinition)element;
                 LinkDefinition[def.Label] = def;
             }
-            else if (element is ContainerElement)
+            else if (element is ContainerElement container)
             {
-                ExtractLinkDefinition(element);
+                foreach (var child in container.Children)
+                {
+                    ExtractLinkDefinition(child);
+                }
             }
         }
 
