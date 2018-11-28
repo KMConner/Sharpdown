@@ -259,6 +259,10 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
                 if (CanStartBlock(lineTrimmed))
                 {
+                    if (ThemanticBreak.CanStartBlock(line))
+                    {
+                        return AddLineResult.NeedClose;
+                    }
                     var newItem = CreateItem(lineTrimmed);
                     if (newItem.Deliminator != item.Deliminator)
                     {

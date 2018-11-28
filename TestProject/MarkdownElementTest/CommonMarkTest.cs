@@ -221,5 +221,128 @@ namespace TestProject.MarkdownElementTest
             block.AssertEqual(((Paragraph)doc.Elements[0]).Inlines);
         }
 
+        [TestMethod]
+        public void TestCase_027()
+        {
+            MarkdownDocument doc = MarkdownParser.Parse("- foo\n***\n- bar");
+            Assert.AreEqual(3, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.ThemanticBreak, doc.Elements[1].Type);
+            var block0 = new BlockElementStructure(BlockElementType.List,
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.Paragraph)));
+            block0.AssertTypeEqual(doc.Elements[0]);
+            block0.AssertTypeEqual(doc.Elements[2]);
+            Assert.IsTrue(((ListBlock)doc.Elements[0]).IsTight);
+            Assert.IsTrue(((ListBlock)doc.Elements[2]).IsTight);
+        }
+
+        [TestMethod]
+        public void TestCase_028()
+        {
+            MarkdownDocument doc = MarkdownParser.Parse("Foo\n***\nbar");
+            Assert.AreEqual(3, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.ThemanticBreak, doc.Elements[1].Type);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[2].Type);
+            var inline1 = new InlineStructure(InlineElementType.InlineText, "Foo");
+            var inline2 = new InlineStructure(InlineElementType.InlineText, "bar");
+            inline1.AssertEqual(((Paragraph)doc.Elements[0]).Inlines);
+            inline2.AssertEqual(((Paragraph)doc.Elements[2]).Inlines);
+        }
+
+        [TestMethod]
+        public void TestCase_029()
+        {
+            MarkdownDocument doc = MarkdownParser.Parse("Foo\n---\nbar");
+            Assert.AreEqual(2, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
+            var inline1 = new InlineStructure(InlineElementType.InlineText, "Foo");
+            var inline2 = new InlineStructure(InlineElementType.InlineText, "bar");
+            inline1.AssertEqual(((SetextHeader)doc.Elements[0]).Inlines);
+            inline2.AssertEqual(((Paragraph)doc.Elements[1]).Inlines);
+        }
+
+        [TestMethod]
+        public void TestCase_030()
+        {
+            MarkdownDocument doc = MarkdownParser.Parse("* Foo\n* * *\n* bar");
+            Assert.AreEqual(3, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.ThemanticBreak, doc.Elements[1].Type);
+            var block0 = new BlockElementStructure(BlockElementType.List,
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.Paragraph)));
+            block0.AssertTypeEqual(doc.Elements[0]);
+            block0.AssertTypeEqual(doc.Elements[2]);
+            Assert.IsTrue(((ListBlock)doc.Elements[0]).IsTight);
+            Assert.IsTrue(((ListBlock)doc.Elements[2]).IsTight);
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "Foo");
+            var inline2 = new InlineStructure(InlineElementType.InlineText, "bar");
+            inline0.AssertEqual(((Paragraph)((ListItem)((ListBlock)doc.Elements[0]).Children[0]).Children[0]).Inlines);
+            inline2.AssertEqual(((Paragraph)((ListItem)((ListBlock)doc.Elements[2]).Children[0]).Children[0]).Inlines);
+        }
+
+        [TestMethod]
+        public void TestCase_031()
+        {
+            MarkdownDocument doc = MarkdownParser.Parse("- Foo\n- * * *");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blocks = new BlockElementStructure(BlockElementType.List,
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.Paragraph)),
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.ThemanticBreak)));
+
+            blocks.AssertTypeEqual(doc.Elements[0]);
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "Foo");
+            inline0.AssertEqual(((Paragraph)((ListItem)((ListBlock)doc.Elements[0]).Children[0]).Children[0]).Inlines);
+        }
+
+        [TestMethod]
+        public void TestCase_032()
+        {
+            MarkdownDocument doc = MarkdownParser.Parse("# foo\n## foo\n### foo\n#### foo\n##### foo\n###### foo");
+            Assert.AreEqual(6, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[1].Type);
+            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[2].Type);
+            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[3].Type);
+            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[4].Type);
+            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[5].Type);
+
+            Assert.AreEqual(1, ((AtxHeaderElement)doc.Elements[0]).HeaderLevel);
+            Assert.AreEqual(2, ((AtxHeaderElement)doc.Elements[1]).HeaderLevel);
+            Assert.AreEqual(3, ((AtxHeaderElement)doc.Elements[2]).HeaderLevel);
+            Assert.AreEqual(4, ((AtxHeaderElement)doc.Elements[3]).HeaderLevel);
+            Assert.AreEqual(5, ((AtxHeaderElement)doc.Elements[4]).HeaderLevel);
+            Assert.AreEqual(6, ((AtxHeaderElement)doc.Elements[5]).HeaderLevel);
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "foo");
+            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[0]).Inlines);
+            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[1]).Inlines);
+            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[2]).Inlines);
+            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[3]).Inlines);
+            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[4]).Inlines);
+            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[5]).Inlines);
+        }
+
+        [TestMethod]
+        public void TestCase_033()
+        {
+            MarkdownDocument doc = MarkdownParser.Parse("####### foo");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "####### foo");
+            inline0.AssertEqual(((Paragraph)doc.Elements[0]).Inlines);
+        }
+
+
+
     }
 }
