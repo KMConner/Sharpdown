@@ -1,4 +1,6 @@
-﻿namespace Sharpdown.MarkdownElement.BlockElement
+﻿using System.Linq;
+
+namespace Sharpdown.MarkdownElement.BlockElement
 {
     /// <summary>
     /// Represents list items in markdown documents.
@@ -32,6 +34,8 @@
         /// </summary>
         public int Index { get; internal set; }
 
+        internal bool IsTight { get; private set; }
+
         /// <summary>
         /// Initializes a new instance of <see cref="ListItem"/>
         /// </summary>
@@ -52,6 +56,12 @@
         {
             markRemoved = line;
             return true;
+        }
+
+        internal override BlockElement Close()
+        {
+            IsTight = Children.LastOrDefault()?.Type != BlockElementType.BlankLine;
+            return base.Close();
         }
     }
 }

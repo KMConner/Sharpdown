@@ -15,7 +15,9 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             BlockElementStructure structure = new BlockElementStructure(BlockElementType.List,
                 new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Paragraph),
                 new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Paragraph));
-            structure.AssertTypeEqual(block.Close());
+            var closed = block.Close();
+            structure.AssertTypeEqual(closed);
+            Assert.AreEqual(true, ((ListBlock)closed).IsTight);
         }
 
         [TestMethod]
@@ -27,7 +29,9 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             BlockElementStructure structure = new BlockElementStructure(BlockElementType.List,
                 new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Paragraph),
                 new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Paragraph));
-            structure.AssertTypeEqual(block.Close());
+            var closed = block.Close();
+            structure.AssertTypeEqual(closed);
+            Assert.AreEqual(true, ((ListBlock)closed).IsTight);
         }
 
         [TestMethod]
@@ -38,6 +42,9 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.NeedClose, block.AddLine("+ bar"));
             BlockElementStructure structure = new BlockElementStructure(BlockElementType.List,
                 new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Paragraph));
+            var closed = block.Close();
+            structure.AssertTypeEqual(closed);
+            Assert.AreEqual(true, ((ListBlock)closed).IsTight);
         }
 
         [TestMethod]
@@ -283,5 +290,40 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                     new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Unknown));
             structure.AssertTypeEqual(block);
         }
+
+        [TestMethod]
+        public void AddLineTest_19()
+        {
+            ListBlock block = TestUtils.CreateInternal<ListBlock>();
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("- foo"));
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine(""));
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("- bar"));
+            BlockElementStructure structure = new BlockElementStructure(BlockElementType.List,
+                new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Paragraph),
+                new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Paragraph));
+            var closed = block.Close();
+            structure.AssertTypeEqual(closed);
+            Assert.AreEqual(false, ((ListBlock)closed).IsTight);
+        }
+
+        [TestMethod]
+        public void AddLineTest_20()
+        {
+            ListBlock block = TestUtils.CreateInternal<ListBlock>();
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("- foo"));
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine(""));
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine(""));
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("- bar"));
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("- baz"));
+            BlockElementStructure structure = new BlockElementStructure(BlockElementType.List,
+                new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Paragraph),
+                new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Paragraph),
+                new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Paragraph));
+            var closed = block.Close();
+            structure.AssertTypeEqual(closed);
+            Assert.AreEqual(false, ((ListBlock)closed).IsTight);
+        }
+
+
     }
 }

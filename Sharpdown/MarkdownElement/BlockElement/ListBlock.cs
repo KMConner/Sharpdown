@@ -51,6 +51,11 @@ namespace Sharpdown.MarkdownElement.BlockElement
         public override BlockElementType Type => BlockElementType.List;
 
         /// <summary>
+        /// Gets wether is List is tight.
+        /// </summary>
+        public bool IsTight { get; private set; }
+
+        /// <summary>
         /// Returns whether the specified line can be a start line of <see cref="ListBlock"/>.
         /// </summary>
         /// <remarks>
@@ -241,7 +246,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
             else if (openElement is ListItem item)
             {
-                if (lineIndent == -1 || lineIndent >= item.contentIndent)
+                if (lineIndent==-1)
+                {
+                    item.AddLine(line);
+                    return AddLineResult.Consumed;
+                }
+                if (lineIndent >= item.contentIndent)
                 {
                     item.AddLine(line.Substring(item.contentIndent));
                     return AddLineResult.Consumed;
@@ -295,6 +305,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
         internal override bool HasMark(string line, out string markRemoved)
         {
             throw new InvalidOperationException();
+        }
+
+        internal override BlockElement Close()
+        {
+            ListBlock ret = (ListBlock)base.Close();
+            IsTight = ret.Children.Cast<ListItem>().All(i => i.IsTight);
+            return ret;
         }
     }
 }
