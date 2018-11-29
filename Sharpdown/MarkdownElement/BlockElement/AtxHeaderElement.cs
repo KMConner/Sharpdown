@@ -24,7 +24,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Regular expression which matches lines which contains ATX Header.
         /// </summary>
         private static readonly Regex headerRegex = new Regex(
-            @"^[ ]{0,3}(?<level>\#{1,6})(?:[ \t]+(?<content>.*?))??(?:[ ]+\#*)??$", RegexOptions.Compiled);
+            @"^[ ]{0,3}(?<level>\#{1,6})(?:[ \t]+(?<content>.*?))??(?:[ ]+\#*[ \t]*)??$", RegexOptions.Compiled);
 
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </returns>
         public static bool CanStartBlock(string line)
         {
-            if (line.GetIndentNum() > 4)
+            if (line.GetIndentNum() >= 4)
             {
                 // Indented too many speces
                 return false;
