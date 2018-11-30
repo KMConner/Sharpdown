@@ -148,27 +148,26 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <returns></returns>
         private static IEnumerable<InlineElementBase> ParseLineBreak(string text)
         {
-            string[] lines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] lines = text.Replace("\r\n", "\n").Replace("\r", "\n").Split(new[] { '\n' });
             for (int i = 0; i < lines.Length; i++)
             {
                 if (i < lines.Length - 1)
                 {
-                    yield return InlineText.CreateFromText(lines[i].TrimEnd(new[] { ' ' }));
+                    if (lines[i] != string.Empty)
+                    {
+                        yield return InlineText.CreateFromText(lines[i].TrimEnd(new[] { ' ' }));
+                    }
                     yield return lines[i].EndsWith("  ")
                         ? (InlineElementBase)new HardLineBreak()
                         : new SoftLineBreak();
                 }
                 else
                 {
-                    yield return InlineText.CreateFromText(lines[i]);
+                    if (lines[i] != string.Empty)
+                    {
+                        yield return InlineText.CreateFromText(lines[i]);
+                    }
                 }
-            }
-
-            if (text.EndsWith("\r") || text.EndsWith("\n"))
-            {
-                yield return lines.Length > 0 && lines[lines.Length - 1].EndsWith("  ")
-                    ? (InlineElementBase)new HardLineBreak()
-                    : new SoftLineBreak();
             }
         }
 
