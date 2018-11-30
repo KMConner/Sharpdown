@@ -14,6 +14,7 @@ namespace TestProject.MarkdownElementTest
     public class CommonMarkTest
     {
         #region Tabs
+
         [TestMethod]
         public void TestCase_001()
         {
@@ -980,6 +981,165 @@ namespace TestProject.MarkdownElementTest
                 new InlineStructure(InlineElementType.SoftLineBreak, ""),
                 new InlineStructure(InlineElementType.InlineText, "baz"));
             inline0.AssertEqual(((LeafElement)doc.Elements[0]).Inlines);
+        }
+
+        #endregion
+
+        #region Indented code block
+
+        [TestMethod]
+        public void TestCase_076()
+        {
+            var doc = MarkdownParser.Parse("    a simple\n      indented code block");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.IndentedCodeBlock, doc.Elements[0].Type);
+            Assert.AreEqual("a simple\r\n  indented code block",
+                (doc.Elements[0] as IndentedCodeBlock).Content);
+        }
+
+        [TestMethod]
+        public void TestCase_077()
+        {
+            var doc = MarkdownParser.Parse("  - foo\n\n    bar");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blockStructure = new BlockElementStructure(BlockElementType.List,
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.Paragraph),
+                    new BlockElementStructure(BlockElementType.Paragraph)));
+            blockStructure.AssertTypeEqual(doc.Elements[0]);
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "foo");
+            var inline1 = new InlineStructure(InlineElementType.InlineText, "bar");
+            inline0.AssertEqual(
+                (((doc.Elements[0] as ListBlock).Children[0] as ListItem).Children[0] as Paragraph).Inlines);
+            inline1.AssertEqual(
+                (((doc.Elements[0] as ListBlock).Children[0] as ListItem).Children[1] as Paragraph).Inlines);
+        }
+
+        [TestMethod]
+        public void TestCase_078()
+        {
+            var doc = MarkdownParser.Parse("1.  foo\n\n    - bar");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blockStructure = new BlockElementStructure(BlockElementType.List,
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.Paragraph),
+                    new BlockElementStructure(BlockElementType.List,
+                        new BlockElementStructure(BlockElementType.ListItem,
+                            new BlockElementStructure(BlockElementType.Paragraph)))));
+            blockStructure.AssertTypeEqual(doc.Elements[0]);
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "foo");
+            inline0.AssertEqual(
+                (((doc.Elements[0] as ListBlock).Children[0] as ListItem).Children[0] as Paragraph).Inlines);
+        }
+
+        [TestMethod]
+        public void TestCase_079()
+        {
+            var doc = MarkdownParser.Parse("    <a/>\n    *hi*\n\n    - one");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.IndentedCodeBlock, doc.Elements[0].Type);
+            Assert.AreEqual("<a/>\r\n*hi*\r\n\r\n- one", (doc.Elements[0] as IndentedCodeBlock).Content);
+        }
+
+        [TestMethod]
+        public void TestCase_080()
+        {
+            var doc = MarkdownParser.Parse("    chunk1\n\n    chunk2\n  \n \n \n    chunk3");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.IndentedCodeBlock, doc.Elements[0].Type);
+            Assert.AreEqual("chunk1\r\n\r\nchunk2\r\n\r\n\r\n\r\nchunk3", (doc.Elements[0] as IndentedCodeBlock).Content);
+        }
+
+
+        [TestMethod]
+        public void TestCase_081()
+        {
+            var doc = MarkdownParser.Parse("    chunk1\n      \n      chunk2");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.IndentedCodeBlock, doc.Elements[0].Type);
+            Assert.AreEqual("chunk1\r\n  \r\n  chunk2", (doc.Elements[0] as IndentedCodeBlock).Content);
+        }
+
+        [TestMethod]
+        public void TestCase_082()
+        {
+            var doc = MarkdownParser.Parse("Foo\n    bar");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+            var inline = new InlineStructure(InlineElementType.InlineText,
+                new InlineStructure(InlineElementType.InlineText, "Foo"),
+                new InlineStructure(InlineElementType.SoftLineBreak, ""),
+                new InlineStructure(InlineElementType.InlineText, "bar"));
+            inline.AssertEqual((doc.Elements[0] as Paragraph).Inlines);
+        }
+
+        [TestMethod]
+        public void TestCase_083()
+        {
+            var doc = MarkdownParser.Parse("    Foo\nbar");
+            Assert.AreEqual(2, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.IndentedCodeBlock, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
+            Assert.AreEqual("Foo", (doc.Elements[0] as IndentedCodeBlock).Content);
+            var inline = new InlineStructure(InlineElementType.InlineText, "bar");
+            inline.AssertEqual((doc.Elements[1] as Paragraph).Inlines);
+        }
+
+        [TestMethod]
+        public void TestCase_084()
+        {
+            var doc = MarkdownParser.Parse("# Heading\n    foo\nHeading\n------\n    foo\n----");
+            Assert.AreEqual(5, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.IndentedCodeBlock, doc.Elements[1].Type);
+            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[2].Type);
+            Assert.AreEqual(BlockElementType.IndentedCodeBlock, doc.Elements[3].Type);
+            Assert.AreEqual(BlockElementType.ThemanticBreak, doc.Elements[4].Type);
+
+            var inline = new InlineStructure(InlineElementType.InlineText, "Heading");
+            inline.AssertEqual((doc.Elements[0] as HeaderElementBase).Inlines);
+            Assert.AreEqual("foo", (doc.Elements[1] as IndentedCodeBlock).Content);
+            inline.AssertEqual((doc.Elements[2] as HeaderElementBase).Inlines);
+            Assert.AreEqual("foo", (doc.Elements[3] as IndentedCodeBlock).Content);
+        }
+
+        [TestMethod]
+        public void TestCase_085()
+        {
+            var doc = MarkdownParser.Parse("        foo\n    bar");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.IndentedCodeBlock, doc.Elements[0].Type);
+            Assert.AreEqual("    foo\r\nbar", (doc.Elements[0] as IndentedCodeBlock).Content);
+        }
+
+        [TestMethod]
+        public void TestCase_086()
+        {
+            var doc = MarkdownParser.Parse("\n    \n    foo\n    ");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.IndentedCodeBlock, doc.Elements[0].Type);
+            Assert.AreEqual("foo", (doc.Elements[0] as IndentedCodeBlock).Content);
+        }
+
+        [TestMethod]
+        public void TestCase_087()
+        {
+            var doc = MarkdownParser.Parse("    foo  ");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.IndentedCodeBlock, doc.Elements[0].Type);
+            Assert.AreEqual("foo  ", (doc.Elements[0] as IndentedCodeBlock).Content);
         }
 
         #endregion
