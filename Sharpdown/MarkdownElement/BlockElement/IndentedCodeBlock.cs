@@ -72,8 +72,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Returns <c>AddLineResult.Consumed</c> except when <paramref name="line"/>
         /// is indented less than 4 spaces.
         /// </returns>
-        internal override AddLineResult AddLine(string line)
+        internal override AddLineResult AddLine(string line, bool lazy)
         {
+            if (lazy)
+            {
+                throw new InvalidBlockFormatException(BlockElementType.IndentedCodeBlock);
+            }
             int indent = line.GetIndentNum();
             if (indent >= 0 && indent < 4)
             {
@@ -82,6 +86,10 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     if (contents[i] == string.Empty)
                     {
                         contents.RemoveAt(i);
+                    }
+                    else
+                    {
+                        break;
                     }
                 }
                 return AddLineResult.NeedClose;
@@ -119,6 +127,22 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 }
             }
             return line.Substring(trimLength);
+        }
+
+        internal override BlockElement Close()
+        {
+            for (int i = contents.Count - 1; i >= 0; i--)
+            {
+                if (contents[i] == string.Empty)
+                {
+                    contents.RemoveAt(i);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return base.Close();
         }
     }
 }

@@ -37,9 +37,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <returns>
         /// Always returns <c>AddLineResult.Consumed | AddLineResult.NeedClose</c>.
         /// </returns>
-        internal override AddLineResult AddLine(string line)
+        internal override AddLineResult AddLine(string line, bool lazy)
         {
-            if (!CanStartBlock(line))
+            if (!CanStartBlock(line) || lazy)
             {
                 throw new InvalidBlockFormatException(BlockElementType.BlankLine);
             }

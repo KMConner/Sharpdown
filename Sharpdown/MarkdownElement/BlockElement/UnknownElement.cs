@@ -60,7 +60,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Gets the type of this block.
         /// </summary>
-        internal override AddLineResult AddLine(string line)
+        internal override AddLineResult AddLine(string line, bool lazy)
         {
             var trimmed = line.TrimStartAscii();
             if (content.Count == 0)
@@ -82,6 +82,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
                 string removed = line.Trim(whiteSpaceShars);
                 if (removed.Length > 0
+                    && !lazy
                     && (removed[0] == '-' || removed[0] == '=')
                     && removed.All(c => removed[0] == c))
                 {
@@ -136,7 +137,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     }
                 }
             }
-
 
             return AddLineResult.Consumed;
         }

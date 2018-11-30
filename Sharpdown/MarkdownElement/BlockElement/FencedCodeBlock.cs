@@ -158,8 +158,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Returns <c>AddLineResult.Consumed</c> except when <paramref name="line"/>
         /// contains the close fence.
         /// </returns>
-        internal override AddLineResult AddLine(string line)
+        internal override AddLineResult AddLine(string line, bool lazy)
         {
+            if (lazy)
+            {
+                throw new InvalidBlockFormatException(BlockElementType.FencedCodeBlock);
+            }
             if (!initialized) // When the fiest line is slecified
             {
                 Match match = openFenceRegex.Match(line);

@@ -467,10 +467,10 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <see cref="NeedClose(string)"/> returns <c>true</c>,
         /// <c>AddLineResult.Consumed</c> otherwise.
         /// </returns>
-        internal override AddLineResult AddLine(string line)
+        internal override AddLineResult AddLine(string line, bool lazy)
         {
             string lineTrimmed = line.TrimStartAscii();
-            if (contents.Count == 0 && (blockType = DetermineType(lineTrimmed)) < 1)
+            if (contents.Count == 0 && (blockType = DetermineType(lineTrimmed)) < 1 || lazy)
             {
                 throw new InvalidBlockFormatException(BlockElementType.HtmlBlock);
             }

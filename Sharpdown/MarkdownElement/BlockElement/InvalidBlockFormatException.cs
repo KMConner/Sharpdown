@@ -12,6 +12,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         public BlockElementType ElementType { get; private set; }
 
+        private string message;
+
         /// <summary>
         /// Initializes new instance of <see cref="InvalidBlockFormatException"/>.
         /// </summary>
@@ -22,6 +24,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
             ElementType = elementType;
         }
 
+        public InvalidBlockFormatException(BlockElementType elementType, string message)
+            : this(elementType)
+        {
+            this.message = message;
+        }
+
         /// <summary>
         /// Gets the error message which explains the current exception.
         /// </summary>
@@ -29,7 +37,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         {
             get
             {
-                return $"Given format is invalid for block type {ElementType}";
+                return message ?? $"Given format is invalid for block type {ElementType}";
             }
         }
     }

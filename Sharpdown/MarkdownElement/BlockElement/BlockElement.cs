@@ -27,7 +27,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         /// <param name="line">A line to add.</param>
         /// <returns></returns>
-        internal abstract AddLineResult AddLine(string line);
+        internal abstract AddLineResult AddLine(string line, bool lazy);
 
         /// <summary>
         /// Initializes a new instance of <see cref="BlockElement"/>.

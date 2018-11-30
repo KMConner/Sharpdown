@@ -147,7 +147,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         /// <param name="line">A single line to add to this element.</param>
         /// <returns></returns>
-        internal override AddLineResult AddLine(string line)
+        internal override AddLineResult AddLine(string line, bool lazy)
         {
             if (HasMark(line, out string markRemoved))
             {
@@ -159,7 +159,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                         openElement = BlockElementUtil.CreateBlockFromLine(markRemoved, Type == BlockElementType.List);
                         children.Add(openElement);
                     }
-                    addLineResult = openElement.AddLine(markRemoved);
+                    addLineResult = openElement.AddLine(markRemoved, lazy);
                     if ((addLineResult & AddLineResult.NeedClose) != 0)
                     {
                         children[children.Count - 1] = openElement.Close();
@@ -178,7 +178,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 return AddLineResult.NeedClose;
             }
 
-            return openElement?.AddLine(line) ?? throw new Exception();
+            return openElement?.AddLine(line, true) ?? throw new Exception();
         }
 
         internal override void ParseInline(IEnumerable<string> linkDefinitions)

@@ -148,14 +148,14 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <returns></returns>
         private static IEnumerable<InlineElementBase> ParseLineBreak(string text)
         {
-            string[] lines = text.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
+            string[] lines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < lines.Length; i++)
             {
                 if (i < lines.Length - 1)
                 {
-                    yield return InlineText.CreateFromText(lines[i].TrimEnd(new[] {' '}));
+                    yield return InlineText.CreateFromText(lines[i].TrimEnd(new[] { ' ' }));
                     yield return lines[i].EndsWith("  ")
-                        ? (InlineElementBase) new HardLineBreak()
+                        ? (InlineElementBase)new HardLineBreak()
                         : new SoftLineBreak();
                 }
                 else
@@ -167,7 +167,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             if (text.EndsWith("\r") || text.EndsWith("\n"))
             {
                 yield return lines.Length > 0 && lines[lines.Length - 1].EndsWith("  ")
-                    ? (InlineElementBase) new HardLineBreak()
+                    ? (InlineElementBase)new HardLineBreak()
                     : new SoftLineBreak();
             }
         }
@@ -336,13 +336,13 @@ namespace Sharpdown.MarkdownElement.InlineElement
             switch (delim.DeliminatorType)
             {
                 case DelimSpan.DelimType.Link:
-                    return new InlineElementBase[] {new Link(newChildren.ToArray())};
+                    return new InlineElementBase[] { new Link(newChildren.ToArray()) };
                 case DelimSpan.DelimType.Image:
-                    return new InlineElementBase[] {new Image(newChildren.ToArray())};
+                    return new InlineElementBase[] { new Image(newChildren.ToArray()) };
                 case DelimSpan.DelimType.Emphasis:
-                    return new InlineElementBase[] {new Emphasis(newChildren.ToArray(), false)};
+                    return new InlineElementBase[] { new Emphasis(newChildren.ToArray(), false) };
                 case DelimSpan.DelimType.StrongEmplasis:
-                    return new InlineElementBase[] {new Emphasis(newChildren.ToArray(), true)};
+                    return new InlineElementBase[] { new Emphasis(newChildren.ToArray(), true) };
                 case DelimSpan.DelimType.Root:
                     return newChildren.ToArray();
                 default:
@@ -736,7 +736,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 && urlMatch.Value.All(c => !char.IsControl(c)))
             {
                 currentIndex += urlMatch.Length;
-                return new Link(new[] {InlineText.CreateFromText(urlMatch.Groups["url"].Value, false)});
+                return new Link(new[] { InlineText.CreateFromText(urlMatch.Groups["url"].Value, false) });
             }
 
             // Auto link (E-Mail)
@@ -744,7 +744,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             if (emailMatch.Success && emailMatch.Index == index)
             {
                 currentIndex += emailMatch.Length;
-                return new Link(new[] {InlineText.CreateFromText("mailto:" + emailMatch.Groups["addr"].Value, false)});
+                return new Link(new[] { InlineText.CreateFromText("mailto:" + emailMatch.Groups["addr"].Value, false) });
             }
 
             // Inline html

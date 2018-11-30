@@ -227,7 +227,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Returns <c>AddLineResult.Consumed | AddLineResult.NeedClose</c>
         /// except when this block need to be insterrupted.
         /// </returns>
-        internal override AddLineResult AddLine(string line)
+        internal override AddLineResult AddLine(string line, bool lazy)
         {
             int lineIndent = line.GetIndentNum();
             string lineTrimmed = line.TrimStartAscii();
@@ -241,19 +241,19 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 AddChild(item);
                 item.contentIndent += lineIndent;
                 item.MarkIndent += lineIndent;
-                openElement.AddLine(line.Substring(item.contentIndent));
+                openElement.AddLine(line.Substring(item.contentIndent), false);
                 return AddLineResult.Consumed;
             }
             else if (openElement is ListItem item)
             {
-                if (lineIndent==-1)
+                if (lineIndent == -1)
                 {
-                    item.AddLine(line);
+                    item.AddLine(line, lazy);
                     return AddLineResult.Consumed;
                 }
                 if (lineIndent >= item.contentIndent)
                 {
-                    item.AddLine(line.Substring(item.contentIndent));
+                    item.AddLine(line.Substring(item.contentIndent), false);
                     return AddLineResult.Consumed;
                 }
 
@@ -272,7 +272,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     AddChild(newItem);
                     newItem.contentIndent += lineIndent;
                     newItem.MarkIndent += lineIndent;
-                    openElement.AddLine(line.Substring(Math.Min(newItem.contentIndent, line.Length)));
+                    openElement.AddLine(line.Substring(Math.Min(newItem.contentIndent, line.Length)), false);
                     return AddLineResult.Consumed;
                 }
 
@@ -287,7 +287,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     return AddLineResult.NeedClose;
                 }
 
-                return openElement.AddLine(line) & AddLineResult.Consumed;
+                return openElement.AddLine(line, true) & AddLineResult.Consumed;
             }
             else
             {

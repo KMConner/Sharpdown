@@ -40,7 +40,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 throw new ArgumentException("level must be 1 or 2.", nameof(level));
             }
             HeaderLevel = level;
-            Content = string.Join("\r\n", elem.content);
+            Content = string.Join("\r\n", elem.content).TrimEnd(new[] { ' ', '\n', '\r' });
             warnings.AddRange(elem.Warnings);
         }
 
@@ -53,7 +53,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         /// <returns>Always throws <see cref="InvalidOperationException"/>.</returns>
         /// <exception cref="InvalidOperationException">Always.</exception>
-        internal override AddLineResult AddLine(string line)
+        internal override AddLineResult AddLine(string line, bool lazy)
         {
             throw new InvalidOperationException();
         }

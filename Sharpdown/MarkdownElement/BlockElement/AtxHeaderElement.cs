@@ -80,9 +80,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         /// <param name="line">A single line to add to this element.</param>
         /// <returns>Always returns <c> AddLineResult.Consumed | AddLineResult.NeedClose</c></returns>
-        internal override AddLineResult AddLine(string line)
+        internal override AddLineResult AddLine(string line, bool lazy)
         {
-            if (!headerRegex.IsMatch(line))
+            if (!headerRegex.IsMatch(line) || lazy)
             {
                 throw new InvalidBlockFormatException(BlockElementType.AtxHeading);
             }

@@ -5,12 +5,12 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
 {
     static class ExtendMethod
     {
-        public static AddLineResult AddLine(this BlockElement element, string line)
+        public static AddLineResult AddLine(this BlockElement element, string line, bool lazy = false)
         {
             var method = element.GetType().GetMethod("AddLine", BindingFlags.NonPublic | BindingFlags.Instance);
             try
             {
-                return (AddLineResult)method.Invoke(element, new[] { line });
+                return (AddLineResult)method.Invoke(element, new object[] { line, lazy });
             }
             catch (TargetInvocationException ex)
             {
