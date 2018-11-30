@@ -13,6 +13,7 @@ namespace TestProject.MarkdownElementTest
     [TestClass]
     public class CommonMarkTest
     {
+        #region Tabs
         [TestMethod]
         public void TestCase_001()
         {
@@ -39,7 +40,10 @@ namespace TestProject.MarkdownElementTest
         //    Assert.AreEqual("foo\tbaz\t\tbim", lit.Content);
         //}
 
+        #endregion
         // TODO: test 02 - 12
+
+        #region Themantic break
 
         [TestMethod]
         public void TestCase_013()
@@ -305,6 +309,10 @@ namespace TestProject.MarkdownElementTest
                 ((Paragraph)((ListItem)((ListBlock)doc.Elements[0]).Children[0]).Children[0]).Inlines);
         }
 
+        #endregion
+
+        #region ATX heading
+
         [TestMethod]
         public void TestCase_032()
         {
@@ -567,6 +575,10 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, ((AtxHeaderElement)doc.Elements[1]).Inlines.Count);
             Assert.AreEqual(0, ((AtxHeaderElement)doc.Elements[2]).Inlines.Count);
         }
+
+        #endregion
+
+        #region Setext heading
 
         [TestMethod]
         public void TestCase_050()
@@ -970,6 +982,6 @@ namespace TestProject.MarkdownElementTest
             inline0.AssertEqual(((LeafElement)doc.Elements[0]).Inlines);
         }
 
-
+        #endregion
     }
 }
