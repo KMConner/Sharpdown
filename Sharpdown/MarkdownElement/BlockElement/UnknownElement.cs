@@ -48,8 +48,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         private bool mayBeLinkReferenceDefinition;
 
-
         public override BlockElementType Type => BlockElementType.Unknown;
+
+        public override string Content => string.Join("\n", content);
 
         internal UnknownElement() : base()
         {

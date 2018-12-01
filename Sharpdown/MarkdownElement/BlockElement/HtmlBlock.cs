@@ -26,7 +26,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Regular expression which matches open tags.
         /// </summary>
         private static readonly Regex openTag = new Regex(
-            @"\<(?<tag>[a-zA-Z][a-zA-Z0-9-]*)[ \t]*?([ \t][a-zA-Z_\:][a-zA-Z0-9_\.\:\-]*[ \t]*(\=[ \t]*([^ \""\'\=\<\>`\t]+|\""[^\""]*\""|\'[^\']*\'))??)*[ \t]*\/??\>[ \t]*$",
+            @"^\<(?<tag>[a-zA-Z][a-zA-Z0-9-]*)[ \t]*?([ \t][a-zA-Z_\:][a-zA-Z0-9_\.\:\-]*[ \t]*(\=[ \t]*([^ \""\'\=\<\>`\t]+|\""[^\""]*\""|\'[^\']*\'))??)*[ \t]*\/??\>[ \t]*$",
                 RegexOptions.Compiled);
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Gets the contents of this block.
         /// </summary>
-        public string Content => string.Join("\r\n", contents);
+        public override string Content => string.Join("\r\n", contents);
 
         internal HtmlBlock() : base()
         {
@@ -515,6 +515,10 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     if (contents[i].TrimStartAscii() == string.Empty)
                     {
                         contents.RemoveAt(i);
+                    }
+                    else
+                    {
+                        break;
                     }
                 }
             }

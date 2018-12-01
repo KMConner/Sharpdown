@@ -1,4 +1,6 @@
-﻿namespace Sharpdown.MarkdownElement.BlockElement
+﻿using System;
+
+namespace Sharpdown.MarkdownElement.BlockElement
 {
     /// <summary>
     /// Represents Block Quotes in markdown documents.
@@ -17,6 +19,8 @@
         /// Gets the type of this block.
         /// </summary>
         public override BlockElementType Type => BlockElementType.BlockQuote;
+
+        public override string Content => throw new InvalidOperationException();
 
         /// <summary>
         /// Initialzies a new instance of <see cref="BlockQuote"/>.

@@ -1,5 +1,8 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Sharpdown.MarkdownElement.BlockElement;
+using Sharpdown.MarkdownElement.InlineElement;
 
 namespace TestProject.MarkdownElementTest.BlockElementTest
 {
@@ -29,6 +32,35 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             {
                 throw ex.InnerException;
             }
+        }
+
+        public static IReadOnlyList<InlineElementBase> GetInlines(this BlockElement element)
+        {
+            if (element is LeafElement leaf)
+            {
+                return leaf.Inlines;
+            }
+            else
+            {
+                throw new Exception("This block is a container block.");
+            }
+        }
+
+        public static IReadOnlyList<BlockElement> GetChildren(this BlockElement element)
+        {
+            if (element is ContainerElement container)
+            {
+                return container.Children;
+            }
+            else
+            {
+                throw new Exception("This block is not a container block.");
+            }
+        }
+
+        public static BlockElement GetChild(this BlockElement element, int index)
+        {
+            return element.GetChildren()[index];
         }
 
     }

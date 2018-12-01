@@ -25,7 +25,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Gets the content of this paragraph.
         /// </summary>
-        public string Content => string.Join("\r\n", contents);
+        public override string Content => string.Join("\r\n", contents);
 
         /// <summary>
         /// Gets the type of this block.

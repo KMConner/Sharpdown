@@ -30,6 +30,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         public IReadOnlyList<BlockElement> Children => children.AsReadOnly();
 
+        public override string Content => throw new NotImplementedException();
+
         /// <summary>
         /// Warning raised while parsing.
         /// </summary>

@@ -29,6 +29,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <returns></returns>
         internal abstract AddLineResult AddLine(string line, bool lazy);
 
+        public abstract string Content { get; }
+
         /// <summary>
         /// Initializes a new instance of <see cref="BlockElement"/>.
         /// </summary>

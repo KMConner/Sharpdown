@@ -91,11 +91,11 @@ namespace Sharpdown.MarkdownElement.BlockElement
             HeaderLevel = match.Groups["level"].Value.Length;
             if (match.Groups["content"].Success)
             {
-                Content = match.Groups["content"].Value;
+                content = match.Groups["content"].Value;
             }
             else
             {
-                Content = string.Empty;
+                content = string.Empty;
             }
             return AddLineResult.Consumed | AddLineResult.NeedClose;
         }

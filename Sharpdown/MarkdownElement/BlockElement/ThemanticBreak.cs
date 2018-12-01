@@ -29,6 +29,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         public override BlockElementType Type => BlockElementType.ThemanticBreak;
 
+        public override string Content => string.Empty;
+
         /// <summary>
         /// Initializes a new instance of <see cref="ThemanticBreak"/>.
         /// </summary>

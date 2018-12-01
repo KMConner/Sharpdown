@@ -55,6 +55,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         public bool IsTight { get; private set; }
 
+        public override string Content => throw new NotImplementedException();
+
         /// <summary>
         /// Returns whether the specified line can be a start line of <see cref="ListBlock"/>.
         /// </summary>

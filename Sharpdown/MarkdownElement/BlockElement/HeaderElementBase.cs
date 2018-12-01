@@ -18,7 +18,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// The content of this header.
         /// </summary>
-        public string Content { get; protected set; }
+        public override string Content => content;
+
+        protected string content;
 
         internal override void ParseInline(IEnumerable<string> linkDefinitions)
         {
