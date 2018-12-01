@@ -70,6 +70,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return RemoveIndent(str.Substring(1), maxRemoveCount - 1);
         }
 
-        internal abstract void ParseInline(IEnumerable<string> linkDefinitions);
+        internal abstract void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions);
     }
 }

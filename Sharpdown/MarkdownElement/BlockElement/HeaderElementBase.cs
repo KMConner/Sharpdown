@@ -22,7 +22,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         protected string content;
 
-        internal override void ParseInline(IEnumerable<string> linkDefinitions)
+        internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
         {
             inlines.AddRange(InlineElementUtils.ParseInlineElements(Content, linkDefinitions));
         }

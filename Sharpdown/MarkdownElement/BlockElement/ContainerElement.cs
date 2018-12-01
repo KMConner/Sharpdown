@@ -183,7 +183,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return openElement?.AddLine(line, true) ?? throw new Exception();
         }
 
-        internal override void ParseInline(IEnumerable<string> linkDefinitions)
+        internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
         {
             foreach (var child in children)
             {

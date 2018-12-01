@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.Reflection;
 
 namespace TestProject
 {
@@ -14,13 +16,16 @@ namespace TestProject
         /// <typeparam name="T">The object type to initialize.</typeparam>
         /// <param name="parameters">The parameters passed to the constructor.</param>
         /// <returns>The created object.</returns>
-        public static T CreateInternal<T>(params object[] parameters)
+        public static T CreateInternal<T>()
         {
-            if (parameters == null || parameters.Length == 0)
-            {
-                return (T)Activator.CreateInstance(typeof(T), true);
-            }
-            return (T)Activator.CreateInstance(typeof(T), parameters);
+            return (T)Activator.CreateInstance(typeof(T), true);
+        }
+
+        public static T CreateInternal<T>(Type[] types, object[] parameters)
+        {
+            ConstructorInfo constructorInfo = typeof(T).GetConstructor(
+                BindingFlags.NonPublic|BindingFlags.Instance, null, types, null);
+            return (T)constructorInfo.Invoke(parameters);
         }
     }
 }

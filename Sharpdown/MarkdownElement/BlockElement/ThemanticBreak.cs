@@ -90,6 +90,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return AddLineResult.Consumed | AddLineResult.NeedClose;
         }
 
-        internal override void ParseInline(IEnumerable<string> linkDefinitions) { }
+        internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions) { }
     }
 }

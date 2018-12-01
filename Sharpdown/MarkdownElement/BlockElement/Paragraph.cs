@@ -71,7 +71,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             throw new InvalidOperationException();
         }
 
-        internal override void ParseInline(IEnumerable<string> linkDefinitions)
+        internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
         {
             inlines.AddRange(InlineElementUtils.ParseInlineElements(Content, linkDefinitions));
         }

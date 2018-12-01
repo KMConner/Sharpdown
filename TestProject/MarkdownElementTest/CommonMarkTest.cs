@@ -2055,5 +2055,11 @@ namespace TestProject.MarkdownElementTest
         }
 
         #endregion
+
+        #region Link reference definitions
+
+
+
+        #endregion
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Sharpdown.MarkdownElement.BlockElement;
 
 namespace Sharpdown.MarkdownElement.InlineElement
 {
@@ -243,6 +244,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
         {
             public int Begin { get; set; }
             public int End { get; set; }
+            public string Destination { get; set; }
+            public string Title { get; set; }
 
             private int? parseBegin;
             private int? parseEnd;
@@ -335,7 +338,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             switch (delim.DeliminatorType)
             {
                 case DelimSpan.DelimType.Link:
-                    return new InlineElementBase[] { new Link(newChildren.ToArray()) };
+                    return new InlineElementBase[] { new Link(newChildren.ToArray(), delim.Destination, delim.Title) };
                 case DelimSpan.DelimType.Image:
                     return new InlineElementBase[] { new Image(newChildren.ToArray()) };
                 case DelimSpan.DelimType.Emphasis:
@@ -496,7 +499,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <param name="text">The string object to @arse.</param>
         /// <param name="linkReferences">Link reference definitions.</param>
         /// <returns>The parse result.</returns>
-        private static IEnumerable<InlineElementBase> ParseLinkEmphasis(string text, IEnumerable<string> linkReferences)
+        private static IEnumerable<InlineElementBase> ParseLinkEmphasis(string text, Dictionary<string, LinkReferenceDefinition> linkReferences)
         {
             var deliminators = new LinkedList<DeliminatorInfo>();
             var delimSpans = new SortedList<int, DelimSpan>();
@@ -608,6 +611,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
                                 ParseBegin = openInfo.Index
                                              + (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink ? 1 : 2),
                                 ParseEnd = i,
+                                Title = inlineLinkMatch.Groups["title"].Value,
+                                Destination = inlineLinkMatch.Groups["destination"].Value,
                             });
                             ParseEmphasis(deliminators, delimSpans, openInfo);
                             deliminators.Remove(openInfo);
@@ -617,9 +622,9 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         else if (i < text.Length - 1
                                  && text[Math.Min(i + 1, text.Length - 1)] == '['
                                  && text[Math.Min(i + 2, text.Length - 1)] == ']'
-                                 && linkReferences.Contains(text.Substring(
+                                 && linkReferences.TryGetValue(text.Substring(
                                      openInfo.Index + openInfo.DeliminatorLength,
-                                     i - openInfo.Index - openInfo.DeliminatorLength)))
+                                     i - openInfo.Index - openInfo.DeliminatorLength), out var definition))
                         {
                             delimSpans.Add(openInfo.Index, new DelimSpan()
                             {
@@ -631,14 +636,16 @@ namespace Sharpdown.MarkdownElement.InlineElement
                                 ParseBegin = openInfo.Index
                                              + (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink ? 1 : 2),
                                 ParseEnd = i,
+                                Destination = definition.Destination,
+                                Title = definition.Title,
                             });
                             ParseEmphasis(deliminators, delimSpans, openInfo);
                             i += 2;
                         }
                         // Full Reference Link
                         else if (text[Math.Min(i + 1, text.Length - 1)] == '[' && linkLabelMatch.Success
-                                                                               && linkReferences.Contains(linkLabelMatch
-                                                                                   .Groups["label"].Value))
+                                                                               && linkReferences.TryGetValue(linkLabelMatch
+                                                                                   .Groups["label"].Value, out definition))
                         {
                             delimSpans.Add(openInfo.Index, new DelimSpan()
                             {
@@ -650,12 +657,15 @@ namespace Sharpdown.MarkdownElement.InlineElement
                                 ParseBegin = openInfo.Index
                                              + (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink ? 1 : 2),
                                 ParseEnd = i,
+                                Destination = definition.Destination,
+                                Title = definition.Title,
                             });
                             ParseEmphasis(deliminators, delimSpans, openInfo);
                             i += linkLabelMatch.Length;
                         }
                         // shortcut link
-                        else if (linkReferences.Contains(text.Substring(openInfo.Index + 1, i - openInfo.Index - 1)))
+                        else if (linkReferences.TryGetValue(text.Substring(openInfo.Index + 1, i - openInfo.Index - 1),
+                            out definition))
                         {
                             delimSpans.Add(openInfo.Index, new DelimSpan()
                             {
@@ -667,6 +677,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
                                 ParseBegin = openInfo.Index
                                              + (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink ? 1 : 2),
                                 ParseEnd = i,
+                                Destination = definition.Destination,
+                                Title = definition.Title,
                             });
                             ParseEmphasis(deliminators, delimSpans, openInfo);
                         }
@@ -735,7 +747,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 && urlMatch.Value.All(c => !char.IsControl(c)))
             {
                 currentIndex += urlMatch.Length;
-                return new Link(new[] { InlineText.CreateFromText(urlMatch.Groups["url"].Value, false) });
+                return new Link(new[] { InlineText.CreateFromText(urlMatch.Groups["url"].Value, false) },
+                    urlMatch.Groups["url"].Value, null);
             }
 
             // Auto link (E-Mail)
@@ -743,7 +756,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
             if (emailMatch.Success && emailMatch.Index == index)
             {
                 currentIndex += emailMatch.Length;
-                return new Link(new[] { InlineText.CreateFromText("mailto:" + emailMatch.Groups["addr"].Value, false) });
+                var target = "mailto:" + emailMatch.Groups["addr"].Value;
+                return new Link(new[] { InlineText.CreateFromText(target, false) }, target, null);
             }
 
             // Inline html
@@ -763,7 +777,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <param name="text">The text to parse.</param>
         /// <param name="linkRefernces">Reference definitions in this document.</param>
         /// <returns>Inline elements in <paramref name="text"/>.</returns>
-        public static IEnumerable<InlineElementBase> ParseInlineElements(string text, IEnumerable<string> linkRefernces)
+        public static IEnumerable<InlineElementBase> ParseInlineElements(string text,
+            Dictionary<string, LinkReferenceDefinition> linkRefernces)
         {
             int currentIndex = 0;
             int nextBacktick = text.IndexOf('`');

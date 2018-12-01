@@ -525,7 +525,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return this;
         }
 
-        internal override void ParseInline(IEnumerable<string> linkDefinitions)
+        internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
         {
             inlines.Add(new LiteralText(Content));
         }

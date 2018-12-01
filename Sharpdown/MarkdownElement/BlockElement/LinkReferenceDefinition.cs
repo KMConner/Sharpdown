@@ -43,7 +43,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             Label = label ?? throw new ArgumentNullException(nameof(title));
             Destination = destination ?? throw new ArgumentNullException(nameof(destination));
             Title = title ?? string.Empty;
-            warnings.AddRange(elem.Warnings);
+            warnings.AddRange(elem?.Warnings ?? new List<string>());
         }
 
         /// <summary>
@@ -77,6 +77,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
             throw new InvalidCastException();
         }
 
-        internal override void ParseInline(IEnumerable<string> linkDefinitions) { }
+        internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions) { }
     }
 }

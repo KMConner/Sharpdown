@@ -7,7 +7,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
     {
         public abstract string InfoString { get; }
         internal CodeBlockBase() : base() { }
-        internal override void ParseInline(IEnumerable<string> linkDefinitions)
+        internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
         {
             inlines.Add(new LiteralText(Content));
         }

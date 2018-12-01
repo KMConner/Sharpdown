@@ -65,10 +65,9 @@ namespace Sharpdown
             {
                 ExtractLinkDefinition(element);
             }
-            var defs = LinkDefinition.Keys;
             foreach (var element in Elements)
             {
-                element.ParseInline(defs);
+                element.ParseInline(LinkDefinition);
             }
         }
 
