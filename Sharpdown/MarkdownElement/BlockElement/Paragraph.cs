@@ -41,6 +41,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         internal Paragraph(UnknownElement element) : base()
         {
             contents = element.content;
+            contents[contents.Count - 1] = contents[contents.Count - 1].TrimEnd(' ');
             warnings.AddRange(element.Warnings);
         }
 
