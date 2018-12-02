@@ -46,6 +46,11 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             }
         }
 
+        public static InlineElementBase GetInline(this BlockElement element, int index)
+        {
+            return element.GetInlines()[index];
+        }
+
         public static IReadOnlyList<BlockElement> GetChildren(this BlockElement element)
         {
             if (element is ContainerElement container)

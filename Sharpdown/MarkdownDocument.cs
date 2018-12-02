@@ -18,7 +18,8 @@ namespace Sharpdown
         internal MarkdownDocument()
         {
             Elements = new List<BlockElement>();
-            LinkDefinition = new Dictionary<string, LinkReferenceDefinition>();
+            LinkDefinition = new Dictionary<string, LinkReferenceDefinition>(
+                StringComparer.InvariantCultureIgnoreCase);
         }
 
         internal void AddLine(string line)
@@ -45,25 +46,40 @@ namespace Sharpdown
 
         private void ExtractLinkDefinition(BlockElement element)
         {
-            if (element.Type == BlockElementType.LinkReferenceDefinition)
+            if (element is ContainerElement container)
             {
-                var def = (LinkReferenceDefinition)element;
-                LinkDefinition[def.Label] = def;
-            }
-            else if (element is ContainerElement container)
-            {
-                foreach (var child in container.Children)
+                for (int i = container.children.Count - 1; i >= 0; i--)
                 {
-                    ExtractLinkDefinition(child);
+                    if (container.children[i].Type == BlockElementType.LinkReferenceDefinition)
+                    {
+                        // TODO: Duplicate warning
+                        var definition = (LinkReferenceDefinition)container.children[i];
+                        container.children.RemoveAt(i);
+                        LinkDefinition[definition.Label] = definition;
+                    }
+                    else
+                    {
+                        ExtractLinkDefinition(container.children[i]);
+                    }
                 }
             }
         }
 
         internal void ParseInline()
         {
-            foreach (var element in Elements)
+            for (int i = Elements.Count - 1; i >= 0; i--)
             {
-                ExtractLinkDefinition(element);
+                if (Elements[i].Type == BlockElementType.LinkReferenceDefinition)
+                {
+                    // TODO: Duplicate warning
+                    var definition = (LinkReferenceDefinition)Elements[i];
+                    Elements.RemoveAt(i);
+                    LinkDefinition[definition.Label] = definition;
+                }
+                else
+                {
+                    ExtractLinkDefinition(Elements[i]);
+                }
             }
             foreach (var element in Elements)
             {

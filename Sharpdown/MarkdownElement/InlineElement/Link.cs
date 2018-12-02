@@ -1,4 +1,6 @@
 ﻿using Sharpdown.MarkdownElement.BlockElement;
+using System.Text;
+using System;
 
 namespace Sharpdown.MarkdownElement.InlineElement
 {
@@ -9,18 +11,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
         public string Destination { get; private set; }
         public string Title { get; private set; }
 
-        public Link(InlineElementBase[] linkText, LinkReferenceDefinition definition)
-        {
-            Children = linkText;
-            Destination = definition.Destination;
-            Title = definition.Title;
-        }
-
         public Link(InlineElementBase[] linkText, string destination, string title)
         {
             Children = linkText;
             Destination = destination;
-            Title = title;
+            Title = title ?? string.Empty;
         }
     }
 }

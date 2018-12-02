@@ -71,7 +71,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     throw new InvalidBlockFormatException(BlockElementType.Unknown);
                 }
 
-                mayBeLinkReferenceDefinition = linkLabelRegex.IsMatch(trimmed);
+                mayBeLinkReferenceDefinition = trimmed.StartsWith("[");
             }
             else if (line.GetIndentNum() < 4)
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 
 namespace Sharpdown.MarkdownElement.BlockElement
@@ -40,9 +41,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <param name="elem"></param>
         internal LinkReferenceDefinition(string label, string destination, string title, UnknownElement elem) : base()
         {
-            Label = label ?? throw new ArgumentNullException(nameof(title));
-            Destination = destination ?? throw new ArgumentNullException(nameof(destination));
-            Title = title ?? string.Empty;
+            Label = label?.Trim(whiteSpaceShars) ?? throw new ArgumentNullException(nameof(title));
+            Destination = ProcessBackslashEscape(destination ?? throw new ArgumentNullException(nameof(destination)));
+            Title = ProcessBackslashEscape(title ?? string.Empty);
             warnings.AddRange(elem?.Warnings ?? new List<string>());
         }
 
@@ -78,5 +79,29 @@ namespace Sharpdown.MarkdownElement.BlockElement
         }
 
         internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions) { }
+
+        private string ProcessBackslashEscape(string unescaped)
+        {
+            var builder = new StringBuilder(unescaped.Length);
+            for (int i = 0; i < unescaped.Length; i++)
+            {
+                if (i == unescaped.Length - 1)
+                {
+                    builder.Append(unescaped[i]);
+                    continue;
+                }
+
+                if (unescaped[i] == '\\' && Array.IndexOf(asciiPunctuationChars, unescaped[i + 1]) >= 0)
+                {
+                    builder.Append(unescaped[i + 1]);
+                    i++;
+                    continue;
+                }
+
+                builder.Append(unescaped[i]);
+            }
+            return builder.ToString();
+        }
+
     }
 }

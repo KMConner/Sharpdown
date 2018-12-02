@@ -23,7 +23,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Child elements of this block.
         /// </summary>
-        private readonly List<BlockElement> children;
+        internal readonly List<BlockElement> children;
 
         /// <summary>
         /// Gets child elements of this block.
