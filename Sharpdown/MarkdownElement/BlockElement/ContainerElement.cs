@@ -174,7 +174,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             line = markRemoved ?? line;
 
             var newElem = BlockElementUtil.CreateBlockFromLine(line, Type == BlockElementType.List);
-            if ((newElem.Type != BlockElementType.Unknown && newElem.Type != BlockElementType.BlankLine)
+            if ((newElem.Type != BlockElementType.Unknown && newElem.Type != BlockElementType.BlankLine && newElem.Type != BlockElementType.IndentedCodeBlock)
                 || !CanLazyContinue())
             {
                 return AddLineResult.NeedClose;

@@ -253,6 +253,11 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     item.AddLine(line, lazy);
                     return AddLineResult.Consumed;
                 }
+                if (lazy)
+                {
+                    item.AddLine(line, lazy);
+                    return AddLineResult.Consumed;
+                }
                 if (lineIndent >= item.contentIndent)
                 {
                     item.AddLine(line.Substring(item.contentIndent), false);

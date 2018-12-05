@@ -310,7 +310,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
         {
             BlockQuote block = TestUtils.CreateInternal<BlockQuote>();
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("> - foo"));
-            Assert.AreEqual(AddLineResult.NeedClose, block.AddLine("    - bar"));
+            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("    - bar"));
             BlockElementStructure elementStructure =
                 new BlockElementStructure(BlockElementType.BlockQuote,
                     new BlockElementStructure(BlockElementType.List,

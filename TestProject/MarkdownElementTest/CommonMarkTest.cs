@@ -2591,7 +2591,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(BlockElementType.IndentedCodeBlock, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
             Assert.AreEqual("aaa", doc.Elements[0].Content);
-            var inline = new InlineStructure(InlineElementType.InlineText,"bbb");
+            var inline = new InlineStructure(InlineElementType.InlineText, "bbb");
             inline.AssertEqual(doc.Elements[1].GetInlines());
         }
 
@@ -2608,6 +2608,464 @@ namespace TestProject.MarkdownElementTest
                 new InlineStructure(InlineElementType.HardLineBreak, ""),
                 new InlineStructure(InlineElementType.InlineText, "bbb"));
             inline0.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        #endregion
+
+        #region Blank line
+
+        [TestMethod]
+        public void TestCase_190()
+        {
+            var html = "\r\n\r\n  \r\n\r\naaa\r\n  \r\n\r\n# aaa\r\n\r\n  \r\n\r\n";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(2, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+            var inline = new InlineStructure(InlineElementType.InlineText, "aaa");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+            inline.AssertEqual(doc.Elements[1].GetInlines());
+        }
+
+        #endregion
+
+        #region Block quote
+
+        [TestMethod]
+        public void TestCase_191()
+        {
+            var html = "> # Foo\r\n> bar\r\n> baz";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.AtxHeading),
+                new BlockElementStructure(BlockElementType.Paragraph));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "Foo");
+            var inline1 = new InlineStructure(InlineElementType.InlineText,
+                new InlineStructure(InlineElementType.InlineText, "bar"),
+                new InlineStructure(InlineElementType.SoftLineBreak, ""),
+                new InlineStructure(InlineElementType.InlineText, "baz"));
+            inline0.AssertEqual(doc.Elements[0].GetChild(0).GetInlines());
+            inline1.AssertEqual(doc.Elements[0].GetChild(1).GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_192()
+        {
+            var html = "># Foo\r\n>bar\r\n> baz";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.AtxHeading),
+                new BlockElementStructure(BlockElementType.Paragraph));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "Foo");
+            var inline1 = new InlineStructure(InlineElementType.InlineText,
+                new InlineStructure(InlineElementType.InlineText, "bar"),
+                new InlineStructure(InlineElementType.SoftLineBreak, ""),
+                new InlineStructure(InlineElementType.InlineText, "baz"));
+            inline0.AssertEqual(doc.Elements[0].GetChild(0).GetInlines());
+            inline1.AssertEqual(doc.Elements[0].GetChild(1).GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_193()
+        {
+            var html = "   > # Foo\r\n   > bar\r\n > baz";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.AtxHeading),
+                new BlockElementStructure(BlockElementType.Paragraph));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "Foo");
+            var inline1 = new InlineStructure(InlineElementType.InlineText,
+                new InlineStructure(InlineElementType.InlineText, "bar"),
+                new InlineStructure(InlineElementType.SoftLineBreak, ""),
+                new InlineStructure(InlineElementType.InlineText, "baz"));
+            inline0.AssertEqual(doc.Elements[0].GetChild(0).GetInlines());
+            inline1.AssertEqual(doc.Elements[0].GetChild(1).GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_194()
+        {
+            var html = "    > # Foo\r\n    > bar\r\n    > baz";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.IndentedCodeBlock, doc.Elements[0].Type);
+            Assert.AreEqual("> # Foo\r\n> bar\r\n> baz", doc.Elements[0].Content);
+        }
+
+        [TestMethod]
+        public void TestCase_195()
+        {
+            var html = "> # Foo\r\n> bar\r\nbaz";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.AtxHeading),
+                new BlockElementStructure(BlockElementType.Paragraph));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "Foo");
+            var inline1 = new InlineStructure(InlineElementType.InlineText,
+                new InlineStructure(InlineElementType.InlineText, "bar"),
+                new InlineStructure(InlineElementType.SoftLineBreak, ""),
+                new InlineStructure(InlineElementType.InlineText, "baz"));
+            inline0.AssertEqual(doc.Elements[0].GetChild(0).GetInlines());
+            inline1.AssertEqual(doc.Elements[0].GetChild(1).GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_196()
+        {
+            var html = "> bar\r\nbaz\r\n> foo";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.Paragraph));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+            var inline = new InlineStructure(InlineElementType.InlineText,
+                new InlineStructure(InlineElementType.InlineText, "bar"),
+                new InlineStructure(InlineElementType.SoftLineBreak, ""),
+                new InlineStructure(InlineElementType.InlineText, "baz"),
+                new InlineStructure(InlineElementType.SoftLineBreak, ""),
+                new InlineStructure(InlineElementType.InlineText, "foo"));
+            inline.AssertEqual(doc.Elements[0].GetChild(0).GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_197()
+        {
+            var html = "> foo\r\n---";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(2, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.Paragraph));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+            Assert.AreEqual(BlockElementType.ThemanticBreak, doc.Elements[1].Type);
+            var inline = new InlineStructure(InlineElementType.InlineText, "foo");
+            inline.AssertEqual(doc.Elements[0].GetChild(0).GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_198()
+        {
+            var html = "> - foo\r\n- bar";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(2, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var block1 = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.List,
+                    new BlockElementStructure(BlockElementType.ListItem,
+                        new BlockElementStructure(BlockElementType.Paragraph))));
+            block1.AssertTypeEqual(doc.Elements[0]);
+            var block2 = new BlockElementStructure(BlockElementType.List,
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.Paragraph)));
+            block2.AssertTypeEqual(doc.Elements[1]);
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "foo");
+            var inline1 = new InlineStructure(InlineElementType.InlineText, "bar");
+            inline0.AssertEqual(doc.Elements[0].GetChild(0).GetChild(0).GetChild(0).GetInlines());
+            inline1.AssertEqual(doc.Elements[1].GetChild(0).GetChild(0).GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_199()
+        {
+            var html = ">     foo\r\n    bar";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(2, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var block1 = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.IndentedCodeBlock));
+            block1.AssertTypeEqual(doc.Elements[0]);
+            Assert.AreEqual(BlockElementType.IndentedCodeBlock, doc.Elements[1].Type);
+            Assert.AreEqual("foo", doc.Elements[0].GetChild(0).Content);
+            Assert.AreEqual("bar", doc.Elements[1].Content);
+        }
+
+        [TestMethod]
+        public void TestCase_200()
+        {
+            var html = "> ```\r\nfoo\r\n```";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(3, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var block1 = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.FencedCodeBlock));
+            block1.AssertTypeEqual(doc.Elements[0]);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
+            Assert.AreEqual(BlockElementType.FencedCodeBlock, doc.Elements[2].Type);
+            Assert.AreEqual("", doc.Elements[0].GetChild(0).Content);
+
+            var inline = new InlineStructure(InlineElementType.InlineText, "foo");
+            inline.AssertEqual(doc.Elements[1].GetInlines());
+
+            Assert.AreEqual("", doc.Elements[2].Content);
+        }
+
+        [TestMethod]
+        public void TestCase_201()
+        {
+            var html = "> foo\r\n    - bar";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var block1 = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.Paragraph));
+            block1.AssertTypeEqual(doc.Elements[0]);
+            var inline = new InlineStructure(InlineElementType.InlineText,
+                new InlineStructure(InlineElementType.InlineText, "foo"),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "- bar"));
+            inline.AssertEqual(doc.Elements[0].GetChild(0).GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_202()
+        {
+            var html = ">";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.BlockQuote, doc.Elements[0].Type);
+            Assert.AreEqual(0, doc.Elements[0].GetChildren().Count);
+        }
+
+        [TestMethod]
+        public void TestCase_203()
+        {
+            var html = ">\r\n>  \r\n> ";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.BlockQuote, doc.Elements[0].Type);
+            Assert.AreEqual(0, doc.Elements[0].GetChildren().Count);
+        }
+
+        [TestMethod]
+        public void TestCase_204()
+        {
+            var html = ">\r\n> foo\r\n>  ";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.Paragraph));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+            var inline = new InlineStructure(InlineElementType.InlineText, "foo");
+            inline.AssertEqual(doc.Elements[0].GetChild(0).GetInlines());
+
+        }
+
+        [TestMethod]
+        public void TestCase_205()
+        {
+            var html = "> foo\r\n\r\n> bar";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(2, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.Paragraph));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+            blocks.AssertTypeEqual(doc.Elements[1]);
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "foo");
+            var inline1 = new InlineStructure(InlineElementType.InlineText, "bar");
+            inline0.AssertEqual(doc.Elements[0].GetChild(0).GetInlines());
+            inline1.AssertEqual(doc.Elements[1].GetChild(0).GetInlines());
+
+        }
+
+        [TestMethod]
+        public void TestCase_206()
+        {
+            var html = "> foo\r\n> bar";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.Paragraph));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+            var inline = new InlineStructure(InlineElementType.InlineText,
+                new InlineStructure(InlineElementType.InlineText, "foo"),
+                new InlineStructure(InlineElementType.SoftLineBreak, ""),
+                new InlineStructure(InlineElementType.InlineText, "bar"));
+            inline.AssertEqual(doc.Elements[0].GetChild(0).GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_207()
+        {
+            var html = "> foo\r\n>\r\n> bar";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.Paragraph),
+                new BlockElementStructure(BlockElementType.Paragraph));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "foo");
+            var inline1 = new InlineStructure(InlineElementType.InlineText, "bar");
+            inline0.AssertEqual(doc.Elements[0].GetChild(0).GetInlines());
+            inline1.AssertEqual(doc.Elements[0].GetChild(1).GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_208()
+        {
+            var html = "foo\r\n> bar";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(2, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+            var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.Paragraph));
+            blocks.AssertTypeEqual(doc.Elements[1]);
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "foo");
+            var inline1 = new InlineStructure(InlineElementType.InlineText, "bar");
+            inline0.AssertEqual(doc.Elements[0].GetInlines());
+            inline1.AssertEqual(doc.Elements[1].GetChild(0).GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_209()
+        {
+            var html = "> aaa\r\n***\r\n> bbb";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(3, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.Paragraph));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+            Assert.AreEqual(BlockElementType.ThemanticBreak, doc.Elements[1].Type);
+            blocks.AssertTypeEqual(doc.Elements[2]);
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "aaa");
+            var inline1 = new InlineStructure(InlineElementType.InlineText, "bbb");
+            inline0.AssertEqual(doc.Elements[0].GetChild(0).GetInlines());
+            inline1.AssertEqual(doc.Elements[2].GetChild(0).GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_210()
+        {
+            var html = "> bar\r\nbaz";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.Paragraph));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+            var inline = new InlineStructure(InlineElementType.InlineText,
+                new InlineStructure(InlineElementType.InlineText, "bar"),
+                new InlineStructure(InlineElementType.SoftLineBreak, ""),
+                new InlineStructure(InlineElementType.InlineText, "baz"));
+            inline.AssertEqual(doc.Elements[0].GetChild(0).GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_211()
+        {
+            var html = "> bar\r\n\r\nbaz";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(2, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.Paragraph));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
+
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "bar");
+            inline0.AssertEqual(doc.Elements[0].GetChild(0).GetInlines());
+            var inline1 = new InlineStructure(InlineElementType.InlineText, "baz");
+            inline1.AssertEqual(doc.Elements[1].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_212()
+        {
+            var html = "> bar\r\n>\r\nbaz";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(2, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.Paragraph));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
+
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "bar");
+            inline0.AssertEqual(doc.Elements[0].GetChild(0).GetInlines());
+            var inline1 = new InlineStructure(InlineElementType.InlineText, "baz");
+            inline1.AssertEqual(doc.Elements[1].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_213()
+        {
+            var html = "> > > foo\r\nbar";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.BlockQuote,
+                    new BlockElementStructure(BlockElementType.BlockQuote,
+                        new BlockElementStructure(BlockElementType.Paragraph))));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+
+            var inline = new InlineStructure(InlineElementType.InlineText,
+                new InlineStructure(InlineElementType.InlineText, "foo"),
+                new InlineStructure(InlineElementType.SoftLineBreak, ""),
+                new InlineStructure(InlineElementType.InlineText, "bar"));
+            inline.AssertEqual(doc.Elements[0].GetChild(0).GetChild(0).GetChild(0).GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_214()
+        {
+            var html = ">>> foo\r\n> bar\r\n>>baz";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.BlockQuote,
+                    new BlockElementStructure(BlockElementType.BlockQuote,
+                        new BlockElementStructure(BlockElementType.Paragraph))));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+
+            var inline = new InlineStructure(InlineElementType.InlineText,
+                new InlineStructure(InlineElementType.InlineText, "foo"),
+                new InlineStructure(InlineElementType.SoftLineBreak, ""),
+                new InlineStructure(InlineElementType.InlineText, "bar"),
+                new InlineStructure(InlineElementType.SoftLineBreak, ""),
+                new InlineStructure(InlineElementType.InlineText, "baz"));
+            inline.AssertEqual(doc.Elements[0].GetChild(0).GetChild(0).GetChild(0).GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_215()
+        {
+            var html = ">     code\r\n\r\n>    not code";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(2, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            var blocks0 = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.IndentedCodeBlock));
+            blocks0.AssertTypeEqual(doc.Elements[0]);
+            var blocks1 = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.Paragraph));
+            blocks1.AssertTypeEqual(doc.Elements[1]);
+
+            Assert.AreEqual("code", doc.Elements[0].GetChild(0).Content);
+            var inline = new InlineStructure(InlineElementType.InlineText, "not code");
+            inline.AssertEqual(doc.Elements[1].GetChild(0).GetInlines());
         }
 
         #endregion
