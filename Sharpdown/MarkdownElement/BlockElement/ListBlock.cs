@@ -285,7 +285,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
                 if (!CanLazyContinue())
                 {
-                    return AddLineResult.Consumed;
+                    return AddLineResult.NeedClose;
                 }
 
                 var newBlock = BlockElementUtil.CreateBlockFromLine(line);
