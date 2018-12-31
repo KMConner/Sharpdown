@@ -76,7 +76,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         {
             if (lazy)
             {
-                throw new InvalidBlockFormatException(BlockElementType.IndentedCodeBlock);
+               // throw new InvalidBlockFormatException(BlockElementType.IndentedCodeBlock);
             }
             int indent = line.GetIndentNum();
             if (indent >= 0 && indent < 4)

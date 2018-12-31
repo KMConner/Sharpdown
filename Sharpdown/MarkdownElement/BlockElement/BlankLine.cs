@@ -41,7 +41,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </returns>
         internal override AddLineResult AddLine(string line, bool lazy)
         {
-            if (!CanStartBlock(line) || lazy)
+            if (!CanStartBlock(line))
             {
                 throw new InvalidBlockFormatException(BlockElementType.BlankLine);
             }

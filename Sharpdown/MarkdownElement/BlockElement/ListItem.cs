@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Collections.Generic;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
@@ -36,6 +37,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         internal bool IsTight { get; private set; }
 
+        internal bool IsLastBlank { get; private set; }
+
         /// <summary>
         /// Initializes a new instance of <see cref="ListItem"/>
         /// </summary>
@@ -60,8 +63,28 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         internal override BlockElement Close()
         {
-            IsTight = Children.LastOrDefault()?.Type != BlockElementType.BlankLine;
+            if (openElement != null)
+            {
+                children[children.Count - 1] = openElement.Close();
+                openElement = null;
+            }
+
+            IsLastBlank = children.LastOrDefault(c => c.Type != BlockElementType.LinkReferenceDefinition)?.Type == BlockElementType.BlankLine
+                || (children.LastOrDefault() as ListBlock)?.IsLastBlank == true;
+            IsTight = ((IEnumerable<BlockElement>)children).Reverse()
+                .SkipWhile(c => c.Type == BlockElementType.BlankLine)
+                .All(c => c.Type != BlockElementType.BlankLine)
+                && children.Where(c => c.Type == BlockElementType.List).Cast<ListBlock>().All(c => !c.IsLastBlank);
             return base.Close();
+        }
+
+        internal override AddLineResult AddLine(string line, bool lazy)
+        {
+            if (children.Count > 1 && children.All(c => c.Type == BlockElementType.BlankLine))
+            {
+                return AddLineResult.NeedClose;
+            }
+            return base.AddLine(line, lazy);
         }
     }
 }

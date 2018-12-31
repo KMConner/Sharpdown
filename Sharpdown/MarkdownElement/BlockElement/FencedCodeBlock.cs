@@ -160,7 +160,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </returns>
         internal override AddLineResult AddLine(string line, bool lazy)
         {
-            if (lazy)
+            if (lazy && line.GetIndentNum() >= 0)
             {
                 throw new InvalidBlockFormatException(BlockElementType.FencedCodeBlock);
             }
