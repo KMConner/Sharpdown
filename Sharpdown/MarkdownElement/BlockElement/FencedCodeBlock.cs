@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Sharpdown.MarkdownElement.InlineElement;
 using System.Text.RegularExpressions;
 
 namespace Sharpdown.MarkdownElement.BlockElement
@@ -177,7 +178,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 indentNum = match.Groups["indent"].Length;
                 if (match.Groups["info"].Success)
                 {
-                    infoString = match.Groups["info"].Value;
+                    infoString = InlineElementUtils.HandleEscape(match.Groups["info"].Value);
                 }
                 initialized = true;
                 return AddLineResult.Consumed;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Sharpdown.MarkdownElement.BlockElement;
+using System.Text;
 
 namespace Sharpdown.MarkdownElement.InlineElement
 {
@@ -152,13 +153,23 @@ namespace Sharpdown.MarkdownElement.InlineElement
             string[] lines = text.Replace("\r\n", "\n").Replace("\r", "\n").Split(new[] { '\n' });
             for (int i = 0; i < lines.Length; i++)
             {
+
+                bool isHardBreak = lines[i].EndsWith("  ")
+                    || (lines[i].EndsWith("\\") && !IsEscaped(lines[i], lines.Length - 1));
                 if (i < lines.Length - 1)
                 {
                     if (lines[i] != string.Empty)
                     {
-                        yield return InlineText.CreateFromText(lines[i].TrimEnd(new[] { ' ' }));
+                        if (isHardBreak && lines[i].EndsWith("\\"))
+                        {
+                            yield return InlineText.CreateFromText(lines[i].Substring(0, lines[i].Length - 1));
+                        }
+                        else
+                        {
+                            yield return InlineText.CreateFromText(lines[i].TrimEnd(new[] { ' ' }));
+                        }
                     }
-                    yield return lines[i].EndsWith("  ")
+                    yield return isHardBreak
                         ? (InlineElementBase)new HardLineBreak()
                         : new SoftLineBreak();
                 }
@@ -506,7 +517,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
             for (int i = 0; i < text.Length; i++)
             {
-                if (text[i] == '*' && text[Math.Max(0, i - 1)] != '\\')
+                if (text[i] == '*' && !IsEscaped(text, i))
                 {
                     int length = CountSameChars(text, i);
                     var delimInfo = new DeliminatorInfo()
@@ -523,7 +534,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     deliminators.AddLast(delimInfo);
                     i += length - 1;
                 }
-                else if (text[i] == '_' && text[Math.Max(0, i - 1)] != '\\')
+                else if (text[i] == '_' && !IsEscaped(text, i))
                 {
                     int length = CountSameChars(text, i);
                     var delimInfo = new DeliminatorInfo()
@@ -545,7 +556,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
                     i += length - 1;
                 }
-                else if (text[i] == '[')
+                else if (text[i] == '[' && !IsEscaped(text, i))
                 {
                     deliminators.AddLast(new DeliminatorInfo()
                     {
@@ -556,7 +567,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         Index = i
                     });
                 }
-                else if (text.Length > i + 1 && text[i] == '!' && text[i + 1] == '[')
+                else if (text.Length > i + 1 && text[i] == '!' && text[i + 1] == '[' && !IsEscaped(text, i))
                 {
                     deliminators.AddLast(new DeliminatorInfo()
                     {
@@ -568,7 +579,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     });
                     i++;
                 }
-                else if (i > 0 && text[i] == ']' && text[i - 1] != '\\')
+                else if (i > 0 && text[i] == ']' && !IsEscaped(text, i))
                 {
                     DeliminatorInfo openInfo = deliminators
                         .LastOrDefault(info => info.Type == DeliminatorInfo.DeliminatorType.OpenImage
@@ -771,6 +782,20 @@ namespace Sharpdown.MarkdownElement.InlineElement
             return null;
         }
 
+        private static int GetNextUnescaped(string str, char ch, int index)
+        {
+            int ret = index;
+            while (true)
+            {
+                ret = str.IndexOf(ch, ret);
+                if (ret <= 0 || !IsEscaped(str, ret))
+                {
+                    return ret;
+                }
+                ret++;
+            }
+        }
+
         /// <summary>
         /// Parses inline elements and returns them.
         /// </summary>
@@ -781,8 +806,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
             Dictionary<string, LinkReferenceDefinition> linkRefernces)
         {
             int currentIndex = 0;
-            int nextBacktick = text.IndexOf('`');
-            int nextLessThan = text.IndexOf('<');
+            int nextBacktick = GetNextUnescaped(text, '`', 0);
+            int nextLessThan = GetNextUnescaped(text, '<', 0);
             while (currentIndex < text.Length)
             {
                 var newIndex = currentIndex;
@@ -818,15 +843,15 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     }
 
                     currentIndex = newIndex;
-                    nextBacktick = text.IndexOf('`', currentIndex);
-                    nextLessThan = text.IndexOf('<', currentIndex);
+                    nextBacktick = GetNextUnescaped(text, '`', currentIndex);
+                    nextLessThan = GetNextUnescaped(text, '<', currentIndex);
                     yield return newInline;
                 }
                 else
                 {
                     nextElemIndex += CountSameChars(text, nextElemIndex);
-                    nextBacktick = text.IndexOf('`', nextElemIndex);
-                    nextLessThan = text.IndexOf('<', nextElemIndex);
+                    nextBacktick = GetNextUnescaped(text, '`', nextElemIndex);
+                    nextLessThan = GetNextUnescaped(text, '<', nextElemIndex);
                 }
             }
 
@@ -840,5 +865,42 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 }
             }
         }
+
+        private static bool IsEscaped(string text, int index)
+        {
+            int count = 0;
+            for (int i = index - 1; i >= 0; i--)
+            {
+                if (text[i] == '\\')
+                {
+                    count++;
+                }
+                else
+                {
+                    return count % 2 != 0;
+                }
+            }
+            return index % 2 != 0;
+        }
+
+        public static string HandleEscape(string text)
+        {
+            var builder = new StringBuilder(text.Length);
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (i < text.Length - 1 && text[i] == '\\' 
+                    && MarkdownElementBase.asciiPunctuationChars.Contains(text[i + 1]))
+                {
+                    builder.Append(text[i + 1]);
+                    i++;
+                }
+                else
+                {
+                    builder.Append(text[i]);
+                }
+            }
+            return builder.ToString();
+        }
+
     }
 }

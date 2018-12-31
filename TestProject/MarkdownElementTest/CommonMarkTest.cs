@@ -4127,6 +4127,10 @@ namespace TestProject.MarkdownElementTest
             inline2.AssertEqual(para0.GetInlines());
         }
 
+        #endregion
+
+        #region List
+
         [TestMethod]
         public void TestCase_264()
         {
@@ -4896,6 +4900,217 @@ namespace TestProject.MarkdownElementTest
             inlineD.AssertEqual(paraD.GetInlines());
             inlineE.AssertEqual(paraE.GetInlines());
             inlineF.AssertEqual(paraF.GetInlines());
+        }
+
+        #endregion
+
+        [TestMethod]
+        public void TestCase_288()
+        {
+            var code = "`hi`lo`";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(
+                new InlineStructure(InlineElementType.CodeSpan, "hi"),
+                new InlineStructure(InlineElementType.InlineText, "lo`"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        #region Backslash Escape
+
+        [TestMethod]
+        public void TestCase_289()
+        {
+            var code = "\\!\\\"\\#\\$\\%\\&\\'\\(\\)\\*\\+\\,\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\[\\\\\\]\\^\\_\\`\\{\\|\\}\\~";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.InlineText, "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_290()
+        {
+            var code = "\\\t\\A\\a\\ \\3\\φ\\«";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.InlineText, "\\\t\\A\\a\\ \\3\\φ\\«");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_291()
+        {
+            var code = "\\*not emphasized*\n\\<br/> not a tag\n\\[not a link](/foo)\n\\`not code`\n1\\." +
+                " not a list\n\\* not a list\n\\# not a heading\n\\[foo]: /url \"not a reference\"";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(
+                new InlineStructure(InlineElementType.InlineText, "*not emphasized*"),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "<br/> not a tag"),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "[not a link](/foo)"),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "`not code`"),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "1. not a list"),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "* not a list"),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "# not a heading"),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "[foo]: /url \"not a reference\""));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_292()
+        {
+            var code = "\\\\*emphasis*";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(
+                new InlineStructure(InlineElementType.InlineText, "\\"),
+                new InlineStructure(InlineElementType.Emphasis,
+                    new InlineStructure(InlineElementType.InlineText, "emphasis")));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_293()
+        {
+            var code = "foo\\\nbar\n";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(
+                new InlineStructure(InlineElementType.InlineText, "foo"),
+                new InlineStructure(InlineElementType.HardLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "bar"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_294()
+        {
+            var code = "`` \\[\\` ``";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.CodeSpan, "\\[\\`");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_295()
+        {
+            var code = "    \\[\\]";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.IndentedCodeBlock, doc.Elements[0].Type);
+            Assert.AreEqual("\\[\\]", doc.Elements[0].Content);
+        }
+
+        [TestMethod]
+        public void TestCase_296()
+        {
+            var code = "~~~\n\\[\\]\n~~~";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.FencedCodeBlock, doc.Elements[0].Type);
+            Assert.AreEqual("\\[\\]", doc.Elements[0].Content);
+        }
+
+        [TestMethod]
+        public void TestCase_297()
+        {
+            var code = "<http://example.com?find=\\*>";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Link,
+                new InlineStructure(InlineElementType.InlineText, "http://example.com?find=\\*"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_298()
+        {
+            var code = "<a href=\"/bar\\/)\">";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
+            Assert.AreEqual("<a href=\"/bar\\/)\">", doc.Elements[0].Content);
+        }
+
+        [TestMethod]
+        public void TestCase_299()
+        {
+            var code = "[foo](/bar\\* \"ti\\*tle\")";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Link,
+                new InlineStructure(InlineElementType.InlineText, "foo"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+            Assert.AreEqual("/bar*", (doc.Elements[0].GetInline(0) as Link).Destination);
+            Assert.AreEqual("ti*tle", (doc.Elements[0].GetInline(0) as Link).Title);
+        }
+
+        [TestMethod]
+        public void TestCase_300()
+        {
+            var code = "[foo]\n\n[foo]: /bar\\* \"ti\\*tle\"";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(1, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Link,
+                new InlineStructure(InlineElementType.InlineText, "foo"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+            Assert.AreEqual("/bar*", (doc.Elements[0].GetInline(0) as Link).Destination);
+            Assert.AreEqual("ti*tle", (doc.Elements[0].GetInline(0) as Link).Title);
+        }
+
+        [TestMethod]
+        public void TestCase_301()
+        {
+            var code = "``` foo\\+bar\nfoo\n```";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.FencedCodeBlock, doc.Elements[0].Type);
+            var block = (FencedCodeBlock)doc.Elements[0];
+            Assert.AreEqual("foo", block.Content);
+            Assert.AreEqual("foo+bar", block.InfoString);
         }
 
         #endregion

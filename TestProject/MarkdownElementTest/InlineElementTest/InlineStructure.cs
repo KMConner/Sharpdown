@@ -26,6 +26,17 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
             Content = type;
         }
 
+        public InlineStructure(params InlineStructure[] structures)
+        {
+            Content = (InlineElementType)(-1);
+            Children = structures;
+        }
+
+        public InlineStructure(InlineElementType type)
+        {
+            Content = type;
+        }
+
         public void AssertEqual(InlineElementBase element)
         {
             Assert.AreEqual(Content, element.Type);
