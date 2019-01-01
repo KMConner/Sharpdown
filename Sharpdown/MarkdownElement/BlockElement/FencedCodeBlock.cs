@@ -178,7 +178,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 indentNum = match.Groups["indent"].Length;
                 if (match.Groups["info"].Success)
                 {
-                    infoString = InlineElementUtils.HandleEscape(match.Groups["info"].Value);
+                    infoString = InlineText.HandleEscapeAndHtmlEntity(match.Groups["info"].Value);
                 }
                 initialized = true;
                 return AddLineResult.Consumed;

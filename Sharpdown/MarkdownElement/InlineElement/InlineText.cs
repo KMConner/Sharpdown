@@ -2172,6 +2172,17 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 throw new ArgumentException("Text must not contain a new line character.");
             }
 
+            string escaped = HandleEscapeAndHtmlEntity(text, backslashEscapeEnabled);
+
+            return new InlineText()
+            {
+                Content = escaped,
+            };
+        }
+
+        // TODO: Move to other class (e.g. Utils)
+        internal static string HandleEscapeAndHtmlEntity(string text, bool backslashEscapeEnabled = true)
+        {
             StringBuilder builder = new StringBuilder(text.Length);
             for (int i = 0; i < text.Length; i++)
             {
@@ -2221,11 +2232,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
                 builder.Append(text[i]);
             }
-
-            return new InlineText()
-            {
-                Content = builder.ToString()
-            };
+            return builder.ToString();
         }
 
         /// <summary>

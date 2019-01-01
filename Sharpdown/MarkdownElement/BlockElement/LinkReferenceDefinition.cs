@@ -1,6 +1,8 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
+using System.Text;
+using System.Web;
+using Sharpdown.MarkdownElement.InlineElement;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
@@ -39,11 +41,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <param name="destination"></param>
         /// <param name="title"></param>
         /// <param name="elem"></param>
-        internal LinkReferenceDefinition(string label, string destination, string title, UnknownElement elem) : base()
+        internal LinkReferenceDefinition(string label, string destination, string title, UnknownElement elem)
         {
             Label = label?.Trim(whiteSpaceShars) ?? throw new ArgumentNullException(nameof(title));
-            Destination = ProcessBackslashEscape(destination ?? throw new ArgumentNullException(nameof(destination)));
-            Title = ProcessBackslashEscape(title ?? string.Empty);
+            Destination = HttpUtility.UrlPathEncode(InlineText.HandleEscapeAndHtmlEntity(
+                destination ?? throw new ArgumentNullException(nameof(destination))));
+            Title = InlineText.HandleEscapeAndHtmlEntity(title ?? string.Empty);
             warnings.AddRange(elem?.Warnings ?? new List<string>());
         }
 

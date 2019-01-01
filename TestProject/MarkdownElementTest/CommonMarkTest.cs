@@ -2280,18 +2280,18 @@ namespace TestProject.MarkdownElementTest
             var html = "[ΑΓΩ]: /φου\r\n\r\n[αγω]";
             var doc = MarkdownParser.Parse(html);
             var label = "αγω";
-            var dest = "/φου";
+            var dest = "/%CF%86%CE%BF%CF%85";
             var title = "";
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(1, doc.LinkDefinition.Count);
             Assert.AreEqual(label, doc.LinkDefinition[label].Label, true);
-            Assert.AreEqual(dest, doc.LinkDefinition[label].Destination);
+            Assert.AreEqual(dest, doc.LinkDefinition[label].Destination, true);
             Assert.AreEqual(title, doc.LinkDefinition[label].Title);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
             var inline = new InlineStructure(InlineElementType.Link,
                 new InlineStructure(InlineElementType.InlineText, label));
             inline.AssertEqual(doc.Elements[0].GetInlines());
-            Assert.AreEqual(dest, (doc.Elements[0].GetInline(0) as Link).Destination);
+            Assert.AreEqual(dest, (doc.Elements[0].GetInline(0) as Link).Destination, true);
             Assert.AreEqual(title, (doc.Elements[0].GetInline(0) as Link).Title);
         }
 
@@ -5111,6 +5111,176 @@ namespace TestProject.MarkdownElementTest
             var block = (FencedCodeBlock)doc.Elements[0];
             Assert.AreEqual("foo", block.Content);
             Assert.AreEqual("foo+bar", block.InfoString);
+        }
+
+        #endregion
+
+        #region Entity and numeric character references 
+
+        [TestMethod]
+        public void TestCase_302()
+        {
+            var code = "&nbsp; &amp; &copy; &AElig; &Dcaron;\n&frac34; &HilbertSpace;" +
+                " &DifferentialD;\n&ClockwiseContourIntegral; &ngE;";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(
+                new InlineStructure(InlineElementType.InlineText, "\x00A0 & © Æ Ď"),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "¾ \x210B \x2146"),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "∲ ≧̸"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_303()
+        {
+            var code = "&#35; &#1234; &#992; &#98765432; &#0;";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.InlineText, "# Ӓ Ϡ \xFFFD \xFFFD");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_304()
+        {
+            var code = "&#X22; &#XD06; &#xcab;";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.InlineText, "\" ആ ಫ");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_305()
+        {
+            var code = "&nbsp &x; &#; &#x;\n&ThisIsNotDefined; &hi?;";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(
+                new InlineStructure(InlineElementType.InlineText, "&nbsp &x; &#; &#x;"),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "&ThisIsNotDefined; &hi?;"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_306()
+        {
+            var code = "&copy";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.InlineText, "&copy");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_307()
+        {
+            var code = "&MadeUpEntity;";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.InlineText, "&MadeUpEntity;");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_308()
+        {
+            var code = "<a href=\"&ouml;&ouml;.html\">";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
+            Assert.AreEqual("<a href=\"&ouml;&ouml;.html\">", doc.Elements[0].Content);
+        }
+
+        [TestMethod]
+        public void TestCase_309()
+        {
+            var code = "[foo](/f&ouml;&ouml; \"f&ouml;&ouml;\")";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Link,
+                new InlineStructure(InlineElementType.InlineText, "foo"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+            Assert.AreEqual("föö", (doc.Elements[0].GetInline(0) as Link).Title);
+            Assert.AreEqual("/f%C3%B6%C3%B6", (doc.Elements[0].GetInline(0) as Link).Destination, true);
+        }
+
+        [TestMethod]
+        public void TestCase_310()
+        {
+            var code = "[foo]\n\n[foo]: /f&ouml;&ouml; \"f&ouml;&ouml;\"";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(1, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Link,
+                new InlineStructure(InlineElementType.InlineText, "foo"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+            Assert.AreEqual("föö", (doc.Elements[0].GetInline(0) as Link).Title);
+            Assert.AreEqual("/f%C3%B6%C3%B6", (doc.Elements[0].GetInline(0) as Link).Destination, true);
+        }
+
+        [TestMethod]
+        public void TestCase_311()
+        {
+            var code = "``` f&ouml;&ouml;\nfoo\n```";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.FencedCodeBlock, doc.Elements[0].Type);
+            Assert.AreEqual("foo", doc.Elements[0].Content);
+            Assert.AreEqual("föö", (doc.Elements[0] as FencedCodeBlock).InfoString);
+        }
+
+        [TestMethod]
+        public void TestCase_312()
+        {
+            var code = "`f&ouml;&ouml;`";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.CodeSpan, "f&ouml;&ouml;");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_313()
+        {
+            var code = "    f&ouml;f&ouml;";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.IndentedCodeBlock, doc.Elements[0].Type);
+            Assert.AreEqual("f&ouml;f&ouml;", doc.Elements[0].Content);
         }
 
         #endregion

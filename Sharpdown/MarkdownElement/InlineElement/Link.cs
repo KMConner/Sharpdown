@@ -2,6 +2,7 @@
 using System.Text;
 using System.Linq;
 using System;
+using System.Web;
 
 namespace Sharpdown.MarkdownElement.InlineElement
 {
@@ -15,8 +16,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
         public Link(InlineElementBase[] linkText, string destination, string title)
         {
             Children = linkText;
-            Destination = InlineElementUtils.HandleEscape(destination);
-            Title = InlineElementUtils.HandleEscape(RemoveQuotes(title ?? string.Empty));
+            Destination = HttpUtility.UrlPathEncode(InlineText.HandleEscapeAndHtmlEntity(destination));
+            Title = InlineText.HandleEscapeAndHtmlEntity(RemoveQuotes(title ?? string.Empty));
         }
 
         private string RemoveQuotes(string text)
