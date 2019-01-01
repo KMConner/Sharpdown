@@ -68,7 +68,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             var nextChar = info.Index + info.DeliminatorLength >= text.Length
                 ? ' '
                 : text[info.Index + info.DeliminatorLength];
-            if (nextChar == ' ')
+            if (char.IsWhiteSpace(nextChar))
             {
                 return false;
             }
@@ -96,7 +96,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             var nextChar = info.Index + info.DeliminatorLength >= text.Length
                 ? ' '
                 : text[info.Index + info.DeliminatorLength];
-            if (prevChar == ' ')
+            if (char.IsWhiteSpace(prevChar))
             {
                 return false;
             }
@@ -281,11 +281,16 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 Image,
                 Emphasis,
                 StrongEmplasis,
+                CodeSpan,
+                AutoLink,
+                InlineHtml,
                 Root,
             };
 
             public SortedList<int, DelimSpan> Children { get; private set; }
             public DelimSpan Parent { get; set; }
+
+            public InlineElementBase DelimElem { get; set; }
 
             public DelimSpan()
             {
@@ -359,7 +364,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 case DelimSpan.DelimType.Root:
                     return newChildren.ToArray();
                 default:
-                    throw new Exception();
+                    return new InlineElementBase[] { delim.DelimElem };
             }
         }
 
@@ -510,14 +515,19 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <param name="text">The string object to @arse.</param>
         /// <param name="linkReferences">Link reference definitions.</param>
         /// <returns>The parse result.</returns>
-        private static IEnumerable<InlineElementBase> ParseLinkEmphasis(string text, Dictionary<string, LinkReferenceDefinition> linkReferences)
+        private static IEnumerable<InlineElementBase> ParseLinkEmphasis(string text, Dictionary<string, LinkReferenceDefinition> linkReferences, List<DelimSpan> higherDelims)
         {
+            bool IsDelim(int index)
+            {
+                return !higherDelims.Any(d => d.Begin <= index && d.End > index);
+            }
+
             var deliminators = new LinkedList<DeliminatorInfo>();
             var delimSpans = new SortedList<int, DelimSpan>();
 
             for (int i = 0; i < text.Length; i++)
             {
-                if (text[i] == '*' && !IsEscaped(text, i))
+                if (text[i] == '*' && !IsEscaped(text, i) && IsDelim(i))
                 {
                     int length = CountSameChars(text, i);
                     var delimInfo = new DeliminatorInfo()
@@ -534,7 +544,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     deliminators.AddLast(delimInfo);
                     i += length - 1;
                 }
-                else if (text[i] == '_' && !IsEscaped(text, i))
+                else if (text[i] == '_' && !IsEscaped(text, i) && IsDelim(i))
                 {
                     int length = CountSameChars(text, i);
                     var delimInfo = new DeliminatorInfo()
@@ -556,7 +566,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
                     i += length - 1;
                 }
-                else if (text[i] == '[' && !IsEscaped(text, i))
+                else if (text[i] == '[' && !IsEscaped(text, i) && IsDelim(i))
                 {
                     deliminators.AddLast(new DeliminatorInfo()
                     {
@@ -567,7 +577,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         Index = i
                     });
                 }
-                else if (text.Length > i + 1 && text[i] == '!' && text[i + 1] == '[' && !IsEscaped(text, i))
+                else if (text.Length > i + 1 && text[i] == '!' && text[i + 1] == '[' && !IsEscaped(text, i) && IsDelim(i))
                 {
                     deliminators.AddLast(new DeliminatorInfo()
                     {
@@ -579,7 +589,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     });
                     i++;
                 }
-                else if (i > 0 && text[i] == ']' && !IsEscaped(text, i))
+                else if (i > 0 && text[i] == ']' && !IsEscaped(text, i) && IsDelim(i))
                 {
                     DeliminatorInfo openInfo = deliminators
                         .LastOrDefault(info => info.Type == DeliminatorInfo.DeliminatorType.OpenImage
@@ -703,6 +713,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
             ParseEmphasis(deliminators, delimSpans, null);
 
+            foreach (var item in higherDelims)
+            {
+                delimSpans.Add(item.Begin, item);
+            }
+
             var tree = GetInlineTree(delimSpans, text.Length);
 
             return ToInlines(text, tree);
@@ -805,6 +820,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         public static IEnumerable<InlineElementBase> ParseInlineElements(string text,
             Dictionary<string, LinkReferenceDefinition> linkRefernces)
         {
+            var highPriorityDelims = new List<DelimSpan>();
             int currentIndex = 0;
             int nextBacktick = GetNextUnescaped(text, '`', 0);
             int nextLessThan = GetNextUnescaped(text, '<', 0);
@@ -835,17 +851,25 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
                 if (newInline != null)
                 {
-                    foreach (var element in
-                        ParseLinkEmphasis(text.Substring(currentIndex, nextElemIndex - currentIndex),
-                            linkRefernces))
+                    var span = new DelimSpan()
                     {
-                        yield return element;
-                    }
+                        Begin = nextElemIndex,
+                        End = newIndex,
+                        DeliminatorType = ToDelimType(newInline.Type),
+                        DelimElem = newInline,
+                    };
+                    highPriorityDelims.Add(span);
+                    //foreach (var element in
+                    //    ParseLinkEmphasis(text.Substring(currentIndex, nextElemIndex - currentIndex),
+                    //        linkRefernces))
+                    //{
+                    //    yield return element;
+                    //}
 
                     currentIndex = newIndex;
                     nextBacktick = GetNextUnescaped(text, '`', currentIndex);
                     nextLessThan = GetNextUnescaped(text, '<', currentIndex);
-                    yield return newInline;
+                    //yield return newInline;
                 }
                 else
                 {
@@ -855,17 +879,34 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 }
             }
 
-            if (currentIndex < text.Length)
-            {
-                foreach (var element in
-                    ParseLinkEmphasis(text.Substring(currentIndex, text.Length - currentIndex),
-                        linkRefernces))
-                {
-                    yield return element;
-                }
-            }
+            return ParseLinkEmphasis(text, linkRefernces, highPriorityDelims);
+
+            //if (currentIndex < text.Length)
+            //{
+            //    foreach (var element in
+            //        ParseLinkEmphasis(text.Substring(currentIndex, text.Length - currentIndex),
+            //            linkRefernces))
+            //    {
+            //        yield return element;
+            //    }
+            //}
         }
 
+
+        private static DelimSpan.DelimType ToDelimType(InlineElementType elemType)
+        {
+            switch (elemType)
+            {
+                case InlineElementType.CodeSpan:
+                    return DelimSpan.DelimType.CodeSpan;
+                case InlineElementType.Link:
+                    return DelimSpan.DelimType.AutoLink;
+                case InlineElementType.InlineHtml:
+                    return DelimSpan.DelimType.InlineHtml;
+                default:
+                    throw new ArgumentException();
+            }
+        }
         private static bool IsEscaped(string text, int index)
         {
             int count = 0;
@@ -888,7 +929,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             var builder = new StringBuilder(text.Length);
             for (int i = 0; i < text.Length; i++)
             {
-                if (i < text.Length - 1 && text[i] == '\\' 
+                if (i < text.Length - 1 && text[i] == '\\'
                     && MarkdownElementBase.asciiPunctuationChars.Contains(text[i + 1]))
                 {
                     builder.Append(text[i + 1]);
