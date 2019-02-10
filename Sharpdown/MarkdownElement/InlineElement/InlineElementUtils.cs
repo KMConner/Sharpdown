@@ -380,7 +380,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 case DelimSpan.DelimType.Link:
                     return new InlineElementBase[] { new Link(newChildren.ToArray(), delim.Destination, delim.Title) };
                 case DelimSpan.DelimType.Image:
-                    return new InlineElementBase[] { new Image(newChildren.ToArray()) };
+                    return new InlineElementBase[] { new Image(newChildren.ToArray(), delim.Destination, delim.Title) };
                 case DelimSpan.DelimType.Emphasis:
                     return new InlineElementBase[] { new Emphasis(newChildren.ToArray(), false) };
                 case DelimSpan.DelimType.StrongEmplasis:
