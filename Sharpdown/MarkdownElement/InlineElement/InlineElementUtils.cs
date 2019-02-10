@@ -97,12 +97,12 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 return false;
             }
 
-            if (!InlineElementBase.asciiPunctuationChars.Contains(nextChar))
+            if (!MarkdownElementBase.asciiPunctuationChars.Contains(nextChar))
             {
                 return true;
             }
 
-            return char.IsWhiteSpace(prevChar) || InlineElementBase.asciiPunctuationChars.Contains(prevChar);
+            return char.IsWhiteSpace(prevChar) || MarkdownElementBase.asciiPunctuationChars.Contains(prevChar);
         }
 
         /// <summary>
@@ -125,12 +125,12 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 return false;
             }
 
-            if (!InlineElementBase.asciiPunctuationChars.Contains(prevChar))
+            if (!MarkdownElementBase.asciiPunctuationChars.Contains(prevChar))
             {
                 return true;
             }
 
-            return char.IsWhiteSpace(nextChar) || InlineElementBase.asciiPunctuationChars.Contains(nextChar);
+            return char.IsWhiteSpace(nextChar) || MarkdownElementBase.asciiPunctuationChars.Contains(nextChar);
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 return false;
             }
 
-            return InlineElementBase.asciiPunctuationChars
+            return MarkdownElementBase.asciiPunctuationChars
                 .Contains(text[info.Index + info.DeliminatorLength]);
         }
 
@@ -164,7 +164,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// </returns>
         private static bool IsPrecededByPunctuation(string text, DeliminatorInfo info)
         {
-            return info.Index != 0 && InlineElementBase.asciiPunctuationChars.Contains(text[info.Index - 1]);
+            return info.Index != 0 && MarkdownElementBase.asciiPunctuationChars.Contains(text[info.Index - 1]);
         }
 
         /// <summary>
@@ -650,12 +650,14 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     }
                     else
                     {
-                        Match inlineLinkMatch = InlineLinkRegex.Match(text, i);
+                        int linkLabel = GetStartIndexOfLinkLabel(text, 0, i + 1, higherDelims);
+                        int linkBody = GetLinkBodyEndIndex(text, i + 1, out var dest, out var title);
+
                         Match linkLabelMatch = LinkLabelRegex.Match(text, Math.Min(text.Length - 1, i + 1));
                         // Inline Link/Image
                         if (text[Math.Min(i + 1, text.Length - 1)] == '('
-                            && AreBlacketsBlanced(text.Substring(openInfo.Index, i - openInfo.Index + 1))
-                            && inlineLinkMatch.Success)
+                        && AreBlacketsBlanced(text.Substring(openInfo.Index, i - openInfo.Index + 1))
+                        && linkLabel >= 0 && linkBody >= 0)
                         {
                             if (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink)
                             {
@@ -671,19 +673,19 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             delimSpans.Add(openInfo.Index, new DelimSpan()
                             {
                                 Begin = openInfo.Index,
-                                End = inlineLinkMatch.Index + inlineLinkMatch.Length,
+                                End = linkBody,
                                 DeliminatorType = openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink
                                     ? DelimSpan.DelimType.Link
                                     : DelimSpan.DelimType.Image,
                                 ParseBegin = openInfo.Index
                                              + (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink ? 1 : 2),
                                 ParseEnd = i,
-                                Title = inlineLinkMatch.Groups["title"].Value,
-                                Destination = inlineLinkMatch.Groups["destination"].Value,
+                                Title = title,
+                                Destination = dest ?? string.Empty,
                             });
                             ParseEmphasis(deliminators, delimSpans, openInfo);
                             deliminators.Remove(openInfo);
-                            i = inlineLinkMatch.Index + inlineLinkMatch.Length - 1;
+                            i = linkBody - 1;
                         }
                         // Collapsed Reference Link
                         else if (i < text.Length - 1
@@ -711,8 +713,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         }
                         // Full Reference Link
                         else if (text[Math.Min(i + 1, text.Length - 1)] == '[' && linkLabelMatch.Success
-                                                                               && linkReferences.TryGetValue(linkLabelMatch
-                                                                                   .Groups["label"].Value, out definition))
+                        && linkReferences.TryGetValue(linkLabelMatch
+                        .Groups["label"].Value, out definition))
                         {
                             delimSpans.Add(openInfo.Index, new DelimSpan()
                             {
@@ -1051,6 +1053,203 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 }
             }
             return builder.ToString();
+        }
+
+        /// <summary>
+        /// Gets the start index of link label.
+        /// </summary>
+        /// <param name="wholeText">Whole text.</param>
+        /// <param name="begin">Begin of the seatch area.</param>
+        /// <param name="end">End of the link label.</param>
+        /// <param name="higherDelims">Higher delims.</param>
+        /// <returns>The start index of link label.</returns>
+        private static int GetStartIndexOfLinkLabel(string wholeText, int begin, int end, List<DelimSpan> higherDelims)
+        {
+            bool IsDelim(int index)
+            {
+                return !higherDelims.Any(d => d.Begin <= index && d.End > index);
+            }
+
+            if (wholeText[end - 1] != ']')
+            {
+                return -1;
+            }
+
+            int depth = 0;
+
+            for (int i = end - 1; i >= begin; i--)
+            {
+                char ch = wholeText[i];
+                char chPrev = wholeText[Math.Max(0, i - 1)];
+                if (chPrev == '\\')
+                {
+                    continue;
+                }
+                if (ch != '[' && ch != ']')
+                {
+                    continue;
+                }
+                if (!IsDelim(i))
+                {
+                    continue;
+                }
+                if (ch == '[')
+                {
+                    depth--;
+                    if (depth == 0)
+                    {
+                        if (chPrev == '!')
+                        {
+                            return i - 1;
+                        }
+                        return i;
+                    }
+                }
+                else if (ch == ']')
+                {
+                    depth++;
+                }
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Gets the index of the of the index of the end of the link body.
+        /// </summary>
+        /// <param name="wholeText">Whole text.</param>
+        /// <param name="begin">The being index of the body.</param>
+        /// <param name="destination">Destination is set unless return value is -1.</param>
+        /// <param name="title">Title is set unless return value is -1.</param>
+        /// <returns>The index at the end of the link body.</returns>
+        private static int GetLinkBodyEndIndex(string wholeText, int begin, out string destination, out string title)
+        {
+            destination = string.Empty;
+            title = null;
+
+            if (wholeText.Length <= begin || wholeText[begin] != '(')
+            {
+                return -1;
+            }
+
+            int current = begin + 1;
+
+            // Search begging of the destination.
+            for (; current < wholeText.Length; current++)
+            {
+                if (!MarkdownElementBase.whiteSpaceShars.Contains(wholeText[current]))
+                {
+                    break;
+                }
+            }
+            int destinationStart = current;
+
+            if (wholeText[destinationStart] == ')')
+            {
+                return begin + 2;
+            }
+            // Extract destination
+            if (wholeText[destinationStart] == '<')
+            {
+                current++;
+                for (; current < wholeText.Length; current++)
+                {
+                    char ch = wholeText[current];
+                    if (MarkdownElementBase.whiteSpaceShars.Contains(ch))
+                    {
+                        return -1;
+                    }
+                    if (ch == '<' && !IsEscaped(wholeText, current))
+                    {
+                        return -1;
+                    }
+                    if (ch == '>' && !IsEscaped(wholeText, current))
+                    {
+                        destination = wholeText.Substring(destinationStart + 1, current - destinationStart - 1);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                int pharenDepth = 0;
+                for (; current < wholeText.Length; current++)
+                {
+                    char ch = wholeText[current];
+                    if (MarkdownElementBase.whiteSpaceShars.Contains(ch) || char.IsControl(ch))
+                    {
+                        if (pharenDepth != 0)
+                        {
+                            return -1;
+                        }
+                        destination = wholeText.Substring(destinationStart, current - destinationStart);
+                        break;
+                    }
+                    if (ch == '(' && !IsEscaped(wholeText, current))
+                    {
+                        pharenDepth++;
+                    }
+                    if (ch == ')' && !IsEscaped(wholeText, current))
+                    {
+                        pharenDepth--;
+                        if (pharenDepth < 0)
+                        {
+                            current--;
+                            destination = wholeText.Substring(destinationStart, current - destinationStart + 1);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            current++;
+
+            // Search begging of the title
+            for (; current < wholeText.Length; current++)
+            {
+                if (!MarkdownElementBase.whiteSpaceShars.Contains(wholeText[current]))
+                {
+                    break;
+                }
+            }
+
+            // Without title
+            if (wholeText[current] == ')')
+            {
+                return current + 1;
+            }
+
+            int titleBegin = current + 1;
+
+            switch (wholeText[current])
+            {
+                case '"':
+                    current = GetNextUnescaped(wholeText, '"', current + 1);
+                    break;
+                case '\'':
+                    current = GetNextUnescaped(wholeText, '\'', current + 1);
+                    break;
+                case '(':
+                    current = GetNextUnescaped(wholeText, ')', current + 1);
+                    break;
+                default:
+                    return -1;
+            }
+
+            title = wholeText.Substring(titleBegin, current - titleBegin);
+            current++;
+
+            for (; current < wholeText.Length; current++)
+            {
+                if (!MarkdownElementBase.whiteSpaceShars.Contains(wholeText[current]))
+                {
+                    break;
+                }
+            }
+            if (wholeText[current] != ')')
+            {
+                return -1;
+            }
+            return current + 1;
         }
     }
 }
