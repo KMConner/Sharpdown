@@ -16,7 +16,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         public Link(InlineElementBase[] linkText, string destination, string title)
         {
             Children = linkText;
-            Destination = HttpUtility.UrlPathEncode(InlineText.HandleEscapeAndHtmlEntity(destination));
+            Destination = InlineElementUtils.UrlEncode(InlineText.HandleEscapeAndHtmlEntity(RemoveAngleBrackets(destination)));
             Title = InlineText.HandleEscapeAndHtmlEntity(RemoveQuotes(title ?? string.Empty));
         }
 
@@ -32,6 +32,19 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 return text.Substring(1, text.Length - 2);
             }
 
+            if (text.StartsWith("(") && text.EndsWith(")"))
+            {
+                return text.Substring(1, text.Length - 2);
+            }
+            return text;
+        }
+
+        private string RemoveAngleBrackets(string text)
+        {
+            if (text.StartsWith("<") && text.EndsWith(">"))
+            {
+                return text.Substring(1, text.Length - 2);
+            }
             return text;
         }
     }

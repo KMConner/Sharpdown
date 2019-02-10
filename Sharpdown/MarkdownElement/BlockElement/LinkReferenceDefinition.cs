@@ -44,7 +44,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         internal LinkReferenceDefinition(string label, string destination, string title, UnknownElement elem)
         {
             Label = label?.Trim(whiteSpaceShars) ?? throw new ArgumentNullException(nameof(title));
-            Destination = HttpUtility.UrlPathEncode(InlineText.HandleEscapeAndHtmlEntity(
+            Destination = InlineElementUtils.UrlEncode(InlineText.HandleEscapeAndHtmlEntity(
                 destination ?? throw new ArgumentNullException(nameof(destination))));
             Title = InlineText.HandleEscapeAndHtmlEntity(title ?? string.Empty);
             warnings.AddRange(elem?.Warnings ?? new List<string>());

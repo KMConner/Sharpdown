@@ -12,20 +12,22 @@ namespace Sharpdown.MarkdownElement.InlineElement
     /// </summary>
     public static class InlineElementUtils
     {
+        // TODO: Check [] balanced
         /// <summary>
         /// Regular expression which matches InlineLink.
         /// </summary>
         private static readonly Regex InlineLinkRegex = new Regex(
-            @"!??\[(?<label>(?:[^\]]|\\\]){1,999})\]\([ \t]*(?:\r|\r\n|\n)??[ \t]*"
+            @"\]\((?:[ \t]*(?:\r|\r\n|\n)??[ \t]*"
             + @"(?<destination>\<(?:[^ \t\r\n\<\>]|\\\<|\\\>)+\>|[^ \t\r\n]+)([ \t]*(?: |\t|\r|\r\n|\n)[ \t]*"
-            + @"(?<title>\""(?:[^\""]|\\\"")*\""|\'(?:[^\']|\\\')*\'|\((?:[^\)]|\\\))*\)))??[ \t]*\)",
+            + @"(?<title>\""(?:[^\""]|\\\"")*\""|\'(?:[^\']|\\\')*\'|\((?:[^\)]|\\\))*\)))??[ \t]*)??\)",
             RegexOptions.Compiled);
 
+        // TODO: Check [] balanced
         /// <summary>
         /// Regular expression which matches link labels.
         /// </summary>
         private static readonly Regex LinkLabelRegex = new Regex(
-            @"\[(?<label>(?:[^\]]|\\\]){1,999})\]", RegexOptions.Compiled);
+            @"\[(?<label>.{1,999})\]", RegexOptions.Compiled);
 
         /// <summary>
         /// Regular expression which matches urls in auto links.
@@ -52,6 +54,28 @@ namespace Sharpdown.MarkdownElement.InlineElement
             + @"|<!\[CDATA\[(?s:.*?)\]\]>"
             + @"|<!--(?!>)(?!-\>)(?s:.(.(?<!--))*)(?<!-)-->",
             RegexOptions.Compiled);
+
+        private static readonly char[] unreservedChars =
+        {
+            'A', 'B', 'C', 'D', 'E',
+            'F', 'G', 'H', 'I', 'J',
+            'K', 'L', 'M', 'N', 'O',
+            'P', 'Q', 'R', 'S', 'T',
+            'U', 'V', 'W', 'X', 'Y',
+            'Z',
+            'a', 'b', 'c', 'd', 'e',
+            'f', 'g', 'h', 'i', 'j',
+            'k', 'l', 'm', 'n', 'o',
+            'p', 'q', 'r', 's', 't',
+            'u', 'v', 'w', 'x', 'y',
+            'z',
+            '0', '1', '2', '3', '4',
+            '5', '6', '7', '8', '9',
+            ';', '/' ,'?', ':', '@',
+            '&', '=', '+', '$', ',',
+            '-', '_', '.', '!', '~',
+            '*', '\'', '(', ')', '#',
+        };
 
         /// <summary>
         /// Returns whether the specified deliminator is left flanking.
@@ -509,6 +533,27 @@ namespace Sharpdown.MarkdownElement.InlineElement
             }
         }
 
+        private static bool AreBlacketsBlanced(string text)
+        {
+            int depth = 0;
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (text[i] == '[' && !IsEscaped(text, i))
+                {
+                    depth++;
+                }
+                if (text[i] == ']' && !IsEscaped(text, i))
+                {
+                    depth--;
+                }
+                if (depth < 0)
+                {
+                    return false;
+                }
+            }
+            return depth == 0;
+        }
+
         /// <summary>
         /// Parses inline elements to Links, Images Emphasis and Line breaks.
         /// </summary>
@@ -605,11 +650,12 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     }
                     else
                     {
-                        Match inlineLinkMatch = InlineLinkRegex.Match(text, openInfo.Index);
+                        Match inlineLinkMatch = InlineLinkRegex.Match(text, i);
                         Match linkLabelMatch = LinkLabelRegex.Match(text, Math.Min(text.Length - 1, i + 1));
                         // Inline Link/Image
-                        if (text[Math.Min(i + 1, text.Length - 1)] == '(' && inlineLinkMatch.Index == openInfo.Index &&
-                            inlineLinkMatch.Success)
+                        if (text[Math.Min(i + 1, text.Length - 1)] == '('
+                            && AreBlacketsBlanced(text.Substring(openInfo.Index, i - openInfo.Index + 1))
+                            && inlineLinkMatch.Success)
                         {
                             if (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink)
                             {
@@ -625,7 +671,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             delimSpans.Add(openInfo.Index, new DelimSpan()
                             {
                                 Begin = openInfo.Index,
-                                End = openInfo.Index + inlineLinkMatch.Length,
+                                End = inlineLinkMatch.Index + inlineLinkMatch.Length,
                                 DeliminatorType = openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink
                                     ? DelimSpan.DelimType.Link
                                     : DelimSpan.DelimType.Image,
@@ -637,7 +683,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             });
                             ParseEmphasis(deliminators, delimSpans, openInfo);
                             deliminators.Remove(openInfo);
-                            i = openInfo.Index + inlineLinkMatch.Length - 1;
+                            i = inlineLinkMatch.Index + inlineLinkMatch.Length - 1;
                         }
                         // Collapsed Reference Link
                         else if (i < text.Length - 1
@@ -892,7 +938,6 @@ namespace Sharpdown.MarkdownElement.InlineElement
             //}
         }
 
-
         private static DelimSpan.DelimType ToDelimType(InlineElementType elemType)
         {
             switch (elemType)
@@ -907,6 +952,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     throw new ArgumentException();
             }
         }
+
         private static bool IsEscaped(string text, int index)
         {
             int count = 0;
@@ -943,5 +989,68 @@ namespace Sharpdown.MarkdownElement.InlineElement
             return builder.ToString();
         }
 
+        private static bool IsPercentEncoded(string text, int index)
+        {
+            bool IsHexChar(char ch)
+            {
+                if (ch >= 0x30 && ch <= 0x39)
+                {
+                    return true;
+                }
+                if (ch >= 0x41 && ch <= 0x5A)
+                {
+                    return true;
+                }
+                if (ch >= 0x61 && ch <= 0x7A)
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            if (index >= text.Length - 2)
+            {
+                return false;
+            }
+            return text[index] == '%'
+                && IsHexChar(text[index + 1])
+                && IsHexChar(text[index + 2]);
+        }
+
+        /// <summary>
+        /// Do percent encode to the specific string.
+        /// </summary>
+        /// <returns>The text to encode.</returns>
+        /// <param name="text">The encoded text.</param>
+        /// <remarks>
+        /// Ascii alphabets, degits and some other ascii characters (see <see cref="unreservedChars"/>)
+        /// will not be encoded which is different from the specification of url.
+        /// % characters will be escaped only when it is not the beginning of percent encoded letters.
+        /// </remarks>
+        public static string UrlEncode(string text)
+        {
+            var builder = new StringBuilder(text.Length);
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (unreservedChars.Contains(text[i]))
+                {
+                    builder.Append(text[i]);
+                }
+                else if (text[i] == '%' && IsPercentEncoded(text, i))
+                {
+                    builder.Append(text[i]);
+                }
+                else
+                {
+                    var bytes = Encoding.UTF8.GetBytes(new[] { text[i] });
+                    foreach (var b in bytes)
+                    {
+                        builder.Append("%");
+                        builder.Append(b.ToString("X2"));
+                    }
+                }
+            }
+            return builder.ToString();
+        }
     }
 }
