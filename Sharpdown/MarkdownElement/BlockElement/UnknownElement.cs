@@ -277,7 +277,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
                         {
                             throw new InvalidBlockFormatException(BlockElementType.LinkReferenceDefinition);
                         }
-                        return new LinkReferenceDefinition(match.Groups["label"].Value, ExtractDestination(match.Groups["destination"].Value), ExtractTitle(match.Groups["title"].Value), this);
+                        return new LinkReferenceDefinition(match.Groups["label"].Value,
+                            ExtractDestination(match.Groups["destination"].Value),
+                            match.Groups["title"].Success ? ExtractTitle(match.Groups["title"].Value) : null, this);
                     }
 
                 case BlockElementType.Paragraph:
@@ -293,7 +295,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                                 Match match = linkDefinitionRegex.Match(joined);
                                 if (AreParenthesesBalanced(match.Groups["destination"].Value))
                                 {
-                                    return new LinkReferenceDefinition(match.Groups["label"].Value, ExtractDestination(match.Groups["destination"].Value), ExtractTitle(match.Groups["title"].Value), this);
+                                    return new LinkReferenceDefinition(match.Groups["label"].Value, ExtractDestination(match.Groups["destination"].Value), match.Groups["title"].Success ? ExtractTitle(match.Groups["title"].Value) : null, this);
                                 }
                             }
                         }

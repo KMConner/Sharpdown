@@ -700,7 +700,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(BlockElementType.LinkReferenceDefinition, closed.Type);
             Assert.AreEqual("foo", ((LinkReferenceDefinition)closed).Label);
             Assert.AreEqual("bar", ((LinkReferenceDefinition)closed).Destination);
-            Assert.AreEqual(string.Empty, ((LinkReferenceDefinition)closed).Title);
+            Assert.AreEqual(null, ((LinkReferenceDefinition)closed).Title);
         }
 
         #endregion

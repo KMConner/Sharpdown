@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -2176,7 +2176,7 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse(html);
             var label = "foo";
             var dest = "/url";
-            var title = "";
+            string title = null;
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(1, doc.LinkDefinition.Count);
             Assert.AreEqual(label, doc.LinkDefinition[label].Label);
@@ -2218,7 +2218,7 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse(html);
             var label = "foo";
             var dest = "url";
-            var title = "";
+            string title = null;
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(1, doc.LinkDefinition.Count);
             Assert.AreEqual(label, doc.LinkDefinition[label].Label);
@@ -2239,7 +2239,7 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse(html);
             var label = "foo";
             var dest = "first";
-            var title = "";
+            string title = null;
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(1, doc.LinkDefinition.Count);
             Assert.AreEqual(label, doc.LinkDefinition[label].Label);
@@ -2260,7 +2260,7 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse(html);
             var label = "Foo";
             var dest = "/url";
-            var title = "";
+            string title = null;
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(1, doc.LinkDefinition.Count);
             Assert.AreEqual(label, doc.LinkDefinition[label].Label, true);
@@ -2281,7 +2281,7 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse(html);
             var label = "αγω";
             var dest = "/%CF%86%CE%BF%CF%85";
-            var title = "";
+            string title = null;
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(1, doc.LinkDefinition.Count);
             Assert.AreEqual(label, doc.LinkDefinition[label].Label, true);
@@ -2302,7 +2302,7 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse(html);
             var label = "foo";
             var dest = "/url";
-            var title = "";
+            string title = null;
             Assert.AreEqual(0, doc.Elements.Count);
             Assert.AreEqual(1, doc.LinkDefinition.Count);
             Assert.AreEqual(label, doc.LinkDefinition[label].Label, true);
@@ -2317,7 +2317,7 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse(html);
             var label = "foo";
             var dest = "/url";
-            var title = "";
+            string title = null;
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(1, doc.LinkDefinition.Count);
             Assert.AreEqual(label, doc.LinkDefinition[label].Label, true);
@@ -2347,7 +2347,7 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse(html);
             var label = "foo";
             var dest = "/url";
-            var title = "";
+            string title = null;
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(1, doc.LinkDefinition.Count);
             Assert.AreEqual(label, doc.LinkDefinition[label].Label, true);
@@ -2411,7 +2411,7 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse(html);
             var label = "foo";
             var dest = "/url";
-            var title = "";
+            string title = null;
             Assert.AreEqual(2, doc.Elements.Count);
             Assert.AreEqual(1, doc.LinkDefinition.Count);
             Assert.AreEqual(label, doc.LinkDefinition[label].Label, true);
@@ -2446,7 +2446,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual("bar", doc.LinkDefinition["bar"].Title);
             Assert.AreEqual("baz", doc.LinkDefinition["baz"].Label);
             Assert.AreEqual("/baz-url", doc.LinkDefinition["baz"].Destination);
-            Assert.AreEqual("", doc.LinkDefinition["baz"].Title);
+            Assert.AreEqual(null, doc.LinkDefinition["baz"].Title);
 
             var inline = new InlineStructure(InlineElementType.CodeSpan,
                 new InlineStructure(InlineElementType.Link,
@@ -2472,7 +2472,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(BlockElementType.BlockQuote, doc.Elements[1].Type);
             Assert.AreEqual("foo", doc.LinkDefinition["foo"].Label);
             Assert.AreEqual("/url", doc.LinkDefinition["foo"].Destination);
-            Assert.AreEqual("", doc.LinkDefinition["foo"].Title);
+            Assert.AreEqual(null, doc.LinkDefinition["foo"].Title);
             var inline0 = new InlineStructure(InlineElementType.Link,
                     new InlineStructure(InlineElementType.InlineText, "foo"));
             inline0.AssertEqual(doc.Elements[0].GetInlines());
@@ -4616,7 +4616,7 @@ namespace TestProject.MarkdownElementTest
             inlineD.AssertEqual(paraD.GetInlines());
 
             Assert.AreEqual("/url", doc.LinkDefinition["ref"].Destination);
-            Assert.AreEqual("", doc.LinkDefinition["ref"].Title);
+            Assert.AreEqual(null, doc.LinkDefinition["ref"].Title);
         }
 
         [TestMethod]
@@ -8053,6 +8053,8 @@ namespace TestProject.MarkdownElementTest
 
             var inline = new InlineStructure(InlineElementType.Image,
                 new InlineStructure(InlineElementType.InlineText, "[foo](uri2)"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+
             var image = doc.Elements[0].GetInline(0) as Image;
 
             Assert.AreEqual("uri3", image.Source);

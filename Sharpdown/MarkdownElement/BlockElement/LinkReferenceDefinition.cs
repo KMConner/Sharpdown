@@ -46,7 +46,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             Label = label?.Trim(whiteSpaceShars) ?? throw new ArgumentNullException(nameof(title));
             Destination = InlineElementUtils.UrlEncode(InlineText.HandleEscapeAndHtmlEntity(
                 destination ?? throw new ArgumentNullException(nameof(destination))));
-            Title = InlineText.HandleEscapeAndHtmlEntity(title ?? string.Empty);
+            Title = title == null ? null : InlineText.HandleEscapeAndHtmlEntity(title);
             warnings.AddRange(elem?.Warnings ?? new List<string>());
         }
 
