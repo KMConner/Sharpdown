@@ -1,8 +1,4 @@
-﻿using Sharpdown.MarkdownElement.BlockElement;
-using System.Text;
-using System.Linq;
-using System;
-using System.Web;
+﻿using System;
 
 namespace Sharpdown.MarkdownElement.InlineElement
 {
@@ -17,22 +13,22 @@ namespace Sharpdown.MarkdownElement.InlineElement
         {
             Children = linkText;
             Destination = InlineElementUtils.UrlEncode(InlineText.HandleEscapeAndHtmlEntity(RemoveAngleBrackets(destination)));
-            Title = InlineText.HandleEscapeAndHtmlEntity(RemoveQuotes(title ?? string.Empty));
+            Title = title == null ? null : InlineText.HandleEscapeAndHtmlEntity(RemoveQuotes(title));
         }
 
         private string RemoveQuotes(string text)
         {
-            if (text.StartsWith("\"") && text.EndsWith("\""))
+            if (text.StartsWith("\"", StringComparison.Ordinal) && text.EndsWith("\"", StringComparison.Ordinal))
             {
                 return text.Substring(1, text.Length - 2);
             }
 
-            if (text.StartsWith("'") && text.EndsWith("'"))
+            if (text.StartsWith("'", StringComparison.Ordinal) && text.EndsWith("'", StringComparison.Ordinal))
             {
                 return text.Substring(1, text.Length - 2);
             }
 
-            if (text.StartsWith("(") && text.EndsWith(")"))
+            if (text.StartsWith("(", StringComparison.Ordinal) && text.EndsWith(")", StringComparison.Ordinal))
             {
                 return text.Substring(1, text.Length - 2);
             }
@@ -41,7 +37,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
         private string RemoveAngleBrackets(string text)
         {
-            if (text.StartsWith("<") && text.EndsWith(">"))
+            if (text.StartsWith("<", StringComparison.Ordinal) && text.EndsWith(">", StringComparison.Ordinal))
             {
                 return text.Substring(1, text.Length - 2);
             }

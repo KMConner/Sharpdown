@@ -20,7 +20,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <summary>
         /// Gets the image source.
         /// </summary>
-        public string ImageSource { get; private set; }
+        public string Source { get; private set; }
 
         /// <summary>
         /// Gets the title of this image.
@@ -35,8 +35,9 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <param name="title">The title of this image.</param>
         public Image(InlineElementBase[] text, string src, string title)
         {
-            Children = new[] { InlineText.CreateFromText(TextFromInlines(text)) };
-            ImageSource = src;
+            Alt = TextFromInlines(text);
+            Children = new[] { InlineText.CreateFromText(Alt) };
+            Source = src;
             Title = title;
         }
 

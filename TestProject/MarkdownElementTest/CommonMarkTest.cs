@@ -7509,7 +7509,7 @@ namespace TestProject.MarkdownElementTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
             var link = doc.Elements[0].GetInline(0) as Link;
             Assert.AreEqual("/uri", link.Destination);
-            Assert.AreEqual("", link.Title);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]
@@ -7526,7 +7526,7 @@ namespace TestProject.MarkdownElementTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
             var link = doc.Elements[0].GetInline(0) as Link;
             Assert.AreEqual("", link.Destination);
-            Assert.AreEqual("", link.Title);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]
@@ -7543,7 +7543,7 @@ namespace TestProject.MarkdownElementTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
             var link = doc.Elements[0].GetInline(0) as Link;
             Assert.AreEqual("", link.Destination);
-            Assert.AreEqual("", link.Title);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]
@@ -7618,7 +7618,7 @@ namespace TestProject.MarkdownElementTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
             var link = doc.Elements[0].GetInline(0) as Link;
             Assert.AreEqual("(foo)", link.Destination);
-            Assert.AreEqual("", link.Title);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]
@@ -7635,7 +7635,7 @@ namespace TestProject.MarkdownElementTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
             var link = doc.Elements[0].GetInline(0) as Link;
             Assert.AreEqual("foo(and(bar))", link.Destination);
-            Assert.AreEqual("", link.Title);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]
@@ -7652,7 +7652,7 @@ namespace TestProject.MarkdownElementTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
             var link = doc.Elements[0].GetInline(0) as Link;
             Assert.AreEqual("foo(and(bar)", link.Destination);
-            Assert.AreEqual("", link.Title);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]
@@ -7669,7 +7669,7 @@ namespace TestProject.MarkdownElementTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
             var link = doc.Elements[0].GetInline(0) as Link;
             Assert.AreEqual("foo(and(bar)", link.Destination);
-            Assert.AreEqual("", link.Title);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]
@@ -7686,7 +7686,7 @@ namespace TestProject.MarkdownElementTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
             var link = doc.Elements[0].GetInline(0) as Link;
             Assert.AreEqual("foo):", link.Destination);
-            Assert.AreEqual("", link.Title);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]
@@ -7709,11 +7709,11 @@ namespace TestProject.MarkdownElementTest
             var link1 = doc.Elements[1].GetInline(0) as Link;
             var link2 = doc.Elements[2].GetInline(0) as Link;
             Assert.AreEqual("#fragment", link0.Destination);
-            Assert.AreEqual("", link0.Title);
+            Assert.AreEqual(null, link0.Title);
             Assert.AreEqual("http://example.com#fragment", link1.Destination);
-            Assert.AreEqual("", link1.Title);
+            Assert.AreEqual(null, link1.Title);
             Assert.AreEqual("http://example.com?foo=3#frag", link2.Destination);
-            Assert.AreEqual("", link2.Title);
+            Assert.AreEqual(null, link2.Title);
         }
 
         [TestMethod]
@@ -7730,7 +7730,7 @@ namespace TestProject.MarkdownElementTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
             var link = doc.Elements[0].GetInline(0) as Link;
             Assert.AreEqual("foo%5Cbar", link.Destination, true);
-            Assert.AreEqual("", link.Title);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]
@@ -7747,7 +7747,7 @@ namespace TestProject.MarkdownElementTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
             var link = doc.Elements[0].GetInline(0) as Link;
             Assert.AreEqual("foo%20b%C3%A4", link.Destination, true);
-            Assert.AreEqual("", link.Title);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]
@@ -7764,7 +7764,7 @@ namespace TestProject.MarkdownElementTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
             var link = doc.Elements[0].GetInline(0) as Link;
             Assert.AreEqual("%22title%22", link.Destination, true);
-            Assert.AreEqual("", link.Title);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]
@@ -7828,7 +7828,7 @@ namespace TestProject.MarkdownElementTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
             var link = doc.Elements[0].GetInline(0) as Link;
             Assert.AreEqual("/url%C2%A0%22title%22", link.Destination, true);
-            Assert.AreEqual("", link.Title);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]
@@ -7905,7 +7905,7 @@ namespace TestProject.MarkdownElementTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
             var link = doc.Elements[0].GetInline(0) as Link;
             Assert.AreEqual("/uri", link.Destination, true);
-            Assert.AreEqual("", link.Title);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]
@@ -7937,7 +7937,7 @@ namespace TestProject.MarkdownElementTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
             var link = doc.Elements[0].GetInline(1) as Link;
             Assert.AreEqual("/uri", link.Destination, true);
-            Assert.AreEqual("", link.Title);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]
@@ -7954,7 +7954,7 @@ namespace TestProject.MarkdownElementTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
             var link = doc.Elements[0].GetInline(0) as Link;
             Assert.AreEqual("/uri", link.Destination, true);
-            Assert.AreEqual("", link.Title);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]
@@ -7977,7 +7977,7 @@ namespace TestProject.MarkdownElementTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
             var link = doc.Elements[0].GetInline(0) as Link;
             Assert.AreEqual("/uri", link.Destination, true);
-            Assert.AreEqual("", link.Title);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]
@@ -7995,7 +7995,7 @@ namespace TestProject.MarkdownElementTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
             var link = doc.Elements[0].GetInline(0) as Link;
             Assert.AreEqual("/uri", link.Destination, true);
-            Assert.AreEqual("", link.Title);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]
@@ -8015,7 +8015,7 @@ namespace TestProject.MarkdownElementTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
             var link = doc.Elements[0].GetInline(1) as Link;
             Assert.AreEqual("/uri", link.Destination, true);
-            Assert.AreEqual("", link.Title);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]
@@ -8039,7 +8039,7 @@ namespace TestProject.MarkdownElementTest
             var link = (doc.Elements[0].GetInline(1) as Emphasis).Children[1] as Link;
 
             Assert.AreEqual("/uri", link.Destination, true);
-            Assert.AreEqual("", link.Title);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]
@@ -8053,11 +8053,32 @@ namespace TestProject.MarkdownElementTest
 
             var inline = new InlineStructure(InlineElementType.Image,
                 new InlineStructure(InlineElementType.InlineText, "[foo](uri2)"));
-            var link = doc.Elements[0].GetInline(0) as Image;
+            var image = doc.Elements[0].GetInline(0) as Image;
 
-            //Assert.AreEqual("/uri3", link., true);
-            //Assert.AreEqual("", link.Title);
+            Assert.AreEqual("uri3", image.Source);
+            Assert.AreEqual("[foo](uri2)", image.Alt);
+            Assert.AreEqual(null, image.Title);
         }
+
+        [TestMethod]
+        public void TestCase_492()
+        {
+            var code = "*[foo*](/uri)";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(
+                new InlineStructure(InlineElementType.InlineText, "*"),
+                new InlineStructure(InlineElementType.Link,
+                    new InlineStructure(InlineElementType.InlineText, "foo *bar")));
+            var link = doc.Elements[0].GetInline(1) as Link;
+
+            Assert.AreEqual("/uri", link.Destination);
+            Assert.AreEqual(null, link.Title);
+        }
+
 
 
         #endregion
