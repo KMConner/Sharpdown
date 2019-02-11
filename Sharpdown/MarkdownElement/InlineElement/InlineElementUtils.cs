@@ -742,7 +742,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         }
                         // shortcut link
                         else if (TryGetReference(linkReferences, text.Substring(openInfo.Index + 1, i - openInfo.Index - 1),
-                            out definition))
+                            out definition) && GetEndIndexOfLinkLabel(text, i + 1, higherDelims) < 0)
                         {
                             if (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink)
                             {
@@ -1140,7 +1140,14 @@ namespace Sharpdown.MarkdownElement.InlineElement
             {
                 return !higherDelims.Any(d => d.Begin <= index && d.End > index);
             }
-
+            if (wholeText.Length <= begin)
+            {
+                return -1;
+            }
+            if (wholeText[begin] != '[')
+            {
+                return -1;
+            }
             int depth = 0;
             for (int i = begin; i < wholeText.Length; i++)
             {
