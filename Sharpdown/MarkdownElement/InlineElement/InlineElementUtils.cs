@@ -161,13 +161,13 @@ namespace Sharpdown.MarkdownElement.InlineElement
             for (int i = 0; i < lines.Length; i++)
             {
 
-                bool isHardBreak = lines[i].EndsWith("  ")
-                    || (lines[i].EndsWith("\\") && !IsEscaped(lines[i], lines.Length - 1));
+                bool isHardBreak = lines[i].EndsWith("  ", StringComparison.Ordinal)
+                    || (lines[i].EndsWith("\\", StringComparison.Ordinal) && !IsEscaped(lines[i], lines.Length - 1));
                 if (i < lines.Length - 1)
                 {
                     if (lines[i] != string.Empty)
                     {
-                        if (isHardBreak && lines[i].EndsWith("\\"))
+                        if (isHardBreak && lines[i].EndsWith("\\", StringComparison.Ordinal))
                         {
                             yield return InlineText.CreateFromText(lines[i].Substring(0, lines[i].Length - 1));
                         }
@@ -806,7 +806,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
             do
             {
-                closeIndex = text.IndexOf(new string('`', openLength), closeIndex);
+                closeIndex = text.IndexOf(new string('`', openLength), closeIndex, StringComparison.Ordinal);
                 if (closeIndex >= 0)
                 {
                     int closeLength = CountSameChars(text, closeIndex);
