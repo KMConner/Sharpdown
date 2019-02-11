@@ -675,7 +675,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         else if (i < text.Length - 1
                                  && text[Math.Min(i + 1, text.Length - 1)] == '['
                                  && text[Math.Min(i + 2, text.Length - 1)] == ']'
-                                 && linkReferences.TryGetValue(text.Substring(
+                                 && TryGetReference(linkReferences, text.Substring(
                                      openInfo.Index + openInfo.DeliminatorLength,
                                      i - openInfo.Index - openInfo.DeliminatorLength), out var definition))
                         {
@@ -709,7 +709,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         }
                         // Full Reference Link
                         else if (text[Math.Min(i + 1, text.Length - 1)] == '[' && linkLabel2 >= 0
-                            && linkReferences.TryGetValue(text.Substring(i + 2, linkLabel2 - i - 3), out definition))
+                            && TryGetReference(linkReferences, text.Substring(i + 2, linkLabel2 - i - 3), out definition))
                         {
                             if (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink)
                             {
@@ -741,7 +741,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
                         }
                         // shortcut link
-                        else if (linkReferences.TryGetValue(text.Substring(openInfo.Index + 1, i - openInfo.Index - 1),
+                        else if (TryGetReference(linkReferences, text.Substring(openInfo.Index + 1, i - openInfo.Index - 1),
                             out definition))
                         {
                             if (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink)
@@ -1312,6 +1312,13 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 return -1;
             }
             return current + 1;
+        }
+
+        private static bool TryGetReference(Dictionary<string, LinkReferenceDefinition> references,
+            string refName, out LinkReferenceDefinition referenceDefinition)
+        {
+            var name = LinkReferenceDefinition.GetSimpleName(refName);
+            return references.TryGetValue(name, out referenceDefinition);
         }
     }
 }

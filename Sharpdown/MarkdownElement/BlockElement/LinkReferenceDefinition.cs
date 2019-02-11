@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Web;
+using System.Linq;
 using Sharpdown.MarkdownElement.InlineElement;
 
 namespace Sharpdown.MarkdownElement.BlockElement
@@ -43,7 +44,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <param name="elem"></param>
         internal LinkReferenceDefinition(string label, string destination, string title, UnknownElement elem)
         {
-            Label = label?.Trim(whiteSpaceShars) ?? throw new ArgumentNullException(nameof(title));
+            Label = GetSimpleName(label?.Trim(whiteSpaceShars) ?? throw new ArgumentNullException(nameof(title)));
             Destination = InlineElementUtils.UrlEncode(InlineText.HandleEscapeAndHtmlEntity(
                 destination ?? throw new ArgumentNullException(nameof(destination))));
             Title = title == null ? null : InlineText.HandleEscapeAndHtmlEntity(title);
@@ -106,5 +107,22 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return builder.ToString();
         }
 
+        public static string GetSimpleName(string name)
+        {
+            var builder = new StringBuilder(name.Length);
+            for (int i = 0; i < name.Length; i++)
+            {
+                if (!char.IsWhiteSpace(name, i))
+                {
+                    builder.Append(name[i]);
+                    continue;
+                }
+                if (i < name.Length - 1 && !char.IsWhiteSpace(name, i + 1))
+                {
+                    builder.Append(' ');
+                }
+            }
+            return builder.ToString();
+        }
     }
 }
