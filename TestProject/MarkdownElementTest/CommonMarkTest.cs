@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -8074,12 +8074,257 @@ namespace TestProject.MarkdownElementTest
             var inline = new InlineStructure(
                 new InlineStructure(InlineElementType.InlineText, "*"),
                 new InlineStructure(InlineElementType.Link,
-                    new InlineStructure(InlineElementType.InlineText, "foo *bar")));
+                    new InlineStructure(InlineElementType.InlineText, "foo*")));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+
             var link = doc.Elements[0].GetInline(1) as Link;
 
             Assert.AreEqual("/uri", link.Destination);
             Assert.AreEqual(null, link.Title);
         }
+
+        [TestMethod]
+        public void TestCase_493()
+        {
+            var code = "[foo *bar](baz*)";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Link,
+                    new InlineStructure(InlineElementType.InlineText, "foo *bar"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+
+            var link = doc.Elements[0].GetInline(0) as Link;
+
+            Assert.AreEqual("baz*", link.Destination);
+            Assert.AreEqual(null, link.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_494()
+        {
+            var code = "*foo [bar* baz]";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(
+                new InlineStructure(InlineElementType.Emphasis,
+                    new InlineStructure(InlineElementType.InlineText, "foo [bar")),
+                new InlineStructure(InlineElementType.InlineText, " baz]"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_495()
+        {
+            var code = "[foo <bar attr=\"](baz)\">";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(
+                new InlineStructure(InlineElementType.InlineText, "[foo "),
+                new InlineStructure(InlineElementType.InlineHtml, "<bar attr=\"](baz)\">"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_496()
+        {
+            var code = "[foo`](/uri)`";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(
+                new InlineStructure(InlineElementType.InlineText, "[foo"),
+                new InlineStructure(InlineElementType.CodeSpan, "](/uri)"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_497()
+        {
+            var code = "[foo<http://example.com/?search=](uri)>";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(
+                new InlineStructure(InlineElementType.InlineText, "[foo"),
+                new InlineStructure(InlineElementType.Link,
+                    new InlineStructure(InlineElementType.InlineText, "http://example.com/?search=](uri)")));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+            var link = doc.Elements[0].GetInline(1) as Link;
+
+            Assert.AreEqual("http://example.com/?search=%5D(uri)", link.Destination);
+            Assert.AreEqual(null, link.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_498()
+        {
+            var code = "[foo][bar]\n\n[bar]: /url \"title\"";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(1, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Link,
+                new InlineStructure(InlineElementType.InlineText, "foo"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+            var link = doc.Elements[0].GetInline(0) as Link;
+
+            Assert.AreEqual("/url", link.Destination);
+            Assert.AreEqual("title", link.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_499()
+        {
+            var code = "[link [foo [bar]]][ref]\n\n[ref]: /uri";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(1, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Link,
+                new InlineStructure(InlineElementType.InlineText, "link [foo [bar]]"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+            var link = doc.Elements[0].GetInline(0) as Link;
+
+            Assert.AreEqual("/uri", link.Destination);
+            Assert.AreEqual(null, link.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_500()
+        {
+            var code = "[link \\[bar][ref]\n\n[ref]: /uri";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(1, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Link,
+                new InlineStructure(InlineElementType.InlineText, "link [bar"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+            var link = doc.Elements[0].GetInline(0) as Link;
+
+            Assert.AreEqual("/uri", link.Destination);
+            Assert.AreEqual(null, link.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_501()
+        {
+            var code = "[link *foo **bar** `#`*][ref]\n\n[ref]: /uri";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(1, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Link,
+                new InlineStructure(InlineElementType.InlineText, "link "),
+                new InlineStructure(InlineElementType.Emphasis,
+                    new InlineStructure(InlineElementType.InlineText, "foo "),
+                    new InlineStructure(InlineElementType.StrongEmphasis,
+                        new InlineStructure(InlineElementType.InlineText, "bar")),
+                    new InlineStructure(InlineElementType.InlineText, " "),
+                    new InlineStructure(InlineElementType.CodeSpan, "#")));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+            var link = doc.Elements[0].GetInline(0) as Link;
+
+            Assert.AreEqual("/uri", link.Destination);
+            Assert.AreEqual(null, link.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_502()
+        {
+            var code = "[![moon](moon.jpg)][ref]\n\n[ref]: /uri";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(1, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Link,
+                new InlineStructure(InlineElementType.Image,
+                    new InlineStructure(InlineElementType.InlineText, "moon")));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+            var link = doc.Elements[0].GetInline(0) as Link;
+            Assert.AreEqual("/uri", link.Destination);
+            Assert.AreEqual(null, link.Title);
+
+            var image = link.Children[0] as Image;
+            Assert.AreEqual("moon.jpg", image.Source);
+            Assert.AreEqual(null, image.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_503()
+        {
+            var code = "[foo [bar](/uri)][ref]\n\n[ref]: /uri";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(1, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(
+                new InlineStructure(InlineElementType.InlineText, "[foo "),
+                new InlineStructure(InlineElementType.Link,
+                    new InlineStructure(InlineElementType.InlineText, "bar")),
+                new InlineStructure(InlineElementType.InlineText, "]"),
+                new InlineStructure(InlineElementType.Link,
+                    new InlineStructure(InlineElementType.InlineText, "ref")));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+            var link = doc.Elements[0].GetInline(1) as Link;
+            var link2 = doc.Elements[0].GetInline(3) as Link;
+
+            Assert.AreEqual("/uri", link.Destination);
+            Assert.AreEqual(null, link.Title);
+
+            Assert.AreEqual("/uri", link2.Destination);
+            Assert.AreEqual(null, link2.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_504()
+        {
+            var code = "[foo *bar [baz][ref]*][ref]\n\n[ref]: /uri";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(1, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(
+                new InlineStructure(InlineElementType.InlineText, "[foo "),
+                new InlineStructure(InlineElementType.Emphasis,
+                    new InlineStructure(InlineElementType.InlineText, "bar "),
+                    new InlineStructure(InlineElementType.Link,
+                        new InlineStructure(InlineElementType.InlineText, "baz"))),
+                new InlineStructure(InlineElementType.InlineText, "]"),
+                new InlineStructure(InlineElementType.Link,
+                    new InlineStructure(InlineElementType.InlineText, "ref")));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+            var link = (doc.Elements[0].GetInline(1) as Emphasis).Children[1] as Link;
+            var link2 = doc.Elements[0].GetInline(3) as Link;
+
+            Assert.AreEqual("/uri", link.Destination);
+            Assert.AreEqual(null, link.Title);
+
+            Assert.AreEqual("/uri", link2.Destination);
+            Assert.AreEqual(null, link2.Title);
+        }
+
+
 
 
 

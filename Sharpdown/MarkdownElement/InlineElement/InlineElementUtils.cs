@@ -12,23 +12,6 @@ namespace Sharpdown.MarkdownElement.InlineElement
     /// </summary>
     public static class InlineElementUtils
     {
-        // TODO: Check [] balanced
-        /// <summary>
-        /// Regular expression which matches InlineLink.
-        /// </summary>
-        private static readonly Regex InlineLinkRegex = new Regex(
-            @"\]\((?:[ \t]*(?:\r|\r\n|\n)??[ \t]*"
-            + @"(?<destination>\<(?:[^ \t\r\n\<\>]|\\\<|\\\>)+\>|[^ \t\r\n]+)([ \t]*(?: |\t|\r|\r\n|\n)[ \t]*"
-            + @"(?<title>\""(?:[^\""]|\\\"")*\""|\'(?:[^\']|\\\')*\'|\((?:[^\)]|\\\))*\)))??[ \t]*)??\)",
-            RegexOptions.Compiled);
-
-        // TODO: Check [] balanced
-        /// <summary>
-        /// Regular expression which matches link labels.
-        /// </summary>
-        private static readonly Regex LinkLabelRegex = new Regex(
-            @"\[(?<label>.{1,999})\]", RegexOptions.Compiled);
-
         /// <summary>
         /// Regular expression which matches urls in auto links.
         /// </summary>
@@ -652,8 +635,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     {
                         int linkLabel = GetStartIndexOfLinkLabel(text, 0, i + 1, higherDelims);
                         int linkBody = GetLinkBodyEndIndex(text, i + 1, out var dest, out var title);
+                        int linkLabel2 = GetEndIndexOfLinkLabel(text, i + 1, higherDelims);
 
-                        Match linkLabelMatch = LinkLabelRegex.Match(text, Math.Min(text.Length - 1, i + 1));
                         // Inline Link/Image
                         if (text[Math.Min(i + 1, text.Length - 1)] == '('
                         && AreBlacketsBlanced(text.Substring(openInfo.Index, i - openInfo.Index + 1))
@@ -686,6 +669,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             ParseEmphasis(deliminators, delimSpans, openInfo);
                             deliminators.Remove(openInfo);
                             i = linkBody - 1;
+                            deliminators.Remove(openInfo);
                         }
                         // Collapsed Reference Link
                         else if (i < text.Length - 1
@@ -695,6 +679,16 @@ namespace Sharpdown.MarkdownElement.InlineElement
                                      openInfo.Index + openInfo.DeliminatorLength,
                                      i - openInfo.Index - openInfo.DeliminatorLength), out var definition))
                         {
+                            if (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink)
+                            {
+                                foreach (var item in deliminators.TakeWhile(c => c != openInfo))
+                                {
+                                    if (item.Type == DeliminatorInfo.DeliminatorType.OpenLink)
+                                    {
+                                        item.Active = false;
+                                    }
+                                }
+                            }
                             delimSpans.Add(openInfo.Index, new DelimSpan()
                             {
                                 Begin = openInfo.Index,
@@ -710,16 +704,28 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             });
                             ParseEmphasis(deliminators, delimSpans, openInfo);
                             i += 2;
+                            deliminators.Remove(openInfo);
+
                         }
                         // Full Reference Link
-                        else if (text[Math.Min(i + 1, text.Length - 1)] == '[' && linkLabelMatch.Success
-                        && linkReferences.TryGetValue(linkLabelMatch
-                        .Groups["label"].Value, out definition))
+                        else if (text[Math.Min(i + 1, text.Length - 1)] == '[' && linkLabel2 >= 0
+                            && linkReferences.TryGetValue(text.Substring(i + 2, linkLabel2 - i - 3), out definition))
                         {
-                            delimSpans.Add(openInfo.Index, new DelimSpan()
+                            if (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink)
+                            {
+                                foreach (var item in deliminators.TakeWhile(c => c != openInfo))
+                                {
+                                    if (item.Type == DeliminatorInfo.DeliminatorType.OpenLink)
+                                    {
+                                        item.Active = false;
+                                    }
+                                }
+                            }
+
+                            delimSpans.Add(openInfo.Index, new DelimSpan
                             {
                                 Begin = openInfo.Index,
-                                End = i + linkLabelMatch.Length + 1,
+                                End = linkLabel2,
                                 DeliminatorType = openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink
                                     ? DelimSpan.DelimType.Link
                                     : DelimSpan.DelimType.Image,
@@ -730,12 +736,25 @@ namespace Sharpdown.MarkdownElement.InlineElement
                                 Title = definition.Title,
                             });
                             ParseEmphasis(deliminators, delimSpans, openInfo);
-                            i += linkLabelMatch.Length;
+                            i = linkLabel2 - 1;
+                            deliminators.Remove(openInfo);
+
                         }
                         // shortcut link
                         else if (linkReferences.TryGetValue(text.Substring(openInfo.Index + 1, i - openInfo.Index - 1),
                             out definition))
                         {
+                            if (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink)
+                            {
+                                foreach (var item in deliminators.TakeWhile(c => c != openInfo))
+                                {
+                                    if (item.Type == DeliminatorInfo.DeliminatorType.OpenLink)
+                                    {
+                                        item.Active = false;
+                                    }
+                                }
+                            }
+
                             delimSpans.Add(openInfo.Index, new DelimSpan()
                             {
                                 Begin = openInfo.Index,
@@ -750,6 +769,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
                                 Title = definition.Title,
                             });
                             ParseEmphasis(deliminators, delimSpans, openInfo);
+                            deliminators.Remove(openInfo);
+
                         }
                         else
                         {
@@ -1108,6 +1129,47 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 else if (ch == ']')
                 {
                     depth++;
+                }
+            }
+            return -1;
+        }
+
+        private static int GetEndIndexOfLinkLabel(string wholeText, int begin, List<DelimSpan> higherDelims)
+        {
+            bool IsDelim(int index)
+            {
+                return !higherDelims.Any(d => d.Begin <= index && d.End > index);
+            }
+
+            int depth = 0;
+            for (int i = begin; i < wholeText.Length; i++)
+            {
+                if (IsEscaped(wholeText, i))
+                {
+                    continue;
+                }
+                if (!IsDelim(i))
+                {
+                    continue;
+                }
+                char ch = wholeText[i];
+                if (ch == '[')
+                {
+                    depth++;
+                    continue;
+                }
+                if (ch == ']')
+                {
+                    depth--;
+                    if (depth == 0)
+                    {
+                        return i + 1;
+                    }
+                    if (depth < 0)
+                    {
+                        return -1;
+                    }
+                    break;
                 }
             }
             return -1;
