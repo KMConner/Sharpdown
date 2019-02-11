@@ -15,17 +15,10 @@ namespace Sharpdown.MarkdownElement.BlockElement
     public class UnknownElement : LeafElement
     {
         /// <summary>
-        /// A regular expression which matches link label.
-        /// </summary>
-        private static readonly Regex linkLabelRegex = new Regex(
-            @"^\[(?:[^\]]|\\\]){1,999}\]\:", RegexOptions.Compiled);
-
-
-        /// <summary>
         /// A regular expression which matches link reference definition.
         /// </summary>
         private static readonly Regex linkDefinitionRegex = new Regex(
-            @"^\[(?<label>(?:[^\]]|\\\]){1,999})\]\:[ \t]*(?:\r|\r\n|\n)??[ \t]*(?<destination>\<(?:[^ \t\r\n\<\>]|\\\<|\\\>)+\>|[^ \t\r\n]+)([ \t]*(?: |\t|\r|\r\n|\n)[ \t]*(?<title>\""(?:[^\""]|\\\"")*\""|\'(?:[^\']|\\\')*\'|\((?:[^\)]|\\\))*\)))??[ \t]*$",
+            @"^\[(?<label>(?:[^\]\[]|\\\]|\\\[){1,999})\]\:[ \t]*(?:\r|\r\n|\n)??[ \t]*(?<destination>\<(?:[^ \t\r\n\<\>]|\\\<|\\\>)+\>|[^ \t\r\n]+)([ \t]*(?: |\t|\r|\r\n|\n)[ \t]*(?<title>\""(?:[^\""]|\\\"")*\""|\'(?:[^\']|\\\')*\'|\((?:[^\)]|\\\))*\)))??[ \t]*$",
             RegexOptions.Compiled);
 
         /// <summary>
@@ -52,7 +45,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         public override string Content => string.Join("\n", content);
 
-        internal UnknownElement() : base()
+        internal UnknownElement()
         {
             content = new List<string>();
             actualType = BlockElementType.Unknown;
@@ -71,7 +64,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     throw new InvalidBlockFormatException(BlockElementType.Unknown);
                 }
 
-                mayBeLinkReferenceDefinition = trimmed.StartsWith("[");
+                mayBeLinkReferenceDefinition = trimmed.StartsWith("[", StringComparison.Ordinal);
             }
             else if (line.GetIndentNum() < 4)
             {
@@ -95,7 +88,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
             if (Interrupted(line))
             {
-                actualType = linkDefinitionRegex.IsMatch(string.Join("\n", content))
+                var match = linkDefinitionRegex.Match(string.Join("\n", content));
+                actualType = match.Success && !IsBlank(match.Groups["label"].Value)
                     ? BlockElementType.LinkReferenceDefinition : BlockElementType.Paragraph;
                 return AddLineResult.NeedClose;
             }
@@ -105,7 +99,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
             if (mayBeLinkReferenceDefinition)
             {
                 string joined = string.Join("\n", content);
-                if (linkDefinitionRegex.IsMatch(joined))
+                var match0 = linkDefinitionRegex.Match(joined);
+                if (match0.Success && !IsBlank(match0.Groups["label"].Value))
                 {
                     Match match = linkDefinitionRegex.Match(joined);
                     if (AreParenthesesBalanced(match.Groups["destination"].Value))
@@ -130,7 +125,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 }
                 else
                 {
-                    if (linkDefinitionRegex.IsMatch(string.Join("\n", content.GetRange(0, content.Count - 1))))
+                    var match1 = linkDefinitionRegex.Match(string.Join("\n", content.GetRange(0, content.Count - 1)));
+                    if (match1.Success && !IsBlank(match1.Groups["label"].Value))
                     {
                         content.RemoveAt(content.Count - 1);
                         actualType = BlockElementType.LinkReferenceDefinition;
@@ -273,7 +269,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     {
 
                         Match match = linkDefinitionRegex.Match(string.Join("\n", content));
-                        if (!match.Success)
+                        if (!match.Success || IsBlank(match.Groups["label"].Value))
                         {
                             throw new InvalidBlockFormatException(BlockElementType.LinkReferenceDefinition);
                         }
@@ -290,9 +286,10 @@ namespace Sharpdown.MarkdownElement.BlockElement
                         if (mayBeLinkReferenceDefinition)
                         {
                             string joined = string.Join("\n", content);
-                            if (linkDefinitionRegex.IsMatch(joined))
+                            Match match = linkDefinitionRegex.Match(joined);
+
+                            if (match.Success && !IsBlank(match.Groups["label"].Value))
                             {
-                                Match match = linkDefinitionRegex.Match(joined);
                                 if (AreParenthesesBalanced(match.Groups["destination"].Value))
                                 {
                                     return new LinkReferenceDefinition(match.Groups["label"].Value, ExtractDestination(match.Groups["destination"].Value), match.Groups["title"].Success ? ExtractTitle(match.Groups["title"].Value) : null, this);
@@ -309,6 +306,18 @@ namespace Sharpdown.MarkdownElement.BlockElement
         internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
         {
             throw new InvalidOperationException();
+        }
+
+        private bool IsBlank(string str)
+        {
+            foreach (var ch in str)
+            {
+                if (!whiteSpaceShars.Contains(ch))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }
