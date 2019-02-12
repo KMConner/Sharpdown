@@ -9030,7 +9030,296 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(null, link.Title);
         }
 
+        #endregion
 
+        #region Images
+
+        [TestMethod]
+        public void TestCase_543()
+        {
+            var code = "![foo](/url \"title\")";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Image,
+                new InlineStructure(InlineElementType.InlineText, "foo"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+
+            var image = doc.Elements[0].GetInline(0) as Image;
+            Assert.AreEqual("/url", image.Source);
+            Assert.AreEqual("foo", image.Alt);
+            Assert.AreEqual("title", image.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_544()
+        {
+            var code = "![foo *bar*]\n\n[foo *bar*]: train.jpg \"train & tracks\"";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(1, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Image,
+                new InlineStructure(InlineElementType.InlineText, "foo bar"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+
+            var image = doc.Elements[0].GetInline(0) as Image;
+            Assert.AreEqual("train.jpg", image.Source);
+            Assert.AreEqual("foo bar", image.Alt);
+            Assert.AreEqual("train & tracks", image.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_545()
+        {
+            var code = "![foo ![bar](/url)](/url2)";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Image,
+                new InlineStructure(InlineElementType.InlineText, "foo bar"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+
+            var image = doc.Elements[0].GetInline(0) as Image;
+            Assert.AreEqual("/url2", image.Source);
+            Assert.AreEqual("foo bar", image.Alt);
+            Assert.AreEqual(null, image.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_546()
+        {
+            var code = "![foo [bar](/url)](/url2)";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Image,
+                new InlineStructure(InlineElementType.InlineText, "foo bar"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+
+            var image = doc.Elements[0].GetInline(0) as Image;
+            Assert.AreEqual("/url2", image.Source);
+            Assert.AreEqual("foo bar", image.Alt);
+            Assert.AreEqual(null, image.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_547()
+        {
+            var code = "![foo *bar*][]\n\n[foo *bar*]: train.jpg \"train & tracks\"";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(1, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Image,
+                new InlineStructure(InlineElementType.InlineText, "foo bar"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+
+            var image = doc.Elements[0].GetInline(0) as Image;
+            Assert.AreEqual("train.jpg", image.Source);
+            Assert.AreEqual("foo bar", image.Alt);
+            Assert.AreEqual("train & tracks", image.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_548()
+        {
+            var code = "![foo *bar*][foobar]\n\n[FOOBAR]: train.jpg \"train & tracks\"";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(1, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Image,
+                new InlineStructure(InlineElementType.InlineText, "foo bar"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+
+            var image = doc.Elements[0].GetInline(0) as Image;
+            Assert.AreEqual("train.jpg", image.Source);
+            Assert.AreEqual("foo bar", image.Alt);
+            Assert.AreEqual("train & tracks", image.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_549()
+        {
+            var code = "![foo](train.jpg)";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Image,
+                new InlineStructure(InlineElementType.InlineText, "foo"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+
+            var image = doc.Elements[0].GetInline(0) as Image;
+            Assert.AreEqual("train.jpg", image.Source);
+            Assert.AreEqual("foo", image.Alt);
+            Assert.AreEqual(null, image.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_550()
+        {
+            var code = "My ![foo bar](/path/to/train.jpg  \"title\"   )";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(
+                new InlineStructure(InlineElementType.InlineText, "My "),
+                new InlineStructure(InlineElementType.Image,
+                    new InlineStructure(InlineElementType.InlineText, "foo bar")));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+
+            var image = doc.Elements[0].GetInline(1) as Image;
+            Assert.AreEqual("/path/to/train.jpg", image.Source);
+            Assert.AreEqual("foo bar", image.Alt);
+            Assert.AreEqual("title", image.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_551()
+        {
+            var code = "![foo](<url>)";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Image,
+                new InlineStructure(InlineElementType.InlineText, "foo"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+
+            var image = doc.Elements[0].GetInline(0) as Image;
+            Assert.AreEqual("url", image.Source);
+            Assert.AreEqual("foo", image.Alt);
+            Assert.AreEqual(null, image.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_552()
+        {
+            var code = "![](/url)";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Image,
+                new InlineStructure(InlineElementType.InlineText, ""));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+
+            var image = doc.Elements[0].GetInline(0) as Image;
+            Assert.AreEqual("/url", image.Source);
+            Assert.AreEqual("", image.Alt);
+            Assert.AreEqual(null, image.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_553()
+        {
+            var code = "![foo][bar]\n\n[bar]: /url";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(1, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Image,
+                new InlineStructure(InlineElementType.InlineText, "foo"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+
+            var image = doc.Elements[0].GetInline(0) as Image;
+            Assert.AreEqual("/url", image.Source);
+            Assert.AreEqual("foo", image.Alt);
+            Assert.AreEqual(null, image.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_554()
+        {
+            var code = "![foo][bar]\n\n[BAR]: /url";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(1, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Image,
+                new InlineStructure(InlineElementType.InlineText, "foo"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+
+            var image = doc.Elements[0].GetInline(0) as Image;
+            Assert.AreEqual("/url", image.Source);
+            Assert.AreEqual("foo", image.Alt);
+            Assert.AreEqual(null, image.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_555()
+        {
+            var code = "![foo][]\n\n[foo]: /url \"title\"\n";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(1, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Image,
+                new InlineStructure(InlineElementType.InlineText, "foo"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+
+            var image = doc.Elements[0].GetInline(0) as Image;
+            Assert.AreEqual("/url", image.Source);
+            Assert.AreEqual("foo", image.Alt);
+            Assert.AreEqual("title", image.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_556()
+        {
+            var code = "![*foo* bar][]\n\n[*foo* bar]: /url \"title\"";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(1, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Image,
+                new InlineStructure(InlineElementType.InlineText, "foo bar"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+
+            var image = doc.Elements[0].GetInline(0) as Image;
+            Assert.AreEqual("/url", image.Source);
+            Assert.AreEqual("foo bar", image.Alt);
+            Assert.AreEqual("title", image.Title);
+        }
+
+        [TestMethod]
+        public void TestCase_557()
+        {
+            var code = "![Foo][]\n\n[foo]: /url \"title\"";
+            var doc = MarkdownParser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(1, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Image,
+                new InlineStructure(InlineElementType.InlineText, "Foo"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+
+            var image = doc.Elements[0].GetInline(0) as Image;
+            Assert.AreEqual("/url", image.Source);
+            Assert.AreEqual("Foo", image.Alt);
+            Assert.AreEqual("title", image.Title);
+        }
 
 
 

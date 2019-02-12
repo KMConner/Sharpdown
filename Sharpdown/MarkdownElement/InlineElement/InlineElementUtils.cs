@@ -341,7 +341,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         {
             int lastEnd = delim.ParseBegin;
             List<InlineElementBase> newChildren = new List<InlineElementBase>();
-            foreach (var item in delim.Children)
+            foreach (var item in delim.Children.Where(d => d.Value.End <= delim.ParseEnd))
             {
                 DelimSpan delimSpan = item.Value;
                 if (lastEnd < delimSpan.Begin)
@@ -741,7 +741,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
                         }
                         // shortcut link
-                        else if (TryGetReference(linkReferences, text.Substring(openInfo.Index + 1, i - openInfo.Index - 1),
+                        else if (TryGetReference(linkReferences, text.Substring(openInfo.Index + openInfo.DeliminatorLength, i - openInfo.Index - openInfo.DeliminatorLength),
                             out definition) && GetEndIndexOfLinkLabel(text, i + 1, higherDelims) < 0)
                         {
                             if (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink)
