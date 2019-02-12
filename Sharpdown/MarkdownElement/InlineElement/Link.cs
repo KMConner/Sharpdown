@@ -16,6 +16,12 @@ namespace Sharpdown.MarkdownElement.InlineElement
             Title = title == null ? null : InlineText.HandleEscapeAndHtmlEntity(RemoveQuotes(title));
         }
 
+        public Link(string destination, bool mailto=false)
+        {
+            Children = new[] { InlineText.CreateFromText(destination, false) };
+            Destination = (mailto ? "mailto:" : string.Empty) + InlineElementUtils.UrlEncode(destination);
+        }
+
         private string RemoveQuotes(string text)
         {
             if (text.StartsWith("\"", StringComparison.Ordinal) && text.EndsWith("\"", StringComparison.Ordinal))

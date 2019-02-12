@@ -842,8 +842,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 && urlMatch.Value.All(c => !char.IsControl(c)))
             {
                 currentIndex += urlMatch.Length;
-                return new Link(new[] { InlineText.CreateFromText(urlMatch.Groups["url"].Value, false) },
-                    urlMatch.Groups["url"].Value, null);
+                return new Link(urlMatch.Groups["url"].Value);
             }
 
             // Auto link (E-Mail)
@@ -851,8 +850,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
             if (emailMatch.Success && emailMatch.Index == index)
             {
                 currentIndex += emailMatch.Length;
-                var target = "mailto:" + emailMatch.Groups["addr"].Value;
-                return new Link(new[] { InlineText.CreateFromText(target, false) }, target, null);
+                var target = emailMatch.Groups["addr"].Value;
+                return new Link(target,true);
             }
 
             // Inline html

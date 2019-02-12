@@ -571,7 +571,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
                 new Dictionary<string, LinkReferenceDefinition>()).ToArray();
             var structure = new InlineStructure(InlineElementType.InlineText,
                 new InlineStructure(InlineElementType.Link,
-                    new InlineStructure(InlineElementType.InlineText, "mailto:foo@bar.example.com")),
+                    new InlineStructure(InlineElementType.InlineText, "foo@bar.example.com")),
                 new InlineStructure(InlineElementType.InlineText, "<foo+@bar.example.com>"));
             structure.AssertEqual(ret);
         }
