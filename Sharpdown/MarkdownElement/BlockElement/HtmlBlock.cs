@@ -39,8 +39,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// HTML tag names which constitutes type 6 HTML block.
         /// </summary>
-        private static readonly string[] htmlTagNames = new[]
-        {
+        private static readonly string[] htmlTagNames = {
             "address", "article", "aside", "base", "basefont", "blockquote", "body", "caption",
             "center", "col", "colgroup", "dd", "details", "dialog", "dir", "div", "dl", "dt",
             "fieldset", "figcaption", "figure", "footer", "form", "frame", "frameset", "h1", "h2",
@@ -176,7 +175,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </returns>
         private static bool IsType2HtmlBlock(string line)
         {
-            return line.StartsWith("<!--");
+            return line.StartsWith("<!--", StringComparison.Ordinal);
         }
 
         /// <summary>
@@ -201,7 +200,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </returns>
         private static bool IsType3HtmlBlock(string line)
         {
-            return line.StartsWith("<?");
+            return line.StartsWith("<?", StringComparison.Ordinal);
         }
 
         /// <summary>
@@ -231,7 +230,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 return false;
             }
 
-            return line.StartsWith("<!")
+            return line.StartsWith("<!", StringComparison.Ordinal)
                 && line[2] >= 0x41
                 && line[2] <= 0x5A;
         }
@@ -258,7 +257,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </returns>
         private static bool IsType5HtmlBlock(string line)
         {
-            return line.StartsWith("<![CDATA[");
+            return line.StartsWith("<![CDATA[", StringComparison.Ordinal);
         }
 
         /// <summary>
@@ -289,7 +288,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 return false;
             }
 
-            if (!line.StartsWith("<"))
+            if (!line.StartsWith("<", StringComparison.Ordinal))
             {
                 return false;
             }
@@ -315,7 +314,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     }
 
                     var afterTag = trimmed.Substring(tagName.Length);
-                    if (afterTag.StartsWith("/>") || afterTag.StartsWith(">") || whiteSpaceShars.Contains(afterTag[0]))
+                    if (afterTag.StartsWith("/>", StringComparison.Ordinal) || afterTag.StartsWith(">", StringComparison.Ordinal) || whiteSpaceShars.Contains(afterTag[0]))
                     {
                         return true;
                     }
@@ -346,7 +345,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </returns>
         private static bool IsType7HtmlBlock(string line)
         {
-            string[] invalidTags = new[] { "script", "style", "pre" };
+            string[] invalidTags = { "script", "style", "pre" };
             if (openTag.IsMatch(line))
             {
                 Match match = openTag.Match(line);

@@ -31,7 +31,7 @@
                 .Replace('\r', ' ')
                 .Replace('\n', ' ')
                 .Replace("  ", " ");
-            while (ret.IndexOf("  ") >= 0)
+            while (ret.IndexOf("  ", System.StringComparison.Ordinal) >= 0)
             {
                 ret = ret.Replace("  ", " ");
             }

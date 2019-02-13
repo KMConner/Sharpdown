@@ -2220,7 +2220,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             i = colon;
                             continue;
                         }
-                        else if (entity.StartsWith("#") && uint.TryParse(entity.Substring(1), out uint num2))
+                        else if (entity.StartsWith("#", StringComparison.Ordinal) && uint.TryParse(entity.Substring(1), out uint num2))
                         {
                             builder.Append(GetSecureChar(num2));
                             i = colon;

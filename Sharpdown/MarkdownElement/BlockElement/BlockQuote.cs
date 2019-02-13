@@ -52,7 +52,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 return false;
             }
 
-            if (line.TrimStart(whiteSpaceShars).StartsWith(">"))
+            if (line.TrimStart(whiteSpaceShars).StartsWith(">", StringComparison.Ordinal))
             {
                 return true;
             }
@@ -70,12 +70,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
             string trimmed = line.TrimStartAscii();
 
-            if (!trimmed.StartsWith(">"))
+            if (!trimmed.StartsWith(">", StringComparison.Ordinal))
             {
                 return false;
             }
 
-            if (trimmed.StartsWith("> ") || trimmed.StartsWith(">\t"))
+            if (trimmed.StartsWith("> ", StringComparison.Ordinal) || trimmed.StartsWith(">\t", StringComparison.Ordinal))
             {
                 markRemoved = SubStringExpandingTabs(trimmed, 2, currentIndent);
                 markLength = 2;

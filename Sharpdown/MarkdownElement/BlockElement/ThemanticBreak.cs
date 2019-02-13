@@ -22,7 +22,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// The characters which can be used in themantic breaks.
         /// </summary>
-        private static readonly char[] ThemanticBreakChars = new[] { '-', '_', '*' };
+        private static readonly char[] ThemanticBreakChars = { '-', '_', '*' };
 
         /// <summary>
         /// Gets the type of this block.
