@@ -31,7 +31,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// Regular expression which matches raw html.
         /// </summary>
         private static readonly Regex HtmlTagRegex = new Regex(
-            @"\<[a-zA-Z][0-9a-z-A-Z\-]*(?:[ \t\r\n]+[a-zA-Z_\:][a-zA-Z0-9_\.\:\-]*[ \t\r\n]*(?:=[ \t\r\n]*(?:[^ \r\n\t\""\'=\<\>`]*|'[^ ']*?' |\""[^\""]*\""))??)*[ \t\r\n]*\/??\>"
+            @"\<[a-zA-Z][0-9a-z-A-Z\-]*(?:[ \t\r\n]+[a-zA-Z_\:][a-zA-Z0-9_\.\:\-]*[ \t\r\n]*(?:=[ \t\r\n]*(?:[^ \r\n\t\""\'=\<\>`]*|'[^']*?'|\""[^\""]*\""))??)*[ \t\r\n]*\/??\>"
             + @"|\<\/[a-zA-Z][0-9a-z-A-Z\-]*[ \t\r\n]*\>"
             + @"|<\?.*?\?>|<![A-Z]+(?:[ \t\r\n]+[^>]*)??>"
             + @"|<!\[CDATA\[(?s:.*?)\]\]>"
