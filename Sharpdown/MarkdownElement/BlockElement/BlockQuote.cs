@@ -81,12 +81,10 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 markLength = 2;
                 return true;
             }
-            else
-            {
-                markRemoved = trimmed.Substring(1);
-                markLength = 1;
-                return true;
-            }
+
+            markRemoved = trimmed.Substring(1);
+            markLength = 1;
+            return true;
         }
     }
 }

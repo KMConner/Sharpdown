@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides methods which commonly used in <see cref="BlockElement"/> and its inheritances.
     /// </summary>
-    public class BlockElementUtil
+    public static class BlockElementUtil
     {
         /// <summary>
         /// Creates a new instance of <see cref="BlockElement"/>.

@@ -190,7 +190,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
 
             var conIn = line.Substring(1).GetIndentNum(currentIndent + 1) + 1;
-            if (conIn>5)
+            if (conIn > 5)
             {
                 conIn = 2;
             }
@@ -264,58 +264,57 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 openElement.AddLine(item.contentIndent > line.Length ? string.Empty : SubStringExpandingTabs(line, item.contentIndent, currentIndent), false, currentIndent + item.contentIndent);
                 return AddLineResult.Consumed;
             }
-            else if (openElement is ListItem item)
-            {
-                if (lineIndent == -1)
-                {
-                    return item.AddLine(line, true, currentIndent);
-                }
-                if (lazy)
-                {
-                    return item.AddLine(line, lazy, currentIndent);
-                }
-                if (lineIndent >= item.contentIndent)
-                {
-                    return item.AddLine(SubStringExpandingTabs(line, item.contentIndent, currentIndent), false, currentIndent + item.contentIndent);
-                }
 
-                if (CanStartBlock(lineTrimmed, currentIndent))
-                {
-                    if (ThemanticBreak.CanStartBlock(line, currentIndent))
-                    {
-                        return AddLineResult.NeedClose;
-                    }
-                    var newItem = CreateItem(lineTrimmed, trimmedIndent);
-                    if (newItem.Deliminator != item.Deliminator)
-                    {
-                        return AddLineResult.NeedClose;
-                    }
-                    CloseOpenlement();
-                    AddChild(newItem);
-                    newItem.contentIndent += lineIndent;
-                    newItem.MarkIndent += lineIndent;
-                    openElement.AddLine(SubStringExpandingTabs(line, Math.Min(newItem.contentIndent, line.Length), currentIndent), false, currentIndent + Math.Min(newItem.contentIndent, line.Length));
-                    return AddLineResult.Consumed;
-                }
-
-                if (!CanLazyContinue())
-                {
-                    return AddLineResult.NeedClose;
-                }
-
-                var indentRemoved = RemoveIndent(line, item.contentIndent, currentIndent);
-                var newBlock = BlockElementUtil.CreateBlockFromLine(indentRemoved, currentIndent + Math.Min(item.contentIndent, lineIndent));
-                if (newBlock.Type != BlockElementType.Unknown)
-                {
-                    return AddLineResult.NeedClose;
-                }
-
-                return openElement.AddLine(line, true, currentIndent) & AddLineResult.Consumed;
-            }
-            else
+            if (!(openElement is ListItem listItem))
             {
                 throw new InvalidBlockFormatException(BlockElementType.List);
             }
+
+            if (lineIndent == -1)
+            {
+                return listItem.AddLine(line, true, currentIndent);
+            }
+            if (lazy)
+            {
+                return listItem.AddLine(line, lazy, currentIndent);
+            }
+            if (lineIndent >= listItem.contentIndent)
+            {
+                return listItem.AddLine(SubStringExpandingTabs(line, listItem.contentIndent, currentIndent), false, currentIndent + listItem.contentIndent);
+            }
+
+            if (CanStartBlock(lineTrimmed, currentIndent))
+            {
+                if (ThemanticBreak.CanStartBlock(line, currentIndent))
+                {
+                    return AddLineResult.NeedClose;
+                }
+                var newItem = CreateItem(lineTrimmed, trimmedIndent);
+                if (newItem.Deliminator != listItem.Deliminator)
+                {
+                    return AddLineResult.NeedClose;
+                }
+                CloseOpenlement();
+                AddChild(newItem);
+                newItem.contentIndent += lineIndent;
+                newItem.MarkIndent += lineIndent;
+                openElement.AddLine(SubStringExpandingTabs(line, Math.Min(newItem.contentIndent, line.Length), currentIndent), false, currentIndent + Math.Min(newItem.contentIndent, line.Length));
+                return AddLineResult.Consumed;
+            }
+
+            if (!CanLazyContinue())
+            {
+                return AddLineResult.NeedClose;
+            }
+
+            var indentRemoved = RemoveIndent(line, listItem.contentIndent, currentIndent);
+            var newBlock = BlockElementUtil.CreateBlockFromLine(indentRemoved, currentIndent + Math.Min(listItem.contentIndent, lineIndent));
+            if (newBlock.Type != BlockElementType.Unknown)
+            {
+                return AddLineResult.NeedClose;
+            }
+
+            return openElement.AddLine(line, true, currentIndent) & AddLineResult.Consumed;
         }
 
         /// <summary>

@@ -36,14 +36,11 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
 
         public static IReadOnlyList<InlineElementBase> GetInlines(this BlockElement element)
         {
-            if (element is LeafElement leaf)
-            {
-                return leaf.Inlines;
-            }
-            else
+            if (!(element is LeafElement leaf))
             {
                 throw new Exception("This block is a container block.");
             }
+            return leaf.Inlines;
         }
 
         public static InlineElementBase GetInline(this BlockElement element, int index)
@@ -53,14 +50,11 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
 
         public static IReadOnlyList<BlockElement> GetChildren(this BlockElement element)
         {
-            if (element is ContainerElement container)
-            {
-                return container.Children;
-            }
-            else
+            if (!(element is ContainerElement container))
             {
                 throw new Exception("This block is not a container block.");
             }
+            return container.Children;
         }
 
         public static BlockElement GetChild(this BlockElement element, int index)

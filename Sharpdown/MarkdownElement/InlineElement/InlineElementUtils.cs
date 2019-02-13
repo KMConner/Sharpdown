@@ -383,7 +383,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <returns>The tree of <see cref="DelimSpan"/> which is equivalent to <paramref name="spans"/>.</returns>
         private static DelimSpan GetInlineTree(SortedList<int, DelimSpan> spans, int rootLength)
         {
-            var root = new DelimSpan()
+            var root = new DelimSpan
             {
                 Begin = 0,
                 End = rootLength,
@@ -466,44 +466,39 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 {
                     return;
                 }
-                else
-                {
-                    ParseEmphasis(deliminators, delimSpans, firstClose?.Value);
-                    return;
-                }
+                ParseEmphasis(deliminators, delimSpans, firstClose?.Value);
+                return;
             }
-            else
+
+            DeliminatorInfo openInfo = startDelimNode.Value;
+            DeliminatorInfo closeInfo = firstClose.Value;
+            int delimLength = openInfo.DeliminatorLength > 1 && closeInfo.DeliminatorLength > 1 ? 2 : 1;
+            var delimSpan = new DelimSpan
             {
-                DeliminatorInfo openInfo = startDelimNode.Value;
-                DeliminatorInfo closeInfo = firstClose.Value;
-                int delimLength = openInfo.DeliminatorLength > 1 && closeInfo.DeliminatorLength > 1 ? 2 : 1;
-                var delimSpan = new DelimSpan()
-                {
-                    Begin = openInfo.Index + openInfo.DeliminatorLength - delimLength,
-                    End = closeInfo.Index + delimLength,
-                    DeliminatorType =
-                        delimLength > 1 ? DelimSpan.DelimType.StrongEmplasis : DelimSpan.DelimType.Emphasis,
-                };
-                delimSpan.ParseBegin = delimSpan.Begin + delimLength;
-                delimSpan.ParseEnd = delimSpan.End - delimLength;
-                delimSpans.Add(delimSpan.Begin, delimSpan);
-                while ((infoNode = infoNode.Next) != null && infoNode != firstClose)
-                {
-                    deliminators.Remove(infoNode);
-                }
+                Begin = openInfo.Index + openInfo.DeliminatorLength - delimLength,
+                End = closeInfo.Index + delimLength,
+                DeliminatorType =
+                    delimLength > 1 ? DelimSpan.DelimType.StrongEmplasis : DelimSpan.DelimType.Emphasis,
+            };
+            delimSpan.ParseBegin = delimSpan.Begin + delimLength;
+            delimSpan.ParseEnd = delimSpan.End - delimLength;
+            delimSpans.Add(delimSpan.Begin, delimSpan);
+            while ((infoNode = infoNode.Next) != null && infoNode != firstClose)
+            {
+                deliminators.Remove(infoNode);
+            }
 
-                openInfo.DeliminatorLength -= delimLength;
-                if (openInfo.DeliminatorLength <= 0)
-                {
-                    deliminators.Remove(openInfo);
-                }
+            openInfo.DeliminatorLength -= delimLength;
+            if (openInfo.DeliminatorLength <= 0)
+            {
+                deliminators.Remove(openInfo);
+            }
 
-                closeInfo.DeliminatorLength -= delimLength;
-                closeInfo.Index += delimLength;
-                if (closeInfo.DeliminatorLength <= 0)
-                {
-                    deliminators.Remove(closeInfo);
-                }
+            closeInfo.DeliminatorLength -= delimLength;
+            closeInfo.Index += delimLength;
+            if (closeInfo.DeliminatorLength <= 0)
+            {
+                deliminators.Remove(closeInfo);
             }
 
             if (deliminators.Find(firstClose.Value) == null)
@@ -558,7 +553,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 if (text[i] == '*' && !IsEscaped(text, i) && IsDelim(i))
                 {
                     int length = CountSameChars(text, i);
-                    var delimInfo = new DeliminatorInfo()
+                    var delimInfo = new DeliminatorInfo
                     {
                         Type = DeliminatorInfo.DeliminatorType.Star,
                         DeliminatorLength = length,
@@ -575,7 +570,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 else if (text[i] == '_' && !IsEscaped(text, i) && IsDelim(i))
                 {
                     int length = CountSameChars(text, i);
-                    var delimInfo = new DeliminatorInfo()
+                    var delimInfo = new DeliminatorInfo
                     {
                         Type = DeliminatorInfo.DeliminatorType.Underbar,
                         DeliminatorLength = length,
@@ -596,7 +591,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 }
                 else if (text[i] == '[' && !IsEscaped(text, i) && IsDelim(i))
                 {
-                    deliminators.AddLast(new DeliminatorInfo()
+                    deliminators.AddLast(new DeliminatorInfo
                     {
                         Type = DeliminatorInfo.DeliminatorType.OpenLink,
                         DeliminatorLength = 1,
@@ -607,7 +602,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 }
                 else if (text.Length > i + 1 && text[i] == '!' && text[i + 1] == '[' && !IsEscaped(text, i) && IsDelim(i))
                 {
-                    deliminators.AddLast(new DeliminatorInfo()
+                    deliminators.AddLast(new DeliminatorInfo
                     {
                         Type = DeliminatorInfo.DeliminatorType.OpenImage,
                         DeliminatorLength = 2,
@@ -653,7 +648,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                                 }
                             }
 
-                            delimSpans.Add(openInfo.Index, new DelimSpan()
+                            delimSpans.Add(openInfo.Index, new DelimSpan
                             {
                                 Begin = openInfo.Index,
                                 End = linkBody,
@@ -689,7 +684,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                                     }
                                 }
                             }
-                            delimSpans.Add(openInfo.Index, new DelimSpan()
+                            delimSpans.Add(openInfo.Index, new DelimSpan
                             {
                                 Begin = openInfo.Index,
                                 End = i + 3,
@@ -755,7 +750,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                                 }
                             }
 
-                            delimSpans.Add(openInfo.Index, new DelimSpan()
+                            delimSpans.Add(openInfo.Index, new DelimSpan
                             {
                                 Begin = openInfo.Index,
                                 End = i + 1,
@@ -851,7 +846,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             {
                 currentIndex += emailMatch.Length;
                 var target = emailMatch.Groups["addr"].Value;
-                return new Link(target,true);
+                return new Link(target, true);
             }
 
             // Inline html
@@ -919,7 +914,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
                 if (newInline != null)
                 {
-                    var span = new DelimSpan()
+                    var span = new DelimSpan
                     {
                         Begin = nextElemIndex,
                         End = newIndex,

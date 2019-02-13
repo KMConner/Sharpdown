@@ -74,7 +74,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         public override string Content => string.Join("\r\n", contents);
 
-        internal HtmlBlock() : base()
+        internal HtmlBlock()
         {
             contents = new List<string>();
             isClosed = false;
@@ -395,34 +395,31 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return 1;
             }
-            else if (IsType2HtmlBlock(lineTrimmed))
+            if (IsType2HtmlBlock(lineTrimmed))
             {
                 return 2;
             }
-            else if (IsType3HtmlBlock(lineTrimmed))
+            if (IsType3HtmlBlock(lineTrimmed))
             {
                 return 3;
             }
-            else if (IsType4HtmlBlock(lineTrimmed))
+            if (IsType4HtmlBlock(lineTrimmed))
             {
                 return 4;
             }
-            else if (IsType5HtmlBlock(lineTrimmed))
+            if (IsType5HtmlBlock(lineTrimmed))
             {
                 return 5;
             }
-            else if (IsType6HtmlBlock(lineTrimmed))
+            if (IsType6HtmlBlock(lineTrimmed))
             {
                 return 6;
             }
-            else if (IsType7HtmlBlock(lineTrimmed))
+            if (IsType7HtmlBlock(lineTrimmed))
             {
                 return 7;
             }
-            else
-            {
-                return -1;
-            }
+            return -1;
         }
 
         /// <summary>

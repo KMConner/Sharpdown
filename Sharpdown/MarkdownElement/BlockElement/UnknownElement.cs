@@ -110,7 +110,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                             actualType = BlockElementType.LinkReferenceDefinition;
                             return AddLineResult.Consumed | AddLineResult.NeedClose;
                         }
-                        else if (linkDefinitionRegex.IsMatch(string.Join("\n", content.GetRange(0, content.Count - 1))))
+                        if (linkDefinitionRegex.IsMatch(string.Join("\n", content.GetRange(0, content.Count - 1))))
                         {
                             content.RemoveAt(content.Count - 1);
                             actualType = BlockElementType.LinkReferenceDefinition;

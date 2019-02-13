@@ -198,11 +198,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 closed = true;
                 return AddLineResult.Consumed | AddLineResult.NeedClose;
             }
-            else
-            {
-                contents.Add(RemoveIndent(line, indentNum, currentIndent));
-                return AddLineResult.Consumed;
-            }
+
+            contents.Add(RemoveIndent(line, indentNum, currentIndent));
+            return AddLineResult.Consumed;
         }
 
         /// <summary>

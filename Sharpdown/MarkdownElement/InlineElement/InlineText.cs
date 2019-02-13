@@ -14,7 +14,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// HTML entity character listing.
         /// </summary>
         private static readonly Dictionary<string, string> entityCharacter =
-            new Dictionary<string, string>()
+            new Dictionary<string, string>
          {
             { "AElig", "\u00C6" },
             { "AMP", "\u0026" },
@@ -2152,7 +2152,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <summary>
         /// Initializes new instance of <see cref="InlineText"/>.
         /// </summary>
-        private InlineText() : base() { }
+        private InlineText(){ }
 
         /// <summary>
         /// Creates <see cref="InlineText"/> object from the specified string.
@@ -2174,7 +2174,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
             string escaped = HandleEscapeAndHtmlEntity(text, backslashEscapeEnabled);
 
-            return new InlineText()
+            return new InlineText
             {
                 Content = escaped,
             };
@@ -2213,14 +2213,14 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             i = colon;
                             continue;
                         }
-                        else if (entity.StartsWith("#x", StringComparison.OrdinalIgnoreCase) &&
+                        if (entity.StartsWith("#x", StringComparison.OrdinalIgnoreCase) &&
                             uint.TryParse(entity.Substring(2), NumberStyles.HexNumber, null, out uint num))
                         {
                             builder.Append(GetSecureChar(num));
                             i = colon;
                             continue;
                         }
-                        else if (entity.StartsWith("#", StringComparison.Ordinal) && uint.TryParse(entity.Substring(1), out uint num2))
+                        if (entity.StartsWith("#", StringComparison.Ordinal) && uint.TryParse(entity.Substring(1), out uint num2))
                         {
                             builder.Append(GetSecureChar(num2));
                             i = colon;
