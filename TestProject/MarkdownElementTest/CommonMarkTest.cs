@@ -121,7 +121,85 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual("  foo", listItem.GetChild(0).Content);
         }
 
+        [TestMethod]
+        public void TestCase_008()
+        {
+            var doc = MarkdownParser.Parse("    foo\n\tbar");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.IndentedCodeBlock, doc.Elements[0].Type);
+            Assert.AreEqual("foo\r\nbar", doc.Elements[0].Content);
+        }
 
+        [TestMethod]
+        public void TestCase_009()
+        {
+            var doc = MarkdownParser.Parse(" - foo\n   - bar\n\t - baz");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+
+            var blocks = new BlockElementStructure(BlockElementType.List,
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.Paragraph),
+                        new BlockElementStructure(BlockElementType.List,
+                            new BlockElementStructure(BlockElementType.ListItem,
+                                new BlockElementStructure(BlockElementType.Paragraph),
+                                    new BlockElementStructure(BlockElementType.List,
+                                        new BlockElementStructure(BlockElementType.ListItem,
+                                            new BlockElementStructure(BlockElementType.Paragraph)))))));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+
+            var listItem0 = doc.Elements[0].GetChild(0) as ListItem;
+            var listItem1 = listItem0.GetChild(1).GetChild(0) as ListItem;
+            var listItem2 = listItem1.GetChild(1).GetChild(0) as ListItem;
+            Assert.AreEqual("foo", listItem0.GetChild(0).Content);
+            Assert.AreEqual("bar", listItem1.GetChild(0).Content);
+            Assert.AreEqual("baz", listItem2.GetChild(0).Content);
+        }
+
+        [TestMethod]
+        public void TestCase_010()
+        {
+            var doc = MarkdownParser.Parse("#\tFoo");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[0].Type);
+
+            Assert.AreEqual("Foo", (doc.Elements[0].GetInline(0) as InlineText).Content);
+        }
+
+        [TestMethod]
+        public void TestCase_011()
+        {
+            var doc = MarkdownParser.Parse("*\t*\t*\t");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.ThemanticBreak, doc.Elements[0].Type);
+        }
+
+        #endregion
+
+        #region Precedence
+
+        [TestMethod]
+        public void TestCase_012()
+        {
+            var doc = MarkdownParser.Parse("- `one\n- two`");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+
+            var blocks = new BlockElementStructure(BlockElementType.List,
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.Paragraph)),
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.Paragraph)));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+
+            var listItem = doc.Elements[0].GetChild(0) as ListItem;
+            var listItem2 = doc.Elements[0].GetChild(1) as ListItem;
+            Assert.AreEqual("`one", listItem.GetChild(0).Content);
+            Assert.AreEqual("two`", listItem2.GetChild(0).Content);
+        }
 
         #endregion
 
