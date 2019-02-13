@@ -53,7 +53,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         /// <returns>Always throws <see cref="InvalidOperationException"/>.</returns>
         /// <exception cref="InvalidOperationException">Always.</exception>
-        internal override AddLineResult AddLine(string line, bool lazy)
+        internal override AddLineResult AddLine(string line, bool lazy, int currentIndent)
         {
             throw new InvalidOperationException();
         }

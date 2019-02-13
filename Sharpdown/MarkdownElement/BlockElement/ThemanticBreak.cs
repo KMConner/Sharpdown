@@ -57,9 +57,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="FencedCodeBlock"/>.
         /// Otherwise, returns <c>false</c>.
         /// </returns>
-        public static bool CanStartBlock(string line)
+        public static bool CanStartBlock(string line, int currentIndent)
         {
-            if (line.GetIndentNum() >= 4)
+            if (line.GetIndentNum(currentIndent) >= 4)
             {
                 return false;
             }
@@ -76,9 +76,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <returns>
         /// Always returns <c>AddLineResult.Consumed | AddLineResult.NeedClose</c>.
         /// </returns>
-        internal override AddLineResult AddLine(string line, bool lazy)
+        internal override AddLineResult AddLine(string line, bool lazy, int currentIndent)
         {
-            if (!CanStartBlock(line) || lazy)
+            if (!CanStartBlock(line, currentIndent) || lazy)
             {
                 throw new InvalidBlockFormatException(BlockElementType.ThemanticBreak);
             }

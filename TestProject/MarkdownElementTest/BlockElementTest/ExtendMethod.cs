@@ -13,7 +13,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             var method = element.GetType().GetMethod("AddLine", BindingFlags.NonPublic | BindingFlags.Instance);
             try
             {
-                return (AddLineResult)method.Invoke(element, new object[] { line, lazy });
+                return (AddLineResult)method.Invoke(element, new object[] { line, lazy, 0 });
             }
             catch (TargetInvocationException ex)
             {

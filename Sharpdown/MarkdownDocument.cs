@@ -25,9 +25,9 @@ namespace Sharpdown
         {
             if (openElement == null)
             {
-                openElement = BlockElementUtil.CreateBlockFromLine(line);
+                openElement = BlockElementUtil.CreateBlockFromLine(line, 0);
             }
-            AddLineResult result = openElement.AddLine(line, false);
+            AddLineResult result = openElement.AddLine(line, false, 0);
 
             if ((result & AddLineResult.NeedClose) != 0)
             {

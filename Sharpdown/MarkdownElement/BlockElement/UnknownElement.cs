@@ -54,21 +54,21 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Gets the type of this block.
         /// </summary>
-        internal override AddLineResult AddLine(string line, bool lazy)
+        internal override AddLineResult AddLine(string line, bool lazy, int currentIndent)
         {
             var trimmed = line.TrimStartAscii();
             if (content.Count == 0)
             {
-                if (line.GetIndentNum() >= 4 || line.GetIndentNum() < 0)
+                if (line.GetIndentNum(currentIndent) >= 4 || line.GetIndentNum(currentIndent) < 0)
                 {
                     throw new InvalidBlockFormatException(BlockElementType.Unknown);
                 }
 
                 mayBeLinkReferenceDefinition = trimmed.StartsWith("[", StringComparison.Ordinal);
             }
-            else if (line.GetIndentNum() < 4)
+            else if (line.GetIndentNum(currentIndent) < 4)
             {
-                if (ListBlock.CanInterruptParagraph(line))
+                if (ListBlock.CanInterruptParagraph(line, currentIndent))
                 {
                     actualType = BlockElementType.Paragraph;
                     return AddLineResult.NeedClose;
@@ -86,7 +86,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 }
             }
 
-            if (Interrupted(line))
+            if (Interrupted(line, currentIndent))
             {
                 var match = linkDefinitionRegex.Match(string.Join("\n", content));
                 actualType = match.Success && !IsBlank(match.Groups["label"].Value)
@@ -146,12 +146,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <c>true</c> if the paragraph needs to be interrupted,
         /// otherwise, <c>false</c>.
         /// </returns>
-        private bool Interrupted(string line)
+        private bool Interrupted(string line, int currentIndent)
         {
-            if (BlockQuote.CanStartBlock(line)
-                || ThemanticBreak.CanStartBlock(line)
-                || AtxHeaderElement.CanStartBlock(line)
-                || FencedCodeBlock.CanStartBlock(line)
+            if (BlockQuote.CanStartBlock(line, currentIndent)
+                || ThemanticBreak.CanStartBlock(line, currentIndent)
+                || AtxHeaderElement.CanStartBlock(line, currentIndent)
+                || FencedCodeBlock.CanStartBlock(line, currentIndent)
                 || HtmlBlock.CanInterruptParagraph(line)
                 || BlankLine.CanStartBlock(line))
             {

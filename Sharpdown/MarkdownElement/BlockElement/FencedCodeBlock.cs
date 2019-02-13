@@ -117,9 +117,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="FencedCodeBlock"/>.
         /// Otherwise, returns <c>false</c>.
         /// </returns>
-        public static bool CanStartBlock(string line)
+        public static bool CanStartBlock(string line, int currentIndent)
         {
-            if (line.GetIndentNum() >= 4)
+            if (line.GetIndentNum(currentIndent) >= 4)
             {
                 return false;
             }
@@ -159,9 +159,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Returns <c>AddLineResult.Consumed</c> except when <paramref name="line"/>
         /// contains the close fence.
         /// </returns>
-        internal override AddLineResult AddLine(string line, bool lazy)
+        internal override AddLineResult AddLine(string line, bool lazy, int currentIndent)
         {
-            if (lazy && line.GetIndentNum() >= 0)
+            if (lazy && line.GetIndentNum(currentIndent) >= 0)
             {
                 throw new InvalidBlockFormatException(BlockElementType.FencedCodeBlock);
             }
@@ -188,7 +188,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
             if (!closeMatch.Success)
             {
-                contents.Add(RemoveIndent(line, indentNum));
+                contents.Add(RemoveIndent(line, indentNum, currentIndent));
                 return AddLineResult.Consumed;
             }
 
@@ -200,7 +200,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
             else
             {
-                contents.Add(RemoveIndent(line, indentNum));
+                contents.Add(RemoveIndent(line, indentNum, currentIndent));
                 return AddLineResult.Consumed;
             }
         }

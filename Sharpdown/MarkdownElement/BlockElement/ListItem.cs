@@ -55,9 +55,10 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <returns>
         /// Always <c>true</c>.
         /// </returns>
-        internal override bool HasMark(string line, out string markRemoved)
+        internal override bool HasMark(string line, int currentIndent, out string markRemoved, out int markLength)
         {
             markRemoved = line;
+            markLength = 0;
             return true;
         }
 
@@ -78,13 +79,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return base.Close();
         }
 
-        internal override AddLineResult AddLine(string line, bool lazy)
+        internal override AddLineResult AddLine(string line, bool lazy, int currentIndent)
         {
             if (children.Count > 1 && children.All(c => c.Type == BlockElementType.BlankLine))
             {
                 return AddLineResult.NeedClose;
             }
-            return base.AddLine(line, lazy);
+            return base.AddLine(line, lazy, currentIndent);
         }
     }
 }

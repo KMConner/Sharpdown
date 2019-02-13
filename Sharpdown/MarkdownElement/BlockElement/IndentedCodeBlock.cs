@@ -59,9 +59,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="FencedCodeBlock"/>.
         /// Otherwise, returns <c>false</c>.
         /// </returns>
-        public static bool CanStartBlock(string line)
+        public static bool CanStartBlock(string line, int currentIndent)
         {
-            return line.GetIndentNum() >= 4;
+            return line.GetIndentNum(currentIndent) >= 4;
         }
 
         /// <summary>
@@ -72,13 +72,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Returns <c>AddLineResult.Consumed</c> except when <paramref name="line"/>
         /// is indented less than 4 spaces.
         /// </returns>
-        internal override AddLineResult AddLine(string line, bool lazy)
+        internal override AddLineResult AddLine(string line, bool lazy, int currentIndent)
         {
             if (lazy)
             {
-               // throw new InvalidBlockFormatException(BlockElementType.IndentedCodeBlock);
+                // throw new InvalidBlockFormatException(BlockElementType.IndentedCodeBlock);
             }
-            int indent = line.GetIndentNum();
+            int indent = line.GetIndentNum(currentIndent);
             if (indent >= 0 && indent < 4)
             {
                 for (int i = contents.Count - 1; i >= 0; i--)
@@ -95,38 +95,10 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 return AddLineResult.NeedClose;
             }
 
-            string lineTrimmed = RemoveIndent(line);
+            string lineTrimmed = RemoveIndent(line, 4, currentIndent);
 
             contents.Add(lineTrimmed);
             return AddLineResult.Consumed;
-        }
-
-        /// <summary>
-        /// Removes indent from the specied string up to four spaces or one tab character.
-        /// </summary>
-        /// <param name="line"><see cref="string"/> to remove indent.</param>
-        /// <returns>String which removed indent.</returns>
-        private string RemoveIndent(string line)
-        {
-            if (line.Length == 0)
-            {
-                return line;
-            }
-            if (line[0] == '\t')
-            {
-                return line.Substring(1);
-            }
-
-            int trimLength = 4;
-            for (int i = 0; i < 4; i++)
-            {
-                if (line.Length < i + 1 || line[i] != ' ')
-                {
-                    trimLength = i;
-                    break;
-                }
-            }
-            return line.Substring(trimLength);
         }
 
         internal override BlockElement Close()

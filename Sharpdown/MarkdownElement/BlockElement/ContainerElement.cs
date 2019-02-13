@@ -61,7 +61,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Wether the specified line satisfied proper conditions to 
         /// continue (without lazy continuation).
         /// </returns>
-        internal abstract bool HasMark(string line, out string markRemoved);
+        internal abstract bool HasMark(string line, int currentIndent, out string markRemoved, out int markLength);
 
         /// <summary>
         /// Closes <see cref="openElement"/>.
@@ -149,19 +149,19 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         /// <param name="line">A single line to add to this element.</param>
         /// <returns></returns>
-        internal override AddLineResult AddLine(string line, bool lazy)
+        internal override AddLineResult AddLine(string line, bool lazy, int currentIndent)
         {
-            if (HasMark(line, out string markRemoved))
+            if (HasMark(line, currentIndent, out string markRemoved, out int markLength))
             {
                 AddLineResult addLineResult;
                 do
                 {
                     if (openElement == null)
                     {
-                        openElement = BlockElementUtil.CreateBlockFromLine(markRemoved, Type == BlockElementType.List);
+                        openElement = BlockElementUtil.CreateBlockFromLine(markRemoved, currentIndent, Type == BlockElementType.List);
                         children.Add(openElement);
                     }
-                    addLineResult = openElement.AddLine(markRemoved, lazy);
+                    addLineResult = openElement.AddLine(markRemoved, lazy, currentIndent + markLength);
                     if ((addLineResult & AddLineResult.NeedClose) != 0)
                     {
                         children[children.Count - 1] = openElement.Close();
@@ -173,14 +173,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
             line = markRemoved ?? line;
 
-            var newElem = BlockElementUtil.CreateBlockFromLine(line, Type == BlockElementType.List);
+            var newElem = BlockElementUtil.CreateBlockFromLine(line, currentIndent, Type == BlockElementType.List);
             if ((newElem.Type != BlockElementType.Unknown && newElem.Type != BlockElementType.BlankLine && newElem.Type != BlockElementType.IndentedCodeBlock)
                 || !CanLazyContinue())
             {
                 return AddLineResult.NeedClose;
             }
 
-            return openElement?.AddLine(line, true) ?? throw new Exception();
+            return openElement?.AddLine(line, true, currentIndent) ?? throw new Exception();
         }
 
         internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
@@ -190,5 +190,20 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 child.ParseInline(linkDefinitions);
             }
         }
+
+        protected string SubStringExpandingTabs(string str, int count, int currentIndent)
+        {
+            if (count <= 0)
+            {
+                return str;
+            }
+            if (str[0] == '\t')
+            {
+                int tabWidth = 4 - (currentIndent % 4);
+                return SubStringExpandingTabs(new string(' ', tabWidth - 1) + str.Substring(1), count - 1, currentIndent + 1);
+            }
+            return SubStringExpandingTabs(str.Substring(1), count - 1, currentIndent + 1);
+        }
+
     }
 }

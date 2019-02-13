@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sharpdown;
 using Sharpdown.MarkdownElement.BlockElement;
 using Sharpdown.MarkdownElement.InlineElement;
@@ -28,21 +25,105 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual("foo\tbaz\t\tbim", lit.Content);
         }
 
-        //[TestMethod]
-        //public void TestCase_002()
-        //{
-        //    var doc = MarkdownParser.Parse("  \tfoo\tbaz\t\tbim");
-        //    Assert.AreEqual(1, doc.Elements.Count);
-        //    Assert.AreEqual(0, doc.LinkDefinition.Count);
-        //    Assert.AreEqual(BlockElementType.IndentedCodeBlock, doc.Elements[0].Type);
-        //    Assert.AreEqual(1, ((IndentedCodeBlock)doc.Elements[0]).Inlines.Count);
-        //    var lit = (LiteralText)((IndentedCodeBlock)doc.Elements[0]).Inlines[0];
-        //    Assert.AreEqual(InlineElementType.LiteralText, lit.Type);
-        //    Assert.AreEqual("foo\tbaz\t\tbim", lit.Content);
-        //}
+        [TestMethod]
+        public void TestCase_002()
+        {
+            var doc = MarkdownParser.Parse("  \tfoo\tbaz\t\tbim");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.IndentedCodeBlock, doc.Elements[0].Type);
+            Assert.AreEqual(1, ((IndentedCodeBlock)doc.Elements[0]).Inlines.Count);
+            var lit = (LiteralText)((IndentedCodeBlock)doc.Elements[0]).Inlines[0];
+            Assert.AreEqual(InlineElementType.LiteralText, lit.Type);
+            Assert.AreEqual("foo\tbaz\t\tbim", lit.Content);
+        }
+
+        [TestMethod]
+        public void TestCase_003()
+        {
+            var doc = MarkdownParser.Parse("    a\ta\n    ὐ\ta");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.IndentedCodeBlock, doc.Elements[0].Type);
+            Assert.AreEqual(1, ((IndentedCodeBlock)doc.Elements[0]).Inlines.Count);
+            var lit = (LiteralText)((IndentedCodeBlock)doc.Elements[0]).Inlines[0];
+            Assert.AreEqual(InlineElementType.LiteralText, lit.Type);
+            Assert.AreEqual("a\ta\r\nὐ\ta", lit.Content);
+        }
+
+        [TestMethod]
+        public void TestCase_004()
+        {
+            var doc = MarkdownParser.Parse("  - foo\n\n\tbar");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+
+            var blocks = new BlockElementStructure(BlockElementType.List,
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.Paragraph),
+                    new BlockElementStructure(BlockElementType.Paragraph)));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "foo");
+            var inline1 = new InlineStructure(InlineElementType.InlineText, "bar");
+            var listItem = doc.Elements[0].GetChild(0) as ListItem;
+            inline0.AssertEqual(listItem.GetChild(0).GetInlines());
+            inline1.AssertEqual(listItem.GetChild(1).GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_005()
+        {
+            var doc = MarkdownParser.Parse("- foo\n\n\t\tbar");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+
+            var blocks = new BlockElementStructure(BlockElementType.List,
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.Paragraph),
+                    new BlockElementStructure(BlockElementType.IndentedCodeBlock)));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "foo");
+            var listItem = doc.Elements[0].GetChild(0) as ListItem;
+            inline0.AssertEqual(listItem.GetChild(0).GetInlines());
+
+            Assert.AreEqual("  bar", listItem.GetChild(1).Content);
+        }
+
+        [TestMethod]
+        public void TestCase_006()
+        {
+            var doc = MarkdownParser.Parse(">\t\tfoo");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+
+            var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
+                new BlockElementStructure(BlockElementType.IndentedCodeBlock));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+
+            Assert.AreEqual("  foo", doc.Elements[0].GetChild(0).Content);
+        }
+
+        [TestMethod]
+        public void TestCase_007()
+        {
+            var doc = MarkdownParser.Parse("-\t\tfoo");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+
+            var blocks = new BlockElementStructure(BlockElementType.List,
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.IndentedCodeBlock)));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+
+            var listItem = doc.Elements[0].GetChild(0) as ListItem;
+            Assert.AreEqual("  foo", listItem.GetChild(0).Content);
+        }
+
+
 
         #endregion
-        // TODO: test 02 - 12
 
         #region Themantic break
 

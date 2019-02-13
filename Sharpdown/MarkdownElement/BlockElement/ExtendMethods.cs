@@ -40,7 +40,7 @@
         /// </summary>
         /// <param name="line">A line to count the indent.</param>
         /// <returns>The indent count of <paramref name="line"/>.</returns>
-        public static int GetIndentNum(this string line)
+        public static int GetIndentNum(this string line, int currentIndent)
         {
             if (line.TrimStart(MarkdownElementBase.whiteSpaceShars).Length == 0)
             {
@@ -55,7 +55,7 @@
                         ret++;
                         break;
                     case '\t':
-                        ret += 4;
+                        ret += 4 - ((currentIndent + ret) % 4);
                         break;
                     default:
                         return ret;
@@ -71,10 +71,10 @@
         /// <param name="str">
         /// The string to remove all reading occurences of ascii white space characters.
         /// </param>
-        /// </returns>
+        /// <returns>
         /// The string that remains after all occurrences of ascii white space characters
         /// are removed from the start of the current string.
-        /// <returns>
+        /// </returns>
         public static string TrimStartAscii(this string str)
         {
             return str.TrimStart(MarkdownElementBase.whiteSpaceShars);

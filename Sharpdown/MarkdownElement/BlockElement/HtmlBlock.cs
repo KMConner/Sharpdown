@@ -92,9 +92,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="HtmlBlock"/>.
         /// Otherwise, returns <c>false</c>.
         /// </returns>
-        public static bool CanStartBlock(string line)
+        public static bool CanStartBlock(string line, int currentIndent)
         {
-            if (line.GetIndentNum() < 0 || line.GetIndentNum() >= 4)
+            if (line.GetIndentNum(currentIndent) < 0 || line.GetIndentNum(currentIndent) >= 4)
             {
                 return false;
             }
@@ -467,7 +467,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <see cref="NeedClose(string)"/> returns <c>true</c>,
         /// <c>AddLineResult.Consumed</c> otherwise.
         /// </returns>
-        internal override AddLineResult AddLine(string line, bool lazy)
+        internal override AddLineResult AddLine(string line, bool lazy, int currentIndent)
         {
             string lineTrimmed = line.TrimStartAscii();
             if (contents.Count == 0 && (blockType = DetermineType(lineTrimmed)) < 1 || lazy)

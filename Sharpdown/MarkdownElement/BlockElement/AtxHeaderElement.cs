@@ -49,9 +49,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="AtxHeaderElement"/>.
         /// Otherwise, returns <c>false</c>.
         /// </returns>
-        public static bool CanStartBlock(string line)
+        public static bool CanStartBlock(string line, int currentIndent)
         {
-            if (line.GetIndentNum() >= 4)
+            if (line.GetIndentNum(currentIndent) >= 4)
             {
                 // Indented too many speces
                 return false;
@@ -80,7 +80,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         /// <param name="line">A single line to add to this element.</param>
         /// <returns>Always returns <c> AddLineResult.Consumed | AddLineResult.NeedClose</c></returns>
-        internal override AddLineResult AddLine(string line, bool lazy)
+        internal override AddLineResult AddLine(string line, bool lazy, int currentIndent)
         {
             if (!headerRegex.IsMatch(line) || lazy)
             {

@@ -45,9 +45,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="BlockQuote"/>.
         /// Otherwise, returns <c>false</c>.
         /// </returns>
-        public static bool CanStartBlock(string line)
+        public static bool CanStartBlock(string line, int currentIndent)
         {
-            if (line.GetIndentNum() >= 4)
+            if (line.GetIndentNum(currentIndent) >= 4)
             { // Too many indent
                 return false;
             }
@@ -60,10 +60,11 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return false;
         }
 
-        internal override bool HasMark(string line, out string markRemoved)
+        internal override bool HasMark(string line, int currentIndent, out string markRemoved, out int markLength)
         {
             markRemoved = null;
-            if (line.GetIndentNum() > 4)
+            markLength = 0;
+            if (line.GetIndentNum(currentIndent) > 4)
             {
                 return false;
             }
@@ -74,14 +75,16 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 return false;
             }
 
-            if (trimmed.StartsWith("> "))
+            if (trimmed.StartsWith("> ") || trimmed.StartsWith(">\t"))
             {
-                markRemoved = trimmed.Substring(2);
+                markRemoved = SubStringExpandingTabs(trimmed, 2, currentIndent);
+                markLength = 2;
                 return true;
             }
             else
             {
                 markRemoved = trimmed.Substring(1);
+                markLength = 1;
                 return true;
             }
         }

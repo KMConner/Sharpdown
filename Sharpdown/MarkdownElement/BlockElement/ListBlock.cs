@@ -80,9 +80,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="ListBlock"/>.
         /// Otherwise, returns <c>false</c>.
         /// </returns>
-        public static bool CanStartBlock(string line)
+        public static bool CanStartBlock(string line, int currentIndent)
         {
-            if (line.GetIndentNum() >= 4)
+            if (line.GetIndentNum(currentIndent) >= 4)
             {
                 return false;
             }
@@ -111,7 +111,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 return (false, '\0');
             }
 
-            if (line.Length == 1 || line[1] == ' ')
+            if (line.Length == 1 || line[1] == ' ' || line[1] == '\t')
             {
                 return (true, line[0]);
             }
@@ -148,7 +148,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <returns>
         /// <see cref="ListItem"/> which is created from <paramref name="line"/>.
         /// </returns>
-        private ListItem CreateItem(string line)
+        private ListItem CreateItem(string line, int currentIndent)
         {
             if (line.Length == 0)
             {
@@ -184,24 +184,37 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 };
             }
 
-            if (line[1] != ' ')
+            if (line[1] != ' ' && line[1] != '\t')
             {
                 throw new InvalidBlockFormatException(BlockElementType.List);
             }
 
-            for (int i = 1; i < line.Length; i++)
+            var conIn = line.Substring(1).GetIndentNum(currentIndent + 1) + 1;
+            if (conIn>5)
             {
-                if (line[i] != ' ' && line[i] != '\t')
-                {
-                    return new ListItem
-                    {
-                        Deliminator = line[0],
-                        MarkIndent = 0,
-                        contentIndent = i,
-                    };
-                }
+                conIn = 2;
             }
-            throw new InvalidBlockFormatException(BlockElementType.List);
+
+            return new ListItem
+            {
+                Deliminator = line[0],
+                MarkIndent = 0,
+                contentIndent = conIn
+            };
+
+            //for (int i = 1; i < line.Length; i++)
+            //{
+            //    if (line[i] != ' ' && line[i] != '\t')
+            //    {
+            //        return new ListItem
+            //        {
+            //            Deliminator = line[0],
+            //            MarkIndent = 0,
+            //            contentIndent = i,
+            //        };
+            //    }
+            //}
+            //throw new InvalidBlockFormatException(BlockElementType.List);
         }
 
         /// <summary>
@@ -212,9 +225,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// If the line is the start line of bullet list which does not starts with blank
         /// line, 
         /// </returns>
-        internal static bool CanInterruptParagraph(string line)
+        internal static bool CanInterruptParagraph(string line, int currentIndent)
         {
-            if (line.GetIndentNum() >= 4)
+            if (line.GetIndentNum(currentIndent) >= 4)
             {
                 return false;
             }
@@ -233,45 +246,46 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Returns <c>AddLineResult.Consumed | AddLineResult.NeedClose</c>
         /// except when this block need to be insterrupted.
         /// </returns>
-        internal override AddLineResult AddLine(string line, bool lazy)
+        internal override AddLineResult AddLine(string line, bool lazy, int currentIndent)
         {
-            int lineIndent = line.GetIndentNum();
+            int lineIndent = line.GetIndentNum(currentIndent);
             string lineTrimmed = line.TrimStartAscii();
+            int trimmedIndent = lineIndent + currentIndent;
             if (openElement == null)
             {
                 if (lineIndent < 0 || lineIndent >= 4)
                 {
                     throw new InvalidBlockFormatException(BlockElementType.List);
                 }
-                var item = CreateItem(lineTrimmed);
+                var item = CreateItem(lineTrimmed, trimmedIndent);
                 AddChild(item);
                 item.contentIndent += lineIndent;
                 item.MarkIndent += lineIndent;
-                openElement.AddLine(item.contentIndent > line.Length ? string.Empty : line.Substring(item.contentIndent), false);
+                openElement.AddLine(item.contentIndent > line.Length ? string.Empty : SubStringExpandingTabs(line, item.contentIndent, currentIndent), false, currentIndent + item.contentIndent);
                 return AddLineResult.Consumed;
             }
             else if (openElement is ListItem item)
             {
                 if (lineIndent == -1)
                 {
-                    return item.AddLine(line, true);
+                    return item.AddLine(line, true, currentIndent);
                 }
                 if (lazy)
                 {
-                    return item.AddLine(line, lazy);
+                    return item.AddLine(line, lazy, currentIndent);
                 }
                 if (lineIndent >= item.contentIndent)
                 {
-                    return item.AddLine(line.Substring(item.contentIndent), false);
+                    return item.AddLine(SubStringExpandingTabs(line, item.contentIndent, currentIndent), false, currentIndent + item.contentIndent);
                 }
 
-                if (CanStartBlock(lineTrimmed))
+                if (CanStartBlock(lineTrimmed, currentIndent))
                 {
-                    if (ThemanticBreak.CanStartBlock(line))
+                    if (ThemanticBreak.CanStartBlock(line, currentIndent))
                     {
                         return AddLineResult.NeedClose;
                     }
-                    var newItem = CreateItem(lineTrimmed);
+                    var newItem = CreateItem(lineTrimmed, trimmedIndent);
                     if (newItem.Deliminator != item.Deliminator)
                     {
                         return AddLineResult.NeedClose;
@@ -280,7 +294,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     AddChild(newItem);
                     newItem.contentIndent += lineIndent;
                     newItem.MarkIndent += lineIndent;
-                    openElement.AddLine(line.Substring(Math.Min(newItem.contentIndent, line.Length)), false);
+                    openElement.AddLine(SubStringExpandingTabs(line, Math.Min(newItem.contentIndent, line.Length), currentIndent), false, currentIndent + Math.Min(newItem.contentIndent, line.Length));
                     return AddLineResult.Consumed;
                 }
 
@@ -289,13 +303,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     return AddLineResult.NeedClose;
                 }
 
-                var newBlock = BlockElementUtil.CreateBlockFromLine(this.RemoveIndent(line, item.contentIndent));
+                var indentRemoved = RemoveIndent(line, item.contentIndent, currentIndent);
+                var newBlock = BlockElementUtil.CreateBlockFromLine(indentRemoved, currentIndent + Math.Min(item.contentIndent, lineIndent));
                 if (newBlock.Type != BlockElementType.Unknown)
                 {
                     return AddLineResult.NeedClose;
                 }
 
-                return openElement.AddLine(line, true) & AddLineResult.Consumed;
+                return openElement.AddLine(line, true, currentIndent) & AddLineResult.Consumed;
             }
             else
             {
@@ -314,7 +329,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <param name="markRemoved">Ignored.</param>
         /// <returns>Always throws <see cref="InvalidOperationException"/>.</returns>
         /// <exception cref="InvalidOperationException">Always.</exception>
-        internal override bool HasMark(string line, out string markRemoved)
+        internal override bool HasMark(string line, int currentIndent, out string markRemoved, out int markLength)
         {
             throw new InvalidOperationException();
         }
@@ -327,5 +342,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 && ret.Children.Reverse().Skip(1).Cast<ListItem>().All(c => !c.IsLastBlank);
             return ret;
         }
+
     }
 }

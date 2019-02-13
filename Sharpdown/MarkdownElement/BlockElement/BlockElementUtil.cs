@@ -14,39 +14,39 @@
         /// Creates a <see cref="ListItem"/> instead of <see cref="ListBlock"/> when <c>true</c> is specified.
         /// </param>
         /// <returns>The new element that the type corresponds to <paramref name="line"/>.</returns>
-        public static BlockElement CreateBlockFromLine(string line, bool createListItem = false)
+        public static BlockElement CreateBlockFromLine(string line, int currentIndent, bool createListItem = false)
         {
-            if (IndentedCodeBlock.CanStartBlock(line))
+            if (IndentedCodeBlock.CanStartBlock(line, currentIndent))
             {
                 return new IndentedCodeBlock();
             }
 
-            if (ThemanticBreak.CanStartBlock(line))
+            if (ThemanticBreak.CanStartBlock(line, currentIndent))
             {
                 return new ThemanticBreak();
             }
 
-            if (AtxHeaderElement.CanStartBlock(line))
+            if (AtxHeaderElement.CanStartBlock(line, currentIndent))
             {
                 return new AtxHeaderElement();
             }
 
-            if (FencedCodeBlock.CanStartBlock(line))
+            if (FencedCodeBlock.CanStartBlock(line, currentIndent))
             {
                 return new FencedCodeBlock();
             }
 
-            if (HtmlBlock.CanStartBlock(line))
+            if (HtmlBlock.CanStartBlock(line, currentIndent))
             {
                 return new HtmlBlock();
             }
 
-            if (BlockQuote.CanStartBlock(line))
+            if (BlockQuote.CanStartBlock(line, currentIndent))
             {
                 return new BlockQuote();
             }
 
-            if (ListBlock.CanStartBlock(line))
+            if (ListBlock.CanStartBlock(line, currentIndent))
             {
                 return createListItem ? (BlockElement)new ListItem() : new ListBlock();
             }

@@ -27,7 +27,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         /// <param name="line">A line to add.</param>
         /// <returns></returns>
-        internal abstract AddLineResult AddLine(string line, bool lazy);
+        internal abstract AddLineResult AddLine(string line, bool lazy, int currentIndent);
 
         public abstract string Content { get; }
 
@@ -61,13 +61,22 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <param name="str">The string to remove indent.</param>
         /// <param name="maxRemoveCount">The string after unindented.</param>
         /// <returns></returns>
-        protected string RemoveIndent(string str, int maxRemoveCount)
+        protected string RemoveIndent(string str, int maxRemoveCount, int currentIndent)
         {
-            if (maxRemoveCount == 0 || str.Length == 0 || str[0] != ' ')
+            if (maxRemoveCount == 0 || str.Length == 0)
             {
                 return str;
             }
-            return RemoveIndent(str.Substring(1), maxRemoveCount - 1);
+            if (str[0]==' ')
+            {
+                return RemoveIndent(str.Substring(1), maxRemoveCount - 1, currentIndent + 1);
+            }
+            if (str[0]=='\t')
+            {
+                int tabWidth = 4 - (currentIndent % 4);
+                return RemoveIndent(new string(' ', tabWidth - 1) + str.Substring(1), maxRemoveCount - 1, currentIndent + 1);
+            }
+            return str;
         }
 
         internal abstract void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions);
