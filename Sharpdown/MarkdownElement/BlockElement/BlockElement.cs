@@ -67,15 +67,19 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return str;
             }
-            if (str[0]==' ')
+
+            if (str[0] == ' ')
             {
                 return RemoveIndent(str.Substring(1), maxRemoveCount - 1, currentIndent + 1);
             }
-            if (str[0]=='\t')
+
+            if (str[0] == '\t')
             {
                 int tabWidth = 4 - (currentIndent % 4);
-                return RemoveIndent(new string(' ', tabWidth - 1) + str.Substring(1), maxRemoveCount - 1, currentIndent + 1);
+                return RemoveIndent(new string(' ', tabWidth - 1) + str.Substring(1), maxRemoveCount - 1,
+                    currentIndent + 1);
             }
+
             return str;
         }
 

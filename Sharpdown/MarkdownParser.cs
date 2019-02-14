@@ -13,6 +13,7 @@ namespace Sharpdown
             {
                 ret.AddLine(line);
             }
+
             ret.Close();
             ret.ParseInline();
             return ret;

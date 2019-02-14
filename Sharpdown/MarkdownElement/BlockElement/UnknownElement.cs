@@ -90,7 +90,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 var match = linkDefinitionRegex.Match(string.Join("\n", content));
                 actualType = match.Success && !IsBlank(match.Groups["label"].Value)
-                    ? BlockElementType.LinkReferenceDefinition : BlockElementType.Paragraph;
+                    ? BlockElementType.LinkReferenceDefinition
+                    : BlockElementType.Paragraph;
                 return AddLineResult.NeedClose;
             }
 
@@ -110,13 +111,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
                             actualType = BlockElementType.LinkReferenceDefinition;
                             return AddLineResult.Consumed | AddLineResult.NeedClose;
                         }
+
                         if (linkDefinitionRegex.IsMatch(string.Join("\n", content.GetRange(0, content.Count - 1))))
                         {
                             content.RemoveAt(content.Count - 1);
                             actualType = BlockElementType.LinkReferenceDefinition;
                             return AddLineResult.NeedClose;
                         }
-
                     }
                     else
                     {
@@ -157,6 +158,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return true;
             }
+
             return false;
         }
 
@@ -186,6 +188,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                         {
                             return false;
                         }
+
                         break;
 
                     case '\\':
@@ -195,6 +198,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                         break;
                 }
             }
+
             return depth == 0;
         }
 
@@ -217,6 +221,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return titleString.Substring(1, titleString.Length - 2);
             }
+
             return titleString;
         }
 
@@ -233,10 +238,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return destString;
             }
+
             if (destString[0] == '<' && destString[destString.Length - 1] == '>')
             {
                 return destString.Substring(1, destString.Length - 2);
             }
+
             return destString;
         }
 
@@ -266,38 +273,42 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     return new SetextHeader(this, headerLevel);
 
                 case BlockElementType.LinkReferenceDefinition:
+                {
+                    Match match = linkDefinitionRegex.Match(string.Join("\n", content));
+                    if (!match.Success || IsBlank(match.Groups["label"].Value))
                     {
-
-                        Match match = linkDefinitionRegex.Match(string.Join("\n", content));
-                        if (!match.Success || IsBlank(match.Groups["label"].Value))
-                        {
-                            throw new InvalidBlockFormatException(BlockElementType.LinkReferenceDefinition);
-                        }
-                        return new LinkReferenceDefinition(match.Groups["label"].Value,
-                            ExtractDestination(match.Groups["destination"].Value),
-                            match.Groups["title"].Success ? ExtractTitle(match.Groups["title"].Value) : null, this);
+                        throw new InvalidBlockFormatException(BlockElementType.LinkReferenceDefinition);
                     }
+
+                    return new LinkReferenceDefinition(match.Groups["label"].Value,
+                        ExtractDestination(match.Groups["destination"].Value),
+                        match.Groups["title"].Success ? ExtractTitle(match.Groups["title"].Value) : null, this);
+                }
 
                 case BlockElementType.Paragraph:
                     return new Paragraph(this);
 
                 case BlockElementType.Unknown:
+                {
+                    if (mayBeLinkReferenceDefinition)
                     {
-                        if (mayBeLinkReferenceDefinition)
-                        {
-                            string joined = string.Join("\n", content);
-                            Match match = linkDefinitionRegex.Match(joined);
+                        string joined = string.Join("\n", content);
+                        Match match = linkDefinitionRegex.Match(joined);
 
-                            if (match.Success && !IsBlank(match.Groups["label"].Value))
+                        if (match.Success && !IsBlank(match.Groups["label"].Value))
+                        {
+                            if (AreParenthesesBalanced(match.Groups["destination"].Value))
                             {
-                                if (AreParenthesesBalanced(match.Groups["destination"].Value))
-                                {
-                                    return new LinkReferenceDefinition(match.Groups["label"].Value, ExtractDestination(match.Groups["destination"].Value), match.Groups["title"].Success ? ExtractTitle(match.Groups["title"].Value) : null, this);
-                                }
+                                return new LinkReferenceDefinition(match.Groups["label"].Value,
+                                    ExtractDestination(match.Groups["destination"].Value),
+                                    match.Groups["title"].Success ? ExtractTitle(match.Groups["title"].Value) : null,
+                                    this);
                             }
                         }
-                        return new Paragraph(this);
                     }
+
+                    return new Paragraph(this);
+                }
                 default:
                     throw new InvalidBlockFormatException(BlockElementType.Unknown);
             }
@@ -317,6 +328,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     return false;
                 }
             }
+
             return true;
         }
     }

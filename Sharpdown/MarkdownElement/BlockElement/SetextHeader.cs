@@ -39,8 +39,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 throw new ArgumentException("level must be 1 or 2.", nameof(level));
             }
+
             HeaderLevel = level;
-            content = string.Join("\r\n", elem.content).TrimEnd(new[] { ' ', '\n', '\r' });
+            content = string.Join("\r\n", elem.content).TrimEnd(new[] {' ', '\n', '\r'});
             warnings.AddRange(elem.Warnings);
         }
 

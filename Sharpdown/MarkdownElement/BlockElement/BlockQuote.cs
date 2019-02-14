@@ -25,7 +25,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Initialzies a new instance of <see cref="BlockQuote"/>.
         /// </summary>
-        internal BlockQuote() : base() { }
+        internal BlockQuote() : base()
+        {
+        }
 
         /// <summary>
         /// Returns wether the specified line can be a start line of <see cref="BlockQuote"/>.
@@ -48,7 +50,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         public static bool CanStartBlock(string line, int currentIndent)
         {
             if (line.GetIndentNum(currentIndent) >= 4)
-            { // Too many indent
+            {
+                // Too many indent
                 return false;
             }
 
@@ -68,6 +71,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return false;
             }
+
             string trimmed = line.TrimStartAscii();
 
             if (!trimmed.StartsWith(">", StringComparison.Ordinal))
@@ -75,7 +79,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 return false;
             }
 
-            if (trimmed.StartsWith("> ", StringComparison.Ordinal) || trimmed.StartsWith(">\t", StringComparison.Ordinal))
+            if (trimmed.StartsWith("> ", StringComparison.Ordinal) ||
+                trimmed.StartsWith(">\t", StringComparison.Ordinal))
             {
                 markRemoved = SubStringExpandingTabs(trimmed, 2, currentIndent);
                 markLength = 2;

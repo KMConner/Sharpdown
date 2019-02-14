@@ -165,6 +165,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 throw new InvalidBlockFormatException(BlockElementType.FencedCodeBlock);
             }
+
             if (!initialized) // When the fiest line is slecified
             {
                 Match match = openFenceRegex.Match(line);
@@ -172,6 +173,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 {
                     throw new InvalidBlockFormatException(BlockElementType.FencedCodeBlock);
                 }
+
                 string fence = match.Groups["fence"].Value;
                 fenceLength = fence.Length;
                 fenceChar = fence[0];
@@ -180,6 +182,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 {
                     infoString = InlineText.HandleEscapeAndHtmlEntity(match.Groups["info"].Value);
                 }
+
                 initialized = true;
                 return AddLineResult.Consumed;
             }
@@ -217,6 +220,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 warnings.Add("Code Block is not closed.");
             }
+
             return this;
         }
     }

@@ -46,6 +46,7 @@
             {
                 return -1;
             }
+
             int ret = 0;
             foreach (var item in line)
             {
@@ -61,6 +62,7 @@
                         return ret;
                 }
             }
+
             return ret;
         }
 

@@ -29,11 +29,12 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
         {
             HtmlBlock block = TestUtils.CreateInternal<HtmlBlock>();
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("<script type=\"text / javascript\">"));
-            Assert.AreEqual(AddLineResult.Consumed, block.AddLine("document.getElementById(\"demo\").innerHTML = \"Hello!\";"));
+            Assert.AreEqual(AddLineResult.Consumed,
+                block.AddLine("document.getElementById(\"demo\").innerHTML = \"Hello!\";"));
             Assert.AreEqual(AddLineResult.Consumed | AddLineResult.NeedClose, block.AddLine("</script>"));
             Assert.AreEqual(1, GetBlockType(block));
             Assert.AreEqual("<script type=\"text / javascript\">\r\n" +
-                "document.getElementById(\"demo\").innerHTML = \"Hello!\";\r\n</script>",
+                            "document.getElementById(\"demo\").innerHTML = \"Hello!\";\r\n</script>",
                 block.Content);
             var closed = block.Close();
             Assert.AreEqual(0, closed.Warnings.Count);

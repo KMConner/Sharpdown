@@ -26,7 +26,7 @@
 
         private static string CollapseWhiteSpaces(string text)
         {
-            var ret = text.Trim(new[] { '\r', '\n', ' ' })
+            var ret = text.Trim(new[] {'\r', '\n', ' '})
                 .Replace('\t', ' ')
                 .Replace('\r', ' ')
                 .Replace('\n', ' ')
@@ -35,6 +35,7 @@
             {
                 ret = ret.Replace("  ", " ");
             }
+
             return ret;
         }
     }

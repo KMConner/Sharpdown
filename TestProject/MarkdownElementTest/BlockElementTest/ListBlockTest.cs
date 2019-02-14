@@ -171,8 +171,8 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             BlockElementStructure structure = new BlockElementStructure(
                 BlockElementType.List,
                 new BlockElementStructure(BlockElementType.ListItem,
-                new BlockElementStructure(BlockElementType.List,
-                new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Unknown))));
+                    new BlockElementStructure(BlockElementType.List,
+                        new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Unknown))));
             structure.AssertTypeEqual(block);
         }
 
@@ -183,12 +183,12 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("1. - 2. foo"));
             BlockElementStructure structure = new BlockElementStructure(
                 BlockElementType.List,
-                    new BlockElementStructure(BlockElementType.ListItem,
-                        new BlockElementStructure(BlockElementType.List,
-                            new BlockElementStructure(BlockElementType.ListItem,
-                                new BlockElementStructure(BlockElementType.List,
-                                    new BlockElementStructure(BlockElementType.ListItem,
-                                        BlockElementType.Unknown))))));
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.List,
+                        new BlockElementStructure(BlockElementType.ListItem,
+                            new BlockElementStructure(BlockElementType.List,
+                                new BlockElementStructure(BlockElementType.ListItem,
+                                    BlockElementType.Unknown))))));
             structure.AssertTypeEqual(block);
         }
 
@@ -202,12 +202,12 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("  baz"));
             BlockElementStructure structure = new BlockElementStructure(
                 BlockElementType.List,
-                    new BlockElementStructure(BlockElementType.ListItem,
-                        BlockElementType.AtxHeading),
-                    new BlockElementStructure(BlockElementType.ListItem,
-                        BlockElementType.SetextHeading,
-                        BlockElementType.Unknown
-                   ));
+                new BlockElementStructure(BlockElementType.ListItem,
+                    BlockElementType.AtxHeading),
+                new BlockElementStructure(BlockElementType.ListItem,
+                    BlockElementType.SetextHeading,
+                    BlockElementType.Unknown
+                ));
             structure.AssertTypeEqual(block);
         }
 
@@ -221,13 +221,13 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("-  baz"));
             BlockElementStructure structure = new BlockElementStructure(
                 BlockElementType.List,
-                    new BlockElementStructure(BlockElementType.ListItem,
-                        BlockElementType.Paragraph),
-                    new BlockElementStructure(BlockElementType.ListItem),
-                    new BlockElementStructure(BlockElementType.ListItem),
-                    new BlockElementStructure(BlockElementType.ListItem,
-                        BlockElementType.Unknown
-                   ));
+                new BlockElementStructure(BlockElementType.ListItem,
+                    BlockElementType.Paragraph),
+                new BlockElementStructure(BlockElementType.ListItem),
+                new BlockElementStructure(BlockElementType.ListItem),
+                new BlockElementStructure(BlockElementType.ListItem,
+                    BlockElementType.Unknown
+                ));
             structure.AssertTypeEqual(block);
         }
 
@@ -241,13 +241,13 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             Assert.AreEqual(AddLineResult.Consumed, block.AddLine("334.  baz"));
             BlockElementStructure structure = new BlockElementStructure(
                 BlockElementType.List,
-                    new BlockElementStructure(BlockElementType.ListItem,
-                        BlockElementType.Paragraph),
-                    new BlockElementStructure(BlockElementType.ListItem),
-                    new BlockElementStructure(BlockElementType.ListItem),
-                    new BlockElementStructure(BlockElementType.ListItem,
-                        BlockElementType.Unknown
-                   ));
+                new BlockElementStructure(BlockElementType.ListItem,
+                    BlockElementType.Paragraph),
+                new BlockElementStructure(BlockElementType.ListItem),
+                new BlockElementStructure(BlockElementType.ListItem),
+                new BlockElementStructure(BlockElementType.ListItem,
+                    BlockElementType.Unknown
+                ));
             structure.AssertTypeEqual(block);
         }
 
@@ -323,7 +323,5 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             structure.AssertTypeEqual(closed);
             Assert.AreEqual(false, ((ListBlock)closed).IsTight);
         }
-
-
     }
 }

@@ -250,6 +250,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             var block = BlockElementUtil.CreateBlockFromLine("~~~aa~~", 0);
             Assert.AreNotEqual(BlockElementType.FencedCodeBlock, block.Type);
         }
+
         #endregion
 
         #region HtmlBlock
@@ -354,7 +355,6 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             var block = BlockElementUtil.CreateBlockFromLine("<StYlE", 0);
             Assert.AreEqual(BlockElementType.HtmlBlock, block.Type);
         }
-
 
         #endregion
 

@@ -9,16 +9,17 @@
         /// Characters which are treated as white space in markdown documents.
         /// </summary>
         internal static readonly char[] whiteSpaceShars =
-            {
-                ' ', '\t', '\x000B', '\x000C', '\r', '\n'
-            };
-        protected internal static readonly char[] asciiPunctuationChars = {
-            '!', '"', '#', '$', '%', '&','\'',
+        {
+            ' ', '\t', '\x000B', '\x000C', '\r', '\n'
+        };
+
+        protected internal static readonly char[] asciiPunctuationChars =
+        {
+            '!', '"', '#', '$', '%', '&', '\'',
             '(', ')', '*', '+', ',', '-', '.',
             '/', ':', ';', '<', '=', '>', '?',
             '@', '[', '\\', ']', '^', '_', '`',
             '{', '|', '}', '~',
         };
-
     }
 }

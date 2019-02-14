@@ -27,7 +27,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         private static readonly Regex openTag = new Regex(
             @"^\<(?<tag>[a-zA-Z][a-zA-Z0-9-]*)[ \t]*?([ \t][a-zA-Z_\:][a-zA-Z0-9_\.\:\-]*[ \t]*(\=[ \t]*([^ \""\'\=\<\>`\t]+|\""[^\""]*\""|\'[^\']*\'))??)*[ \t]*\/??\>[ \t]*$",
-                RegexOptions.Compiled);
+            RegexOptions.Compiled);
 
         /// <summary>
         /// Regular expression which matches close tags.
@@ -39,7 +39,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// HTML tag names which constitutes type 6 HTML block.
         /// </summary>
-        private static readonly string[] htmlTagNames = {
+        private static readonly string[] htmlTagNames =
+        {
             "address", "article", "aside", "base", "basefont", "blockquote", "body", "caption",
             "center", "col", "colgroup", "dd", "details", "dialog", "dir", "div", "dl", "dt",
             "fieldset", "figcaption", "figure", "footer", "form", "frame", "frameset", "h1", "h2",
@@ -150,6 +151,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return true;
             }
+
             return false;
         }
 
@@ -231,8 +233,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
 
             return line.StartsWith("<!", StringComparison.Ordinal)
-                && line[2] >= 0x41
-                && line[2] <= 0x5A;
+                   && line[2] >= 0x41
+                   && line[2] <= 0x5A;
         }
 
         /// <summary>
@@ -314,12 +316,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     }
 
                     var afterTag = trimmed.Substring(tagName.Length);
-                    if (afterTag.StartsWith("/>", StringComparison.Ordinal) || afterTag.StartsWith(">", StringComparison.Ordinal) || whiteSpaceShars.Contains(afterTag[0]))
+                    if (afterTag.StartsWith("/>", StringComparison.Ordinal) ||
+                        afterTag.StartsWith(">", StringComparison.Ordinal) || whiteSpaceShars.Contains(afterTag[0]))
                     {
                         return true;
                     }
                 }
             }
+
             return false;
         }
 
@@ -345,7 +349,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </returns>
         private static bool IsType7HtmlBlock(string line)
         {
-            string[] invalidTags = { "script", "style", "pre" };
+            string[] invalidTags = {"script", "style", "pre"};
             if (openTag.IsMatch(line))
             {
                 Match match = openTag.Match(line);
@@ -359,6 +363,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 string tagName = match.Groups["tag"].Value;
                 return !invalidTags.Contains(tagName, StringComparer.OrdinalIgnoreCase);
             }
+
             return false;
         }
 
@@ -374,11 +379,11 @@ namespace Sharpdown.MarkdownElement.BlockElement
             string lineTrimmed = line.TrimStart(whiteSpaceShars);
 
             return IsType1HtmlBlock(lineTrimmed)
-            || IsType2HtmlBlock(lineTrimmed)
-            || IsType3HtmlBlock(lineTrimmed)
-            || IsType4HtmlBlock(lineTrimmed)
-            || IsType5HtmlBlock(lineTrimmed)
-            || IsType6HtmlBlock(lineTrimmed);
+                   || IsType2HtmlBlock(lineTrimmed)
+                   || IsType3HtmlBlock(lineTrimmed)
+                   || IsType4HtmlBlock(lineTrimmed)
+                   || IsType5HtmlBlock(lineTrimmed)
+                   || IsType6HtmlBlock(lineTrimmed);
         }
 
         /// <summary>
@@ -395,30 +400,37 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return 1;
             }
+
             if (IsType2HtmlBlock(lineTrimmed))
             {
                 return 2;
             }
+
             if (IsType3HtmlBlock(lineTrimmed))
             {
                 return 3;
             }
+
             if (IsType4HtmlBlock(lineTrimmed))
             {
                 return 4;
             }
+
             if (IsType5HtmlBlock(lineTrimmed))
             {
                 return 5;
             }
+
             if (IsType6HtmlBlock(lineTrimmed))
             {
                 return 6;
             }
+
             if (IsType7HtmlBlock(lineTrimmed))
             {
                 return 7;
             }
+
             return -1;
         }
 
@@ -436,8 +448,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 case 1:
                     return lineTrimmed.Contains("</script>")
-                        || lineTrimmed.Contains("</pre>")
-                        || lineTrimmed.Contains("</style>");
+                           || lineTrimmed.Contains("</pre>")
+                           || lineTrimmed.Contains("</style>");
                 case 2:
                     return lineTrimmed.Contains("-->");
                 case 3:
@@ -477,6 +489,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 contents.Add(line);
                 return AddLineResult.Consumed;
             }
+
             isClosed = true;
             if (blockType < 6)
             {
@@ -518,6 +531,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     }
                 }
             }
+
             return this;
         }
 

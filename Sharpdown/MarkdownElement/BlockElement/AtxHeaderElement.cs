@@ -30,7 +30,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Initializes a new instance of <see cref="AtxHeaderElement"/>
         /// </summary>
-        internal AtxHeaderElement() : base() { }
+        internal AtxHeaderElement() : base()
+        {
+        }
 
         /// <summary>
         /// Returns whether the specified line can be a start line of <see cref="AtxHeaderElement"/>.
@@ -56,6 +58,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 // Indented too many speces
                 return false;
             }
+
             var trimmed = line.TrimStart(whiteSpaceShars);
             int level = trimmed.Length;
             for (int i = 0; i < trimmed.Length; i++)
@@ -97,6 +100,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 content = string.Empty;
             }
+
             return AddLineResult.Consumed | AddLineResult.NeedClose;
         }
     }

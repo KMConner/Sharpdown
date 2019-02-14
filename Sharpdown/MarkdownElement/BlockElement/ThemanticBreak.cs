@@ -22,7 +22,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// The characters which can be used in themantic breaks.
         /// </summary>
-        private static readonly char[] ThemanticBreakChars = { '-', '_', '*' };
+        private static readonly char[] ThemanticBreakChars = {'-', '_', '*'};
 
         /// <summary>
         /// Gets the type of this block.
@@ -34,7 +34,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Initializes a new instance of <see cref="ThemanticBreak"/>.
         /// </summary>
-        internal ThemanticBreak() : base() { }
+        internal ThemanticBreak() : base()
+        {
+        }
 
         /// <summary>
         /// Returns whether the specified line can be a start line of <see cref="FencedCodeBlock"/>.
@@ -63,10 +65,11 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return false;
             }
+
             var shortenLine = line.Remove(" ").Remove("\t").Remove("\x000B").Remove("\x000C");
             return shortenLine.Length >= 3
-                && ThemanticBreakChars.Contains(shortenLine[0])
-                && shortenLine.All(c => c == shortenLine[0]);
+                   && ThemanticBreakChars.Contains(shortenLine[0])
+                   && shortenLine.All(c => c == shortenLine[0]);
         }
 
         /// <summary>
@@ -82,14 +85,18 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 throw new InvalidBlockFormatException(BlockElementType.ThemanticBreak);
             }
+
             if (lazy)
             {
                 throw new InvalidBlockFormatException(
                     BlockElementType.ThemanticBreak, "Must Not be Lazy.");
             }
+
             return AddLineResult.Consumed | AddLineResult.NeedClose;
         }
 
-        internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions) { }
+        internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
+        {
+        }
     }
 }

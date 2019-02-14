@@ -80,7 +80,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
             throw new InvalidCastException();
         }
 
-        internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions) { }
+        internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
+        {
+        }
 
         private string ProcessBackslashEscape(string unescaped)
         {
@@ -102,6 +104,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
                 builder.Append(unescaped[i]);
             }
+
             return builder.ToString();
         }
 
@@ -115,11 +118,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     builder.Append(name[i]);
                     continue;
                 }
+
                 if (i < name.Length - 1 && !char.IsWhiteSpace(name, i + 1))
                 {
                     builder.Append(' ');
                 }
             }
+
             return builder.ToString();
         }
     }

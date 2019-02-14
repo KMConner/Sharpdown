@@ -39,7 +39,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
                 new InlineStructure(InlineElementType.Emphasis,
                     new InlineStructure(InlineElementType.InlineText, "6")),
                 new InlineStructure(InlineElementType.InlineText, "78")
-                );
+            );
             structure.AssertEqual(ret);
         }
 
@@ -52,7 +52,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
                 new InlineStructure(InlineElementType.InlineText, "foo"),
                 new InlineStructure(InlineElementType.Emphasis,
                     new InlineStructure(InlineElementType.InlineText, "bar"))
-                );
+            );
             structure.AssertEqual(ret);
         }
 
@@ -84,7 +84,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
                 new InlineStructure(InlineElementType.InlineText, "foo-"),
                 new InlineStructure(InlineElementType.Emphasis,
                     new InlineStructure(InlineElementType.InlineText, "(bar)"))
-                );
+            );
             structure.AssertEqual(ret);
         }
 
@@ -126,7 +126,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
                 new InlineStructure(InlineElementType.InlineText, "foo"),
                 new InlineStructure(InlineElementType.StrongEmphasis,
                     new InlineStructure(InlineElementType.InlineText, "bar"))
-                );
+            );
             structure.AssertEqual(ret);
         }
 
@@ -145,11 +145,11 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
             var ret = InlineElementUtils.ParseInlineElements("__foo, __bar__, baz__",
                 new Dictionary<string, LinkReferenceDefinition>()).ToArray();
             var structure = new InlineStructure(InlineElementType.StrongEmphasis,
-                    new InlineStructure(InlineElementType.InlineText, "foo, "),
-                    new InlineStructure(InlineElementType.StrongEmphasis,
-                        new InlineStructure(InlineElementType.InlineText, "bar")),
-                    new InlineStructure(InlineElementType.InlineText, ", baz")
-                );
+                new InlineStructure(InlineElementType.InlineText, "foo, "),
+                new InlineStructure(InlineElementType.StrongEmphasis,
+                    new InlineStructure(InlineElementType.InlineText, "bar")),
+                new InlineStructure(InlineElementType.InlineText, ", baz")
+            );
             structure.AssertEqual(ret);
         }
 
@@ -163,7 +163,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
                 new InlineStructure(InlineElementType.StrongEmphasis,
                     new InlineStructure(InlineElementType.InlineText, "foo")),
                 new InlineStructure(InlineElementType.InlineText, ")")
-                );
+            );
             structure.AssertEqual(ret);
         }
 
@@ -176,7 +176,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
                 new InlineStructure(InlineElementType.Emphasis,
                     new InlineStructure(InlineElementType.InlineText, "foo")),
                 new InlineStructure(InlineElementType.InlineText, " bar")
-                );
+            );
             structure.AssertEqual(ret);
         }
 
@@ -190,7 +190,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
                 new InlineStructure(InlineElementType.StrongEmphasis,
                     new InlineStructure(InlineElementType.InlineText, "bar")),
                 new InlineStructure(InlineElementType.InlineText, " baz")
-                );
+            );
             structure.AssertEqual(ret);
         }
 
@@ -203,7 +203,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
                 new InlineStructure(InlineElementType.StrongEmphasis,
                     new InlineStructure(InlineElementType.InlineText, "foo")),
                 new InlineStructure(InlineElementType.InlineText, " bar")
-                );
+            );
             structure.AssertEqual(ret);
         }
 
@@ -216,7 +216,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
                 new InlineStructure(InlineElementType.InlineText, "foo"),
                 new InlineStructure(InlineElementType.StrongEmphasis,
                     new InlineStructure(InlineElementType.InlineText, "bar"))
-                );
+            );
             structure.AssertEqual(ret);
         }
 
@@ -230,7 +230,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
                 new InlineStructure(InlineElementType.Link,
                     new InlineStructure(InlineElementType.Emphasis,
                         new InlineStructure(InlineElementType.InlineText, "bar")))
-                );
+            );
             structure.AssertEqual(ret);
         }
 
@@ -242,8 +242,8 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
             var structure = new InlineStructure(InlineElementType.StrongEmphasis,
                 new InlineStructure(InlineElementType.InlineText, "foo "),
                 new InlineStructure(InlineElementType.Link,
-                        new InlineStructure(InlineElementType.InlineText, "bar"))
-                );
+                    new InlineStructure(InlineElementType.InlineText, "bar"))
+            );
             structure.AssertEqual(ret);
         }
 
@@ -254,9 +254,9 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
                 new Dictionary<string, LinkReferenceDefinition>()).ToArray();
             var structure = new InlineStructure(InlineElementType.StrongEmphasis,
                 new InlineStructure(InlineElementType.StrongEmphasis,
-                        new InlineStructure(InlineElementType.InlineText, "foo")),
+                    new InlineStructure(InlineElementType.InlineText, "foo")),
                 new InlineStructure(InlineElementType.InlineText, " bar")
-                );
+            );
             structure.AssertEqual(ret);
         }
 
@@ -268,8 +268,8 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
             var structure = new InlineStructure(InlineElementType.StrongEmphasis,
                 new InlineStructure(InlineElementType.InlineText, "*"),
                 new InlineStructure(InlineElementType.Emphasis,
-                        new InlineStructure(InlineElementType.InlineText, "foo"))
-                );
+                    new InlineStructure(InlineElementType.InlineText, "foo"))
+            );
             structure.AssertEqual(ret);
         }
 
@@ -281,8 +281,8 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
             var structure = new InlineStructure(InlineElementType.StrongEmphasis,
                 new InlineStructure(InlineElementType.InlineText, "*"),
                 new InlineStructure(InlineElementType.StrongEmphasis,
-                        new InlineStructure(InlineElementType.InlineText, "foo"))
-                );
+                    new InlineStructure(InlineElementType.InlineText, "foo"))
+            );
             structure.AssertEqual(ret);
         }
 
@@ -294,8 +294,8 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
             var structure = new InlineStructure(InlineElementType.StrongEmphasis,
                 new InlineStructure(InlineElementType.InlineText, "*"),
                 new InlineStructure(InlineElementType.Link,
-                        new InlineStructure(InlineElementType.InlineText, "bar*"))
-                );
+                    new InlineStructure(InlineElementType.InlineText, "bar*"))
+            );
             structure.AssertEqual(ret);
         }
 
@@ -308,7 +308,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
                 new InlineStructure(InlineElementType.Emphasis,
                     new InlineStructure(InlineElementType.InlineText, "foo _bar")),
                 new InlineStructure(InlineElementType.InlineText, " baz_")
-                );
+            );
             structure.AssertEqual(ret);
         }
 
@@ -319,15 +319,17 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
             var ret = InlineElementUtils.ParseInlineElements("*[*foo*][]*",
                 new Dictionary<string, LinkReferenceDefinition>
                 {
-                    { "*foo*" ,TestUtils.CreateInternal<LinkReferenceDefinition>(
-                        new[]{ t,t,t, typeof(UnknownElement)},
-                        new object[]{"*foo*","./url", "title", null })}
+                    {
+                        "*foo*", TestUtils.CreateInternal<LinkReferenceDefinition>(
+                            new[] {t, t, t, typeof(UnknownElement)},
+                            new object[] {"*foo*", "./url", "title", null})
+                    }
                 }).ToArray();
             var structure = new InlineStructure(InlineElementType.Emphasis,
                 new InlineStructure(InlineElementType.Link,
                     new InlineStructure(InlineElementType.Emphasis,
                         new InlineStructure(InlineElementType.InlineText, "foo")))
-                );
+            );
             structure.AssertEqual(ret);
         }
 
@@ -338,15 +340,17 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
             var ret = InlineElementUtils.ParseInlineElements("*[*foo*]*",
                 new Dictionary<string, LinkReferenceDefinition>
                 {
-                    { "*foo*" ,TestUtils.CreateInternal<LinkReferenceDefinition>(
-                        new[]{ t,t,t, typeof(UnknownElement)},
-                        new object[]{"*foo*","./url", "title", null })}
+                    {
+                        "*foo*", TestUtils.CreateInternal<LinkReferenceDefinition>(
+                            new[] {t, t, t, typeof(UnknownElement)},
+                            new object[] {"*foo*", "./url", "title", null})
+                    }
                 }).ToArray();
             var structure = new InlineStructure(InlineElementType.Emphasis,
                 new InlineStructure(InlineElementType.Link,
                     new InlineStructure(InlineElementType.Emphasis,
                         new InlineStructure(InlineElementType.InlineText, "foo")))
-                );
+            );
             structure.AssertEqual(ret);
         }
 
@@ -357,15 +361,17 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
             var ret = InlineElementUtils.ParseInlineElements("*[*foo*][bar]*",
                 new Dictionary<string, LinkReferenceDefinition>
                 {
-                    { "bar" ,TestUtils.CreateInternal<LinkReferenceDefinition>(
-                        new[]{ t,t,t, typeof(UnknownElement)},
-                    new object[]{"*foo*", "./url", "title" ,null})}
+                    {
+                        "bar", TestUtils.CreateInternal<LinkReferenceDefinition>(
+                            new[] {t, t, t, typeof(UnknownElement)},
+                            new object[] {"*foo*", "./url", "title", null})
+                    }
                 }).ToArray();
             var structure = new InlineStructure(InlineElementType.Emphasis,
                 new InlineStructure(InlineElementType.Link,
                     new InlineStructure(InlineElementType.Emphasis,
                         new InlineStructure(InlineElementType.InlineText, "foo")))
-                );
+            );
             structure.AssertEqual(ret);
             Assert.AreEqual(((ret[0] as Emphasis).Children[0] as Link).Destination, "./url");
             Assert.AreEqual(((ret[0] as Emphasis).Children[0] as Link).Title, "title");
@@ -380,7 +386,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
                 new InlineStructure(InlineElementType.StrongEmphasis,
                     new InlineStructure(InlineElementType.InlineText, "foo")),
                 new InlineStructure(InlineElementType.InlineText, "bar")
-                );
+            );
             structure.AssertEqual(ret);
         }
 
@@ -395,7 +401,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
                 new InlineStructure(InlineElementType.InlineText, "bar"),
                 new InlineStructure(InlineElementType.HardLineBreak, ""),
                 new InlineStructure(InlineElementType.InlineText, "baz")
-                );
+            );
             structure.AssertEqual(ret);
         }
 
@@ -412,7 +418,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
                     new InlineStructure(InlineElementType.InlineText, "bar"),
                     new InlineStructure(InlineElementType.HardLineBreak, ""),
                     new InlineStructure(InlineElementType.InlineText, "baz"))
-                );
+            );
             structure.AssertEqual(ret);
         }
 
@@ -451,7 +457,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
             var structure = new InlineStructure(InlineElementType.CodeSpan,
                 new InlineStructure(InlineElementType.CodeSpan, "foo"),
                 new InlineStructure(InlineElementType.InlineText, "bar")
-                );
+            );
             structure.AssertEqual(ret);
         }
 
@@ -472,7 +478,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
             var structure = new InlineStructure(InlineElementType.CodeSpan,
                 new InlineStructure(InlineElementType.InlineText, "bar"),
                 new InlineStructure(InlineElementType.CodeSpan, "foo")
-                );
+            );
             structure.AssertEqual(ret);
         }
 
@@ -530,7 +536,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
             var ret = InlineElementUtils.ParseInlineElements("<http://foo.bar.baz>",
                 new Dictionary<string, LinkReferenceDefinition>()).ToArray();
             var structure = new InlineStructure(InlineElementType.Link,
-                    new InlineStructure(InlineElementType.InlineText, "http://foo.bar.baz"));
+                new InlineStructure(InlineElementType.InlineText, "http://foo.bar.baz"));
             structure.AssertEqual(ret);
         }
 
@@ -540,7 +546,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
             var ret = InlineElementUtils.ParseInlineElements("<irc://foo.bar:2233/baz>",
                 new Dictionary<string, LinkReferenceDefinition>()).ToArray();
             var structure = new InlineStructure(InlineElementType.Link,
-                    new InlineStructure(InlineElementType.InlineText, "irc://foo.bar:2233/baz"));
+                new InlineStructure(InlineElementType.InlineText, "irc://foo.bar:2233/baz"));
             structure.AssertEqual(ret);
         }
 
@@ -550,7 +556,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
             var ret = InlineElementUtils.ParseInlineElements("<made-up-scheme://foo,bar>",
                 new Dictionary<string, LinkReferenceDefinition>()).ToArray();
             var structure = new InlineStructure(InlineElementType.Link,
-                    new InlineStructure(InlineElementType.InlineText, "made-up-scheme://foo,bar"));
+                new InlineStructure(InlineElementType.InlineText, "made-up-scheme://foo,bar"));
             structure.AssertEqual(ret);
         }
 
@@ -560,7 +566,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
             var ret = InlineElementUtils.ParseInlineElements("<http://example.com/\\[\\>",
                 new Dictionary<string, LinkReferenceDefinition>()).ToArray();
             var structure = new InlineStructure(InlineElementType.Link,
-                    new InlineStructure(InlineElementType.InlineText, "http://example.com/\\[\\"));
+                new InlineStructure(InlineElementType.InlineText, "http://example.com/\\[\\"));
             structure.AssertEqual(ret);
         }
 
@@ -648,7 +654,8 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
         {
             var ret = InlineElementUtils.ParseInlineElements("foo <!-- not a comment -- two hyphens -->",
                 new Dictionary<string, LinkReferenceDefinition>()).ToArray();
-            var structure = new InlineStructure(InlineElementType.InlineText, "foo <!-- not a comment -- two hyphens -->");
+            var structure =
+                new InlineStructure(InlineElementType.InlineText, "foo <!-- not a comment -- two hyphens -->");
             structure.AssertEqual(ret);
         }
 
@@ -686,6 +693,5 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
         }
 
         #endregion
-
     }
 }

@@ -22,7 +22,7 @@ namespace TestProject
         public static T CreateInternal<T>(Type[] types, object[] parameters)
         {
             ConstructorInfo constructorInfo = typeof(T).GetConstructor(
-                BindingFlags.NonPublic|BindingFlags.Instance, null, types, null);
+                BindingFlags.NonPublic | BindingFlags.Instance, null, types, null);
             return (T)constructorInfo.Invoke(parameters);
         }
     }

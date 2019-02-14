@@ -78,6 +78,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 // throw new InvalidBlockFormatException(BlockElementType.IndentedCodeBlock);
             }
+
             int indent = line.GetIndentNum(currentIndent);
             if (indent >= 0 && indent < 4)
             {
@@ -92,6 +93,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                         break;
                     }
                 }
+
                 return AddLineResult.NeedClose;
             }
 
@@ -114,6 +116,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     break;
                 }
             }
+
             return base.Close();
         }
     }

@@ -318,6 +318,5 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                             BlockElementType.Unknown)));
             elementStructure.AssertTypeEqual(block);
         }
-
     }
 }

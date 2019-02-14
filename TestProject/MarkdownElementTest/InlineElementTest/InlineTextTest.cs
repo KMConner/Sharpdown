@@ -39,7 +39,8 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
         [TestMethod]
         public void CreateFromTextTest_05()
         {
-            InlineText text = CreateInlineTextFromString(@"\!\""\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\=\>\?\@\[\\\]\^\_\`\{\|\}\~");
+            InlineText text =
+                CreateInlineTextFromString(@"\!\""\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\=\>\?\@\[\\\]\^\_\`\{\|\}\~");
             Assert.AreEqual("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~", text.Content);
         }
 
@@ -93,7 +94,7 @@ namespace TestProject.MarkdownElementTest.InlineElementTest
             MethodInfo method = type.GetMethod("CreateFromText", BindingFlags.NonPublic | BindingFlags.Static);
             try
             {
-                return (InlineText)method.Invoke(null, new object[] { text, true });
+                return (InlineText)method.Invoke(null, new object[] {text, true});
             }
             catch (TargetInvocationException ex)
             {

@@ -12,13 +12,14 @@ namespace Sharpdown.MarkdownElement.InlineElement
         public Link(InlineElementBase[] linkText, string destination, string title)
         {
             Children = linkText;
-            Destination = InlineElementUtils.UrlEncode(InlineText.HandleEscapeAndHtmlEntity(RemoveAngleBrackets(destination)));
+            Destination =
+                InlineElementUtils.UrlEncode(InlineText.HandleEscapeAndHtmlEntity(RemoveAngleBrackets(destination)));
             Title = title == null ? null : InlineText.HandleEscapeAndHtmlEntity(RemoveQuotes(title));
         }
 
-        public Link(string destination, bool mailto=false)
+        public Link(string destination, bool mailto = false)
         {
-            Children = new[] { InlineText.CreateFromText(destination, false) };
+            Children = new[] {InlineText.CreateFromText(destination, false)};
             Destination = (mailto ? "mailto:" : string.Empty) + InlineElementUtils.UrlEncode(destination);
         }
 
@@ -38,6 +39,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             {
                 return text.Substring(1, text.Length - 2);
             }
+
             return text;
         }
 
@@ -47,6 +49,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             {
                 return text.Substring(1, text.Length - 2);
             }
+
             return text;
         }
     }

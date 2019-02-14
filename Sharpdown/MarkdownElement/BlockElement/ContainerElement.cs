@@ -37,8 +37,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         public override IReadOnlyList<string> Warnings =>
             new List<string>(children.Select(c => c.Warnings.AsEnumerable())
-                .Aggregate((l1, l2) => l1.Union(l2)).Union(warnings))
-            .AsReadOnly();
+                    .Aggregate((l1, l2) => l1.Union(l2)).Union(warnings))
+                .AsReadOnly();
 
         /// <summary>
         /// Initializes a new instance of <see cref="ContainerElement"/>.
@@ -89,6 +89,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 throw new InvalidOperationException("openElement is not null.");
             }
+
             openElement = elem;
             children.Add(elem);
         }
@@ -105,6 +106,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return false;
             }
+
             BlockElementType lastElementType = children.Last().Type;
 
             if (children.Last() is ContainerElement container)
@@ -113,7 +115,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
 
             return lastElementType == BlockElementType.Unknown
-                || lastElementType == BlockElementType.Paragraph;
+                   || lastElementType == BlockElementType.Paragraph;
         }
 
         /// <summary>
@@ -133,6 +135,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 children[children.Count - 1] = openElement.Close();
             }
+
             for (int i = children.Count - 1; i >= 0; i--)
             {
                 if (children[i].Type == BlockElementType.BlankLine)
@@ -140,6 +143,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     children.RemoveAt(i);
                 }
             }
+
             return this;
         }
 
@@ -158,9 +162,11 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 {
                     if (openElement == null)
                     {
-                        openElement = BlockElementUtil.CreateBlockFromLine(markRemoved, currentIndent, Type == BlockElementType.List);
+                        openElement = BlockElementUtil.CreateBlockFromLine(markRemoved, currentIndent,
+                            Type == BlockElementType.List);
                         children.Add(openElement);
                     }
+
                     addLineResult = openElement.AddLine(markRemoved, lazy, currentIndent + markLength);
                     if ((addLineResult & AddLineResult.NeedClose) != 0)
                     {
@@ -168,13 +174,15 @@ namespace Sharpdown.MarkdownElement.BlockElement
                         openElement = null;
                     }
                 } while ((addLineResult & AddLineResult.Consumed) == 0);
+
                 return addLineResult & AddLineResult.Consumed;
             }
 
             line = markRemoved ?? line;
 
             var newElem = BlockElementUtil.CreateBlockFromLine(line, currentIndent, Type == BlockElementType.List);
-            if ((newElem.Type != BlockElementType.Unknown && newElem.Type != BlockElementType.BlankLine && newElem.Type != BlockElementType.IndentedCodeBlock)
+            if ((newElem.Type != BlockElementType.Unknown && newElem.Type != BlockElementType.BlankLine &&
+                 newElem.Type != BlockElementType.IndentedCodeBlock)
                 || !CanLazyContinue())
             {
                 return AddLineResult.NeedClose;
@@ -197,13 +205,15 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return str;
             }
+
             if (str[0] == '\t')
             {
                 int tabWidth = 4 - (currentIndent % 4);
-                return SubStringExpandingTabs(new string(' ', tabWidth - 1) + str.Substring(1), count - 1, currentIndent + 1);
+                return SubStringExpandingTabs(new string(' ', tabWidth - 1) + str.Substring(1), count - 1,
+                    currentIndent + 1);
             }
+
             return SubStringExpandingTabs(str.Substring(1), count - 1, currentIndent + 1);
         }
-
     }
 }

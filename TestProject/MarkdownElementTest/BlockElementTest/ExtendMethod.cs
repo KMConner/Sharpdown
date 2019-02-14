@@ -13,7 +13,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             var method = element.GetType().GetMethod("AddLine", BindingFlags.NonPublic | BindingFlags.Instance);
             try
             {
-                return (AddLineResult)method.Invoke(element, new object[] { line, lazy, 0 });
+                return (AddLineResult)method.Invoke(element, new object[] {line, lazy, 0});
             }
             catch (TargetInvocationException ex)
             {
@@ -40,6 +40,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             {
                 throw new Exception("This block is a container block.");
             }
+
             return leaf.Inlines;
         }
 
@@ -54,6 +55,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
             {
                 throw new Exception("This block is not a container block.");
             }
+
             return container.Children;
         }
 
@@ -61,6 +63,5 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
         {
             return element.GetChildren()[index];
         }
-
     }
 }

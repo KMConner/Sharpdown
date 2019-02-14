@@ -35,10 +35,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         public override string Message
         {
-            get
-            {
-                return message ?? $"Given format is invalid for block type {ElementType}";
-            }
+            get { return message ?? $"Given format is invalid for block type {ElementType}"; }
         }
     }
 }

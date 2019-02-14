@@ -24,12 +24,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Characters which can be used as bullet list markers.
         /// </summary>
-        private static readonly char[] bullets = { '-', '*', '+' };
+        private static readonly char[] bullets = {'-', '*', '+'};
 
         /// <summary>
         /// Characters which can be used as ordered list deliminators.
         /// </summary>
-        private static readonly char[] deliminators = { '.', ')' };
+        private static readonly char[] deliminators = {'.', ')'};
 
         /// <summary>
         /// Regular expression which matches the first line of list item which starts with a
@@ -115,6 +115,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return (true, line[0]);
             }
+
             return (false, '\0');
         }
 
@@ -132,12 +133,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return (false, -1, '\0');
             }
+
             Match match = orderdList.Match(line);
             string indexStr = match.Groups["index"].Value;
             if (!int.TryParse(indexStr, out int index) || index < 0)
             {
                 throw new InvalidBlockFormatException(BlockElementType.List);
             }
+
             return (true, index, match.Groups["delim"].Value[0]);
         }
 
@@ -154,10 +157,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 throw new InvalidBlockFormatException(BlockElementType.List);
             }
+
             Match orderd = orderdList.Match(line);
             if (orderd.Success && int.TryParse(orderd.Groups["index"].Value, out int index))
             {
-                int indent = orderd.Groups["spaces"].Success ? ((orderd.Groups["spaces"].Length > 4 ? 1 : orderd.Groups["spaces"].Length) + orderd.Groups["spaces"].Index) : 2;
+                int indent = orderd.Groups["spaces"].Success
+                    ? ((orderd.Groups["spaces"].Length > 4 ? 1 : orderd.Groups["spaces"].Length) +
+                       orderd.Groups["spaces"].Index)
+                    : 2;
                 int delimIndex = orderd.Groups["delim"].Index;
 
                 return new ListItem
@@ -231,11 +238,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return false;
             }
+
             string trimmed = line.Trim(whiteSpaceShars);
             var (isOrderd, index, _) = IsOrderdList(trimmed);
 
             return (IsBulletList(trimmed).isBulletList || (isOrderd && index == 1))
-                && !blankItemRegex.IsMatch(trimmed);
+                   && !blankItemRegex.IsMatch(trimmed);
         }
 
         /// <summary>
@@ -257,11 +265,16 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 {
                     throw new InvalidBlockFormatException(BlockElementType.List);
                 }
+
                 var item = CreateItem(lineTrimmed, trimmedIndent);
                 AddChild(item);
                 item.contentIndent += lineIndent;
                 item.MarkIndent += lineIndent;
-                openElement.AddLine(item.contentIndent > line.Length ? string.Empty : SubStringExpandingTabs(line, item.contentIndent, currentIndent), false, currentIndent + item.contentIndent);
+                openElement.AddLine(
+                    item.contentIndent > line.Length
+                        ? string.Empty
+                        : SubStringExpandingTabs(line, item.contentIndent, currentIndent), false,
+                    currentIndent + item.contentIndent);
                 return AddLineResult.Consumed;
             }
 
@@ -274,13 +287,16 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return listItem.AddLine(line, true, currentIndent);
             }
+
             if (lazy)
             {
                 return listItem.AddLine(line, lazy, currentIndent);
             }
+
             if (lineIndent >= listItem.contentIndent)
             {
-                return listItem.AddLine(SubStringExpandingTabs(line, listItem.contentIndent, currentIndent), false, currentIndent + listItem.contentIndent);
+                return listItem.AddLine(SubStringExpandingTabs(line, listItem.contentIndent, currentIndent), false,
+                    currentIndent + listItem.contentIndent);
             }
 
             if (CanStartBlock(lineTrimmed, currentIndent))
@@ -289,16 +305,20 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 {
                     return AddLineResult.NeedClose;
                 }
+
                 var newItem = CreateItem(lineTrimmed, trimmedIndent);
                 if (newItem.Deliminator != listItem.Deliminator)
                 {
                     return AddLineResult.NeedClose;
                 }
+
                 CloseOpenlement();
                 AddChild(newItem);
                 newItem.contentIndent += lineIndent;
                 newItem.MarkIndent += lineIndent;
-                openElement.AddLine(SubStringExpandingTabs(line, Math.Min(newItem.contentIndent, line.Length), currentIndent), false, currentIndent + Math.Min(newItem.contentIndent, line.Length));
+                openElement.AddLine(
+                    SubStringExpandingTabs(line, Math.Min(newItem.contentIndent, line.Length), currentIndent), false,
+                    currentIndent + Math.Min(newItem.contentIndent, line.Length));
                 return AddLineResult.Consumed;
             }
 
@@ -308,7 +328,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
 
             var indentRemoved = RemoveIndent(line, listItem.contentIndent, currentIndent);
-            var newBlock = BlockElementUtil.CreateBlockFromLine(indentRemoved, currentIndent + Math.Min(listItem.contentIndent, lineIndent));
+            var newBlock = BlockElementUtil.CreateBlockFromLine(indentRemoved,
+                currentIndent + Math.Min(listItem.contentIndent, lineIndent));
             if (newBlock.Type != BlockElementType.Unknown)
             {
                 return AddLineResult.NeedClose;
@@ -338,9 +359,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
             ListBlock ret = (ListBlock)base.Close();
             IsLastBlank = (ret.children.LastOrDefault() as ListItem)?.IsLastBlank == true;
             IsTight = ret.Children.Cast<ListItem>().All(i => i.IsTight)
-                && ret.Children.Reverse().Skip(1).Cast<ListItem>().All(c => !c.IsLastBlank);
+                      && ret.Children.Reverse().Skip(1).Cast<ListItem>().All(c => !c.IsLastBlank);
             return ret;
         }
-
     }
 }

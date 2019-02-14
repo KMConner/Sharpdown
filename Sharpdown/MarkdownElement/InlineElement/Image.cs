@@ -36,7 +36,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         public Image(InlineElementBase[] text, string src, string title)
         {
             Alt = TextFromInlines(text);
-            Children = new[] { InlineText.CreateFromText(Alt) };
+            Children = new[] {InlineText.CreateFromText(Alt)};
             Source = src;
             Title = title;
         }
@@ -64,6 +64,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             {
                 return;
             }
+
             foreach (var item in inlines)
             {
                 switch (item.Type)
@@ -83,7 +84,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     case InlineElementType.Link:
                     case InlineElementType.Emphasis:
                     case InlineElementType.StrongEmphasis:
-                        TextFromInlines(((ContainerInlineElement)item).Children,builder);
+                        TextFromInlines(((ContainerInlineElement)item).Children, builder);
                         break;
                 }
             }

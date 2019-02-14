@@ -54,7 +54,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             'z',
             '0', '1', '2', '3', '4',
             '5', '6', '7', '8', '9',
-            ';', '/' ,'?', ':', '@',
+            ';', '/', '?', ':', '@',
             '&', '=', '+', '$', ',',
             '-', '_', '.', '!', '~',
             '*', '\'', '(', ')', '#',
@@ -157,12 +157,12 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <returns></returns>
         private static IEnumerable<InlineElementBase> ParseLineBreak(string text)
         {
-            string[] lines = text.Replace("\r\n", "\n").Replace("\r", "\n").Split(new[] { '\n' });
+            string[] lines = text.Replace("\r\n", "\n").Replace("\r", "\n").Split(new[] {'\n'});
             for (int i = 0; i < lines.Length; i++)
             {
-
                 bool isHardBreak = lines[i].EndsWith("  ", StringComparison.Ordinal)
-                    || (lines[i].EndsWith("\\", StringComparison.Ordinal) && !IsEscaped(lines[i], lines.Length - 1));
+                                   || (lines[i].EndsWith("\\", StringComparison.Ordinal) &&
+                                       !IsEscaped(lines[i], lines.Length - 1));
                 if (i < lines.Length - 1)
                 {
                     if (lines[i] != string.Empty)
@@ -173,9 +173,10 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         }
                         else
                         {
-                            yield return InlineText.CreateFromText(lines[i].TrimEnd(new[] { ' ' }));
+                            yield return InlineText.CreateFromText(lines[i].TrimEnd(new[] {' '}));
                         }
                     }
+
                     yield return isHardBreak
                         ? (InlineElementBase)new HardLineBreak()
                         : new SoftLineBreak();
@@ -361,17 +362,17 @@ namespace Sharpdown.MarkdownElement.InlineElement
             switch (delim.DeliminatorType)
             {
                 case DelimSpan.DelimType.Link:
-                    return new InlineElementBase[] { new Link(newChildren.ToArray(), delim.Destination, delim.Title) };
+                    return new InlineElementBase[] {new Link(newChildren.ToArray(), delim.Destination, delim.Title)};
                 case DelimSpan.DelimType.Image:
-                    return new InlineElementBase[] { new Image(newChildren.ToArray(), delim.Destination, delim.Title) };
+                    return new InlineElementBase[] {new Image(newChildren.ToArray(), delim.Destination, delim.Title)};
                 case DelimSpan.DelimType.Emphasis:
-                    return new InlineElementBase[] { new Emphasis(newChildren.ToArray(), false) };
+                    return new InlineElementBase[] {new Emphasis(newChildren.ToArray(), false)};
                 case DelimSpan.DelimType.StrongEmplasis:
-                    return new InlineElementBase[] { new Emphasis(newChildren.ToArray(), true) };
+                    return new InlineElementBase[] {new Emphasis(newChildren.ToArray(), true)};
                 case DelimSpan.DelimType.Root:
                     return newChildren.ToArray();
                 default:
-                    return new InlineElementBase[] { delim.DelimElem };
+                    return new InlineElementBase[] {delim.DelimElem};
             }
         }
 
@@ -466,6 +467,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 {
                     return;
                 }
+
                 ParseEmphasis(deliminators, delimSpans, firstClose?.Value);
                 return;
             }
@@ -520,15 +522,18 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 {
                     depth++;
                 }
+
                 if (text[i] == ']' && !IsEscaped(text, i))
                 {
                     depth--;
                 }
+
                 if (depth < 0)
                 {
                     return false;
                 }
             }
+
             return depth == 0;
         }
 
@@ -538,7 +543,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <param name="text">The string object to @arse.</param>
         /// <param name="linkReferences">Link reference definitions.</param>
         /// <returns>The parse result.</returns>
-        private static IEnumerable<InlineElementBase> ParseLinkEmphasis(string text, Dictionary<string, LinkReferenceDefinition> linkReferences, List<DelimSpan> higherDelims)
+        private static IEnumerable<InlineElementBase> ParseLinkEmphasis(string text,
+            Dictionary<string, LinkReferenceDefinition> linkReferences, List<DelimSpan> higherDelims)
         {
             bool IsDelim(int index)
             {
@@ -600,7 +606,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         Index = i
                     });
                 }
-                else if (text.Length > i + 1 && text[i] == '!' && text[i + 1] == '[' && !IsEscaped(text, i) && IsDelim(i))
+                else if (text.Length > i + 1 && text[i] == '!' && text[i + 1] == '[' && !IsEscaped(text, i) &&
+                         IsDelim(i))
                 {
                     deliminators.AddLast(new DeliminatorInfo
                     {
@@ -634,8 +641,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
                         // Inline Link/Image
                         if (text[Math.Min(i + 1, text.Length - 1)] == '('
-                        && AreBlacketsBlanced(text.Substring(openInfo.Index, i - openInfo.Index + 1))
-                        && linkLabel >= 0 && linkBody >= 0)
+                            && AreBlacketsBlanced(text.Substring(openInfo.Index, i - openInfo.Index + 1))
+                            && linkLabel >= 0 && linkBody >= 0)
                         {
                             if (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink)
                             {
@@ -684,6 +691,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                                     }
                                 }
                             }
+
                             delimSpans.Add(openInfo.Index, new DelimSpan
                             {
                                 Begin = openInfo.Index,
@@ -700,11 +708,13 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             ParseEmphasis(deliminators, delimSpans, openInfo);
                             i += 2;
                             deliminators.Remove(openInfo);
-
                         }
                         // Full Reference Link
                         else if (text[Math.Min(i + 1, text.Length - 1)] == '[' && linkLabel2 >= 0
-                            && TryGetReference(linkReferences, text.Substring(i + 2, linkLabel2 - i - 3), out definition))
+                                                                               && TryGetReference(linkReferences,
+                                                                                   text.Substring(i + 2,
+                                                                                       linkLabel2 - i - 3),
+                                                                                   out definition))
                         {
                             if (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink)
                             {
@@ -733,11 +743,12 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             ParseEmphasis(deliminators, delimSpans, openInfo);
                             i = linkLabel2 - 1;
                             deliminators.Remove(openInfo);
-
                         }
                         // shortcut link
-                        else if (TryGetReference(linkReferences, text.Substring(openInfo.Index + openInfo.DeliminatorLength, i - openInfo.Index - openInfo.DeliminatorLength),
-                            out definition) && GetEndIndexOfLinkLabel(text, i + 1, higherDelims) < 0)
+                        else if (TryGetReference(linkReferences,
+                                     text.Substring(openInfo.Index + openInfo.DeliminatorLength,
+                                         i - openInfo.Index - openInfo.DeliminatorLength),
+                                     out definition) && GetEndIndexOfLinkLabel(text, i + 1, higherDelims) < 0)
                         {
                             if (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink)
                             {
@@ -765,7 +776,6 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             });
                             ParseEmphasis(deliminators, delimSpans, openInfo);
                             deliminators.Remove(openInfo);
-
                         }
                         else
                         {
@@ -870,6 +880,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 {
                     return ret;
                 }
+
                 ret++;
             }
         }
@@ -984,6 +995,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     return count % 2 != 0;
                 }
             }
+
             return index % 2 != 0;
         }
 
@@ -993,7 +1005,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             for (int i = 0; i < text.Length; i++)
             {
                 if (i < text.Length - 1 && text[i] == '\\'
-                    && MarkdownElementBase.asciiPunctuationChars.Contains(text[i + 1]))
+                                        && MarkdownElementBase.asciiPunctuationChars.Contains(text[i + 1]))
                 {
                     builder.Append(text[i + 1]);
                     i++;
@@ -1003,6 +1015,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     builder.Append(text[i]);
                 }
             }
+
             return builder.ToString();
         }
 
@@ -1014,14 +1027,17 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 {
                     return true;
                 }
+
                 if (ch >= 0x41 && ch <= 0x5A)
                 {
                     return true;
                 }
+
                 if (ch >= 0x61 && ch <= 0x7A)
                 {
                     return true;
                 }
+
                 return false;
             }
 
@@ -1029,9 +1045,10 @@ namespace Sharpdown.MarkdownElement.InlineElement
             {
                 return false;
             }
+
             return text[index] == '%'
-                && IsHexChar(text[index + 1])
-                && IsHexChar(text[index + 2]);
+                   && IsHexChar(text[index + 1])
+                   && IsHexChar(text[index + 2]);
         }
 
         /// <summary>
@@ -1059,7 +1076,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 }
                 else
                 {
-                    var bytes = Encoding.UTF8.GetBytes(new[] { text[i] });
+                    var bytes = Encoding.UTF8.GetBytes(new[] {text[i]});
                     foreach (var b in bytes)
                     {
                         builder.Append("%");
@@ -1067,6 +1084,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     }
                 }
             }
+
             return builder.ToString();
         }
 
@@ -1100,14 +1118,17 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 {
                     continue;
                 }
+
                 if (ch != '[' && ch != ']')
                 {
                     continue;
                 }
+
                 if (!IsDelim(i))
                 {
                     continue;
                 }
+
                 if (ch == '[')
                 {
                     depth--;
@@ -1117,6 +1138,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         {
                             return i - 1;
                         }
+
                         return i;
                     }
                 }
@@ -1125,6 +1147,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     depth++;
                 }
             }
+
             return -1;
         }
 
@@ -1134,14 +1157,17 @@ namespace Sharpdown.MarkdownElement.InlineElement
             {
                 return !higherDelims.Any(d => d.Begin <= index && d.End > index);
             }
+
             if (wholeText.Length <= begin)
             {
                 return -1;
             }
+
             if (wholeText[begin] != '[')
             {
                 return -1;
             }
+
             int depth = 0;
             for (int i = begin; i < wholeText.Length; i++)
             {
@@ -1149,16 +1175,19 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 {
                     continue;
                 }
+
                 if (!IsDelim(i))
                 {
                     continue;
                 }
+
                 char ch = wholeText[i];
                 if (ch == '[')
                 {
                     depth++;
                     continue;
                 }
+
                 if (ch == ']')
                 {
                     depth--;
@@ -1166,13 +1195,16 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     {
                         return i + 1;
                     }
+
                     if (depth < 0)
                     {
                         return -1;
                     }
+
                     break;
                 }
             }
+
             return -1;
         }
 
@@ -1204,12 +1236,14 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     break;
                 }
             }
+
             int destinationStart = current;
 
             if (wholeText[destinationStart] == ')')
             {
                 return begin + 2;
             }
+
             // Extract destination
             if (wholeText[destinationStart] == '<')
             {
@@ -1221,10 +1255,12 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     {
                         return -1;
                     }
+
                     if (ch == '<' && !IsEscaped(wholeText, current))
                     {
                         return -1;
                     }
+
                     if (ch == '>' && !IsEscaped(wholeText, current))
                     {
                         destination = wholeText.Substring(destinationStart + 1, current - destinationStart - 1);
@@ -1244,13 +1280,16 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         {
                             return -1;
                         }
+
                         destination = wholeText.Substring(destinationStart, current - destinationStart);
                         break;
                     }
+
                     if (ch == '(' && !IsEscaped(wholeText, current))
                     {
                         pharenDepth++;
                     }
+
                     if (ch == ')' && !IsEscaped(wholeText, current))
                     {
                         pharenDepth--;
@@ -1308,10 +1347,12 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     break;
                 }
             }
+
             if (wholeText[current] != ')')
             {
                 return -1;
             }
+
             return current + 1;
         }
 

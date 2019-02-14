@@ -17,7 +17,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Initializes a new instance of <see cref="BlankLine"/>
         /// </summary>
-        internal BlankLine() : base() { }
+        internal BlankLine() : base()
+        {
+        }
 
         /// <summary>
         /// Returns wether the specified line can be a start line of <see cref="BlankLine"/>.
@@ -45,9 +47,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 throw new InvalidBlockFormatException(BlockElementType.BlankLine);
             }
+
             return AddLineResult.Consumed | AddLineResult.NeedClose;
         }
 
-        internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions) { }
+        internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
+        {
+        }
     }
 }

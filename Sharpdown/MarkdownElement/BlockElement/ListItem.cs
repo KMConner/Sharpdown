@@ -42,7 +42,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Initializes a new instance of <see cref="ListItem"/>
         /// </summary>
-        internal ListItem() : base() { }
+        internal ListItem() : base()
+        {
+        }
 
         /// <summary>
         /// Returns wether the specified line satisfied proper conditions to 
@@ -70,12 +72,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 openElement = null;
             }
 
-            IsLastBlank = children.LastOrDefault(c => c.Type != BlockElementType.LinkReferenceDefinition)?.Type == BlockElementType.BlankLine
-                || (children.LastOrDefault() as ListBlock)?.IsLastBlank == true;
+            IsLastBlank = children.LastOrDefault(c => c.Type != BlockElementType.LinkReferenceDefinition)?.Type ==
+                          BlockElementType.BlankLine
+                          || (children.LastOrDefault() as ListBlock)?.IsLastBlank == true;
             IsTight = ((IEnumerable<BlockElement>)children).Reverse()
-                .SkipWhile(c => c.Type == BlockElementType.BlankLine)
-                .All(c => c.Type != BlockElementType.BlankLine)
-                && children.Where(c => c.Type == BlockElementType.List).Cast<ListBlock>().All(c => !c.IsLastBlank);
+                      .SkipWhile(c => c.Type == BlockElementType.BlankLine)
+                      .All(c => c.Type != BlockElementType.BlankLine)
+                      && children.Where(c => c.Type == BlockElementType.List).Cast<ListBlock>()
+                          .All(c => !c.IsLastBlank);
             return base.Close();
         }
 
@@ -85,6 +89,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return AddLineResult.NeedClose;
             }
+
             return base.AddLine(line, lazy, currentIndent);
         }
     }

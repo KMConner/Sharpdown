@@ -4,7 +4,8 @@
     {
         public bool IsStrong { get; private set; }
 
-        public override InlineElementType Type => IsStrong ? InlineElementType.StrongEmphasis : InlineElementType.Emphasis;
+        public override InlineElementType Type =>
+            IsStrong ? InlineElementType.StrongEmphasis : InlineElementType.Emphasis;
 
         public Emphasis(InlineElementBase[] children, bool isStrong)
         {
