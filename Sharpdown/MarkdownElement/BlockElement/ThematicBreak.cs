@@ -4,10 +4,10 @@ using System.Linq;
 namespace Sharpdown.MarkdownElement.BlockElement
 {
     /// <summary>
-    /// Represents Thmentic breaks in markdown documents.
+    /// Represents Thematic breaks in markdown documents.
     /// </summary>
     /// <remarks>
-    /// The typical themantic break is folloing.
+    /// The typical thematic break is folloing.
     /// 
     /// <![CDATA[
     /// ****
@@ -17,17 +17,17 @@ namespace Sharpdown.MarkdownElement.BlockElement
     /// ____
     /// ]]>
     /// </remarks>
-    class ThemanticBreak : LeafElement
+    class ThematicBreak : LeafElement
     {
         /// <summary>
-        /// The characters which can be used in themantic breaks.
+        /// The characters which can be used in thematic breaks.
         /// </summary>
-        private static readonly char[] ThemanticBreakChars = {'-', '_', '*'};
+        private static readonly char[] ThematicBreakChars = {'-', '_', '*'};
 
         /// <summary>
         /// Gets the type of this block.
         /// </summary>
-        public override BlockElementType Type => BlockElementType.ThemanticBreak;
+        public override BlockElementType Type => BlockElementType.ThematicBreak;
 
         public override string Content => string.Empty;
 
@@ -61,12 +61,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
             var shortenLine = line.Remove(" ").Remove("\t").Remove("\x000B").Remove("\x000C");
             return shortenLine.Length >= 3
-                   && ThemanticBreakChars.Contains(shortenLine[0])
+                   && ThematicBreakChars.Contains(shortenLine[0])
                    && shortenLine.All(c => c == shortenLine[0]);
         }
 
         /// <summary>
-        /// Adds a line of string to this <see cref="ThemanticBreak"/>.
+        /// Adds a line of string to this <see cref="ThematicBreak"/>.
         /// </summary>
         /// <param name="line">A single line to add to this element.</param>
         /// <returns>
@@ -76,13 +76,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
         {
             if (!CanStartBlock(line, currentIndent) || lazy)
             {
-                throw new InvalidBlockFormatException(BlockElementType.ThemanticBreak);
+                throw new InvalidBlockFormatException(BlockElementType.ThematicBreak);
             }
 
             if (lazy)
             {
                 throw new InvalidBlockFormatException(
-                    BlockElementType.ThemanticBreak, "Must Not be Lazy.");
+                    BlockElementType.ThematicBreak, "Must Not be Lazy.");
             }
 
             return AddLineResult.Consumed | AddLineResult.NeedClose;

@@ -296,7 +296,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
             if (CanStartBlock(lineTrimmed, currentIndent))
             {
-                if (ThemanticBreak.CanStartBlock(line, currentIndent))
+                if (ThematicBreak.CanStartBlock(line, currentIndent))
                 {
                     return AddLineResult.NeedClose;
                 }

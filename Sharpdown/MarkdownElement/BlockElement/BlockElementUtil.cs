@@ -21,9 +21,9 @@
                 return new IndentedCodeBlock();
             }
 
-            if (ThemanticBreak.CanStartBlock(line, currentIndent))
+            if (ThematicBreak.CanStartBlock(line, currentIndent))
             {
-                return new ThemanticBreak();
+                return new ThematicBreak();
             }
 
             if (AtxHeaderElement.CanStartBlock(line, currentIndent))

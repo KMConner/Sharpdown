@@ -6,9 +6,9 @@
     public enum BlockElementType
     {
         /// <summary>
-        /// Themantic Break.
+        /// Thematic Break.
         /// </summary>
-        ThemanticBreak,
+        ThematicBreak,
 
         /// <summary>
         /// ATX Header.

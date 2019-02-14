@@ -6,62 +6,62 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
     [TestClass]
     public class BlockElementUtilTest
     {
-        #region Themantic Break
+        #region Thematic Break
 
         [TestMethod]
-        public void DetermineNewBlockTypeTest_ThemanticBreak_1()
+        public void DetermineNewBlockTypeTest_ThematicBreak_1()
         {
             var block = BlockElementUtil.CreateBlockFromLine("---", 0);
-            Assert.AreEqual(BlockElementType.ThemanticBreak, block.Type);
+            Assert.AreEqual(BlockElementType.ThematicBreak, block.Type);
         }
 
         [TestMethod]
-        public void DetermineNewBlockTypeTest_ThemanticBreak_2()
+        public void DetermineNewBlockTypeTest_ThematicBreak_2()
         {
             var block = BlockElementUtil.CreateBlockFromLine("   ---", 0);
-            Assert.AreEqual(BlockElementType.ThemanticBreak, block.Type);
+            Assert.AreEqual(BlockElementType.ThematicBreak, block.Type);
         }
 
         [TestMethod]
-        public void DetermineNewBlockTypeTest_ThemanticBreak_3()
+        public void DetermineNewBlockTypeTest_ThematicBreak_3()
         {
             var block = BlockElementUtil.CreateBlockFromLine("- -  ---------- -", 0);
-            Assert.AreEqual(BlockElementType.ThemanticBreak, block.Type);
+            Assert.AreEqual(BlockElementType.ThematicBreak, block.Type);
         }
 
         [TestMethod]
-        public void DetermineNewBlockTypeTest_ThemanticBreak_4()
+        public void DetermineNewBlockTypeTest_ThematicBreak_4()
         {
             var block = BlockElementUtil.CreateBlockFromLine("  ***\t*", 0);
-            Assert.AreEqual(BlockElementType.ThemanticBreak, block.Type);
+            Assert.AreEqual(BlockElementType.ThematicBreak, block.Type);
         }
 
         [TestMethod]
-        public void DetermineNewBlockTypeTest_ThemanticBreak_5()
+        public void DetermineNewBlockTypeTest_ThematicBreak_5()
         {
             var block = BlockElementUtil.CreateBlockFromLine("__ _ _", 0);
-            Assert.AreEqual(BlockElementType.ThemanticBreak, block.Type);
+            Assert.AreEqual(BlockElementType.ThematicBreak, block.Type);
         }
 
         [TestMethod]
-        public void DetermineNewBlockTypeTest_ThemanticBreak_6()
+        public void DetermineNewBlockTypeTest_ThematicBreak_6()
         {
             var block = BlockElementUtil.CreateBlockFromLine("\t__ _ _", 0);
-            Assert.AreNotEqual(BlockElementType.ThemanticBreak, block.Type);
+            Assert.AreNotEqual(BlockElementType.ThematicBreak, block.Type);
         }
 
         [TestMethod]
-        public void DetermineNewBlockTypeTest_ThemanticBreak_7()
+        public void DetermineNewBlockTypeTest_ThematicBreak_7()
         {
             var block = BlockElementUtil.CreateBlockFromLine("--", 0);
-            Assert.AreNotEqual(BlockElementType.ThemanticBreak, block.Type);
+            Assert.AreNotEqual(BlockElementType.ThematicBreak, block.Type);
         }
 
         [TestMethod]
-        public void DetermineNewBlockTypeTest_ThemanticBreak_8()
+        public void DetermineNewBlockTypeTest_ThematicBreak_8()
         {
             var block = BlockElementUtil.CreateBlockFromLine("   ", 0);
-            Assert.AreNotEqual(BlockElementType.ThemanticBreak, block.Type);
+            Assert.AreNotEqual(BlockElementType.ThematicBreak, block.Type);
         }
 
         #endregion

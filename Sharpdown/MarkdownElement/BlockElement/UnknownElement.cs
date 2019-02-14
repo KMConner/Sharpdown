@@ -150,7 +150,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         private bool Interrupted(string line, int currentIndent)
         {
             if (BlockQuote.CanStartBlock(line, currentIndent)
-                || ThemanticBreak.CanStartBlock(line, currentIndent)
+                || ThematicBreak.CanStartBlock(line, currentIndent)
                 || AtxHeaderElement.CanStartBlock(line, currentIndent)
                 || FencedCodeBlock.CanStartBlock(line, currentIndent)
                 || HtmlBlock.CanInterruptParagraph(line)
