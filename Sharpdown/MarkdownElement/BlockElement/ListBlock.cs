@@ -162,7 +162,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     ? ((ordered.Groups["spaces"].Length > 4 ? 1 : ordered.Groups["spaces"].Length) +
                        ordered.Groups["spaces"].Index)
                     : 2;
-                int delimIndex = ordered.Groups["delim"].Index;
 
                 return new ListItem
                 {
@@ -205,20 +204,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 MarkIndent = 0,
                 contentIndent = conIn
             };
-
-            //for (int i = 1; i < line.Length; i++)
-            //{
-            //    if (line[i] != ' ' && line[i] != '\t')
-            //    {
-            //        return new ListItem
-            //        {
-            //            Deliminator = line[0],
-            //            MarkIndent = 0,
-            //            contentIndent = i,
-            //        };
-            //    }
-            //}
-            //throw new InvalidBlockFormatException(BlockElementType.List);
         }
 
         /// <summary>
@@ -290,7 +275,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
             if (lazy)
             {
-                return listItem.AddLine(line, lazy, currentIndent);
+                return listItem.AddLine(line, true, currentIndent);
             }
 
             if (lineIndent >= listItem.contentIndent)

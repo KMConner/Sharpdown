@@ -86,30 +86,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
         {
         }
 
-        private string ProcessBackslashEscape(string unescaped)
-        {
-            var builder = new StringBuilder(unescaped.Length);
-            for (int i = 0; i < unescaped.Length; i++)
-            {
-                if (i == unescaped.Length - 1)
-                {
-                    builder.Append(unescaped[i]);
-                    continue;
-                }
-
-                if (unescaped[i] == '\\' && Array.IndexOf(asciiPunctuationChars, unescaped[i + 1]) >= 0)
-                {
-                    builder.Append(unescaped[i + 1]);
-                    i++;
-                    continue;
-                }
-
-                builder.Append(unescaped[i]);
-            }
-
-            return builder.ToString();
-        }
-
         public static string GetSimpleName(string name)
         {
             var builder = new StringBuilder(name.Length);

@@ -48,6 +48,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </list>
         /// </remarks>
         /// <param name="line">Single line string.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.C</param>
         /// <returns>
         /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="FencedCodeBlock"/>.
         /// Otherwise, returns <c>false</c>.
@@ -69,6 +70,10 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Adds a line of string to this <see cref="ThematicBreak"/>.
         /// </summary>
         /// <param name="line">A single line to add to this element.</param>
+        /// <param name="lazy">
+        /// Whether is <paramref name="line"/> is the lazy continuation.
+        /// </param>
+        /// <param name="currentIndent">zThe indent number of <paramref name="line"/>.</param>
         /// <returns>
         /// Always returns <c>AddLineResult.Consumed | AddLineResult.NeedClose</c>.
         /// </returns>

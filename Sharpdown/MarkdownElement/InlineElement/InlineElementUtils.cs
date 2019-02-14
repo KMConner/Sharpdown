@@ -467,7 +467,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     return;
                 }
 
-                ParseEmphasis(deliminators, delimSpans, firstClose?.Value);
+                ParseEmphasis(deliminators, delimSpans, firstClose.Value);
                 return;
             }
 
@@ -900,9 +900,9 @@ namespace Sharpdown.MarkdownElement.InlineElement
             int nextLessThan = GetNextUnescaped(text, '<', 0);
             while (currentIndex < text.Length)
             {
-                var newIndex = currentIndex;
+                int newIndex;
                 int nextElemIndex;
-                InlineElementBase newInline = null;
+                InlineElementBase newInline;
 
                 // Find `
                 if (nextBacktick >= 0 && (nextLessThan < 0 || nextBacktick < nextLessThan))
