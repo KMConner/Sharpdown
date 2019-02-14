@@ -5,7 +5,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
     /// <summary>
     /// Represents blank lines in markdown documents.
     /// </summary>
-    public class BlankLine : LeafElement
+    internal class BlankLine : LeafElement
     {
         /// <summary>
         /// Gets the type of this block.
