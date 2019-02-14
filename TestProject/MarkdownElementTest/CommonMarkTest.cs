@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sharpdown;
 using Sharpdown.MarkdownElement.BlockElement;
 using Sharpdown.MarkdownElement.InlineElement;
-using TestProject.MarkdownElementTest.BlockElementTest;
 
 namespace TestProject.MarkdownElementTest
 {

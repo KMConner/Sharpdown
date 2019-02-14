@@ -2,13 +2,13 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sharpdown.MarkdownElement.BlockElement;
 
-namespace TestProject.MarkdownElementTest.BlockElementTest
+namespace TestProject.MarkdownElementTest
 {
-    class BlockElementStructure
+    internal class BlockElementStructure
     {
-        public BlockElementType Content { get; set; }
+        private BlockElementType Content { get; }
 
-        public BlockElementStructure[] Children { get; set; }
+        private BlockElementStructure[] Children { get; }
 
         public BlockElementStructure(BlockElementType type, params BlockElementStructure[] structures)
         {

@@ -8,11 +8,11 @@ namespace TestProject.MarkdownElementTest
 {
     class InlineStructure
     {
-        public InlineElementType Content { get; set; }
+        public InlineElementType Content { get; }
 
-        public InlineStructure[] Children { get; set; }
+        private InlineStructure[] Children { get; }
 
-        public string Text { get; set; }
+        private string Text { get; }
 
         public InlineStructure(InlineElementType type, params InlineStructure[] structures)
         {
@@ -37,7 +37,7 @@ namespace TestProject.MarkdownElementTest
             Content = type;
         }
 
-        public void AssertEqual(InlineElementBase element)
+        private void AssertEqual(InlineElementBase element)
         {
             Assert.AreEqual(Content, element.Type);
             if (element is InlineText text)
@@ -67,16 +67,17 @@ namespace TestProject.MarkdownElementTest
 
         public void AssertEqual(IEnumerable<InlineElementBase> element)
         {
-            if (element.Count() == 1)
+            IEnumerable<InlineElementBase> inlineElementBases = element as InlineElementBase[] ?? element.ToArray();
+            if (inlineElementBases.Count() == 1)
             {
-                AssertEqual(element.First());
+                AssertEqual(inlineElementBases.First());
             }
             else
             {
-                Assert.AreEqual(Children.Length, element.Count());
+                Assert.AreEqual(Children.Length, inlineElementBases.Count());
                 for (int i = 0; i < Children.Length; i++)
                 {
-                    Children[i].AssertEqual(element.ElementAt(i));
+                    Children[i].AssertEqual(inlineElementBases.ElementAt(i));
                 }
             }
         }

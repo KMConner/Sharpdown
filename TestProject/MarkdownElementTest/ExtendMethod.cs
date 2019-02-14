@@ -4,7 +4,7 @@ using System.Reflection;
 using Sharpdown.MarkdownElement.BlockElement;
 using Sharpdown.MarkdownElement.InlineElement;
 
-namespace TestProject.MarkdownElementTest.BlockElementTest
+namespace TestProject.MarkdownElementTest
 {
     static class ExtendMethod
     {
