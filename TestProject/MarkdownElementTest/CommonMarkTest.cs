@@ -164,7 +164,7 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("#\tFoo");
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
 
             Assert.AreEqual("Foo", (doc.Elements[0].GetInline(0) as InlineText).Content);
         }
@@ -422,11 +422,11 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("Foo\n---\nbar");
             Assert.AreEqual(2, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
             var inline1 = new InlineStructure(InlineElementType.InlineText, "Foo");
             var inline2 = new InlineStructure(InlineElementType.InlineText, "bar");
-            inline1.AssertEqual(((SetextHeader)doc.Elements[0]).Inlines);
+            inline1.AssertEqual(((Heading)doc.Elements[0]).Inlines);
             inline2.AssertEqual(((Paragraph)doc.Elements[1]).Inlines);
         }
 
@@ -480,26 +480,26 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("# foo\n## foo\n### foo\n#### foo\n##### foo\n###### foo");
             Assert.AreEqual(6, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[0].Type);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[1].Type);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[2].Type);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[3].Type);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[4].Type);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[5].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[1].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[2].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[3].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[4].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[5].Type);
 
-            Assert.AreEqual(1, ((AtxHeaderElement)doc.Elements[0]).HeaderLevel);
-            Assert.AreEqual(2, ((AtxHeaderElement)doc.Elements[1]).HeaderLevel);
-            Assert.AreEqual(3, ((AtxHeaderElement)doc.Elements[2]).HeaderLevel);
-            Assert.AreEqual(4, ((AtxHeaderElement)doc.Elements[3]).HeaderLevel);
-            Assert.AreEqual(5, ((AtxHeaderElement)doc.Elements[4]).HeaderLevel);
-            Assert.AreEqual(6, ((AtxHeaderElement)doc.Elements[5]).HeaderLevel);
+            Assert.AreEqual(1, ((Heading)doc.Elements[0]).HeaderLevel);
+            Assert.AreEqual(2, ((Heading)doc.Elements[1]).HeaderLevel);
+            Assert.AreEqual(3, ((Heading)doc.Elements[2]).HeaderLevel);
+            Assert.AreEqual(4, ((Heading)doc.Elements[3]).HeaderLevel);
+            Assert.AreEqual(5, ((Heading)doc.Elements[4]).HeaderLevel);
+            Assert.AreEqual(6, ((Heading)doc.Elements[5]).HeaderLevel);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "foo");
-            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[0]).Inlines);
-            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[1]).Inlines);
-            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[2]).Inlines);
-            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[3]).Inlines);
-            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[4]).Inlines);
-            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[5]).Inlines);
+            inline0.AssertEqual(((Heading)doc.Elements[0]).Inlines);
+            inline0.AssertEqual(((Heading)doc.Elements[1]).Inlines);
+            inline0.AssertEqual(((Heading)doc.Elements[2]).Inlines);
+            inline0.AssertEqual(((Heading)doc.Elements[3]).Inlines);
+            inline0.AssertEqual(((Heading)doc.Elements[4]).Inlines);
+            inline0.AssertEqual(((Heading)doc.Elements[5]).Inlines);
         }
 
         [TestMethod]
@@ -544,13 +544,13 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("# foo *bar* \\*baz\\*");
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
             var inline0 = new InlineStructure(InlineElementType.InlineText,
                 new InlineStructure(InlineElementType.InlineText, "foo "),
                 new InlineStructure(InlineElementType.Emphasis,
                     new InlineStructure(InlineElementType.InlineText, "bar")),
                 new InlineStructure(InlineElementType.InlineText, " *baz*"));
-            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[0]).Inlines);
+            inline0.AssertEqual(((Heading)doc.Elements[0]).Inlines);
         }
 
         [TestMethod]
@@ -559,9 +559,9 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("#                  foo                     ");
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "foo");
-            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[0]).Inlines);
+            inline0.AssertEqual(((Heading)doc.Elements[0]).Inlines);
         }
 
         [TestMethod]
@@ -570,13 +570,13 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse(" ### foo\n  ## foo\n   # foo");
             Assert.AreEqual(3, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[0].Type);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[1].Type);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[2].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[1].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[2].Type);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "foo");
-            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[0]).Inlines);
-            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[1]).Inlines);
-            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[2]).Inlines);
+            inline0.AssertEqual(((Heading)doc.Elements[0]).Inlines);
+            inline0.AssertEqual(((Heading)doc.Elements[1]).Inlines);
+            inline0.AssertEqual(((Heading)doc.Elements[2]).Inlines);
         }
 
         [TestMethod]
@@ -608,14 +608,14 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("## foo ##\n  ###   bar    ###");
             Assert.AreEqual(2, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[0].Type);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[1].Type);
-            Assert.AreEqual(2, ((AtxHeaderElement)doc.Elements[0]).HeaderLevel);
-            Assert.AreEqual(3, ((AtxHeaderElement)doc.Elements[1]).HeaderLevel);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[1].Type);
+            Assert.AreEqual(2, ((Heading)doc.Elements[0]).HeaderLevel);
+            Assert.AreEqual(3, ((Heading)doc.Elements[1]).HeaderLevel);
             var inlines0 = new InlineStructure(InlineElementType.InlineText, "foo");
             var inlines1 = new InlineStructure(InlineElementType.InlineText, "bar");
-            inlines0.AssertEqual(((AtxHeaderElement)doc.Elements[0]).Inlines);
-            inlines1.AssertEqual(((AtxHeaderElement)doc.Elements[1]).Inlines);
+            inlines0.AssertEqual(((Heading)doc.Elements[0]).Inlines);
+            inlines1.AssertEqual(((Heading)doc.Elements[1]).Inlines);
         }
 
         [TestMethod]
@@ -624,13 +624,13 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("# foo ##################################\n##### foo ##");
             Assert.AreEqual(2, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[0].Type);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[1].Type);
-            Assert.AreEqual(1, ((AtxHeaderElement)doc.Elements[0]).HeaderLevel);
-            Assert.AreEqual(5, ((AtxHeaderElement)doc.Elements[1]).HeaderLevel);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[1].Type);
+            Assert.AreEqual(1, ((Heading)doc.Elements[0]).HeaderLevel);
+            Assert.AreEqual(5, ((Heading)doc.Elements[1]).HeaderLevel);
             var inlines = new InlineStructure(InlineElementType.InlineText, "foo");
-            inlines.AssertEqual(((AtxHeaderElement)doc.Elements[0]).Inlines);
-            inlines.AssertEqual(((AtxHeaderElement)doc.Elements[1]).Inlines);
+            inlines.AssertEqual(((Heading)doc.Elements[0]).Inlines);
+            inlines.AssertEqual(((Heading)doc.Elements[1]).Inlines);
         }
 
         [TestMethod]
@@ -639,10 +639,10 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("### foo ###     ");
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[0].Type);
-            Assert.AreEqual(3, ((AtxHeaderElement)doc.Elements[0]).HeaderLevel);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
+            Assert.AreEqual(3, ((Heading)doc.Elements[0]).HeaderLevel);
             var inlines = new InlineStructure(InlineElementType.InlineText, "foo");
-            inlines.AssertEqual(((AtxHeaderElement)doc.Elements[0]).Inlines);
+            inlines.AssertEqual(((Heading)doc.Elements[0]).Inlines);
         }
 
         [TestMethod]
@@ -651,10 +651,10 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("### foo ### b");
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[0].Type);
-            Assert.AreEqual(3, ((AtxHeaderElement)doc.Elements[0]).HeaderLevel);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
+            Assert.AreEqual(3, ((Heading)doc.Elements[0]).HeaderLevel);
             var inlines = new InlineStructure(InlineElementType.InlineText, "foo ### b");
-            inlines.AssertEqual(((AtxHeaderElement)doc.Elements[0]).Inlines);
+            inlines.AssertEqual(((Heading)doc.Elements[0]).Inlines);
         }
 
         [TestMethod]
@@ -663,10 +663,10 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("# foo#");
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[0].Type);
-            Assert.AreEqual(1, ((AtxHeaderElement)doc.Elements[0]).HeaderLevel);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
+            Assert.AreEqual(1, ((Heading)doc.Elements[0]).HeaderLevel);
             var inlines = new InlineStructure(InlineElementType.InlineText, "foo#");
-            inlines.AssertEqual(((AtxHeaderElement)doc.Elements[0]).Inlines);
+            inlines.AssertEqual(((Heading)doc.Elements[0]).Inlines);
         }
 
         [TestMethod]
@@ -675,17 +675,17 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("### foo \\###\n## foo #\\##\n# foo \\#");
             Assert.AreEqual(3, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[0].Type);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[1].Type);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[2].Type);
-            Assert.AreEqual(3, ((AtxHeaderElement)doc.Elements[0]).HeaderLevel);
-            Assert.AreEqual(2, ((AtxHeaderElement)doc.Elements[1]).HeaderLevel);
-            Assert.AreEqual(1, ((AtxHeaderElement)doc.Elements[2]).HeaderLevel);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[1].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[2].Type);
+            Assert.AreEqual(3, ((Heading)doc.Elements[0]).HeaderLevel);
+            Assert.AreEqual(2, ((Heading)doc.Elements[1]).HeaderLevel);
+            Assert.AreEqual(1, ((Heading)doc.Elements[2]).HeaderLevel);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "foo ###");
             var inline2 = new InlineStructure(InlineElementType.InlineText, "foo #");
-            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[0]).Inlines);
-            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[1]).Inlines);
-            inline2.AssertEqual(((AtxHeaderElement)doc.Elements[2]).Inlines);
+            inline0.AssertEqual(((Heading)doc.Elements[0]).Inlines);
+            inline0.AssertEqual(((Heading)doc.Elements[1]).Inlines);
+            inline2.AssertEqual(((Heading)doc.Elements[2]).Inlines);
         }
 
         [TestMethod]
@@ -695,11 +695,11 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(3, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.ThematicBreak, doc.Elements[0].Type);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[1].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[1].Type);
             Assert.AreEqual(BlockElementType.ThematicBreak, doc.Elements[2].Type);
-            Assert.AreEqual(2, ((AtxHeaderElement)doc.Elements[1]).HeaderLevel);
+            Assert.AreEqual(2, ((Heading)doc.Elements[1]).HeaderLevel);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "foo");
-            inline0.AssertEqual(((AtxHeaderElement)doc.Elements[1]).Inlines);
+            inline0.AssertEqual(((Heading)doc.Elements[1]).Inlines);
         }
 
         [TestMethod]
@@ -709,14 +709,14 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(3, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[1].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[1].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[2].Type);
-            Assert.AreEqual(1, ((AtxHeaderElement)doc.Elements[1]).HeaderLevel);
+            Assert.AreEqual(1, ((Heading)doc.Elements[1]).HeaderLevel);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "Foo bar");
             var inline1 = new InlineStructure(InlineElementType.InlineText, "baz");
             var inline2 = new InlineStructure(InlineElementType.InlineText, "Bar foo");
             inline0.AssertEqual(((Paragraph)doc.Elements[0]).Inlines);
-            inline1.AssertEqual(((AtxHeaderElement)doc.Elements[1]).Inlines);
+            inline1.AssertEqual(((Heading)doc.Elements[1]).Inlines);
             inline2.AssertEqual(((Paragraph)doc.Elements[2]).Inlines);
         }
 
@@ -726,15 +726,15 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("## \n#\n### ###");
             Assert.AreEqual(3, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[0].Type);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[1].Type);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[2].Type);
-            Assert.AreEqual(2, ((AtxHeaderElement)doc.Elements[0]).HeaderLevel);
-            Assert.AreEqual(1, ((AtxHeaderElement)doc.Elements[1]).HeaderLevel);
-            Assert.AreEqual(3, ((AtxHeaderElement)doc.Elements[2]).HeaderLevel);
-            Assert.AreEqual(0, ((AtxHeaderElement)doc.Elements[0]).Inlines.Count);
-            Assert.AreEqual(0, ((AtxHeaderElement)doc.Elements[1]).Inlines.Count);
-            Assert.AreEqual(0, ((AtxHeaderElement)doc.Elements[2]).Inlines.Count);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[1].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[2].Type);
+            Assert.AreEqual(2, ((Heading)doc.Elements[0]).HeaderLevel);
+            Assert.AreEqual(1, ((Heading)doc.Elements[1]).HeaderLevel);
+            Assert.AreEqual(3, ((Heading)doc.Elements[2]).HeaderLevel);
+            Assert.AreEqual(0, ((Heading)doc.Elements[0]).Inlines.Count);
+            Assert.AreEqual(0, ((Heading)doc.Elements[1]).Inlines.Count);
+            Assert.AreEqual(0, ((Heading)doc.Elements[2]).Inlines.Count);
         }
 
         #endregion
@@ -747,16 +747,16 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("Foo *bar*\n=========\n\nFoo *bar*\n---------");
             Assert.AreEqual(2, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[0].Type);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[1].Type);
-            Assert.AreEqual(1, ((SetextHeader)doc.Elements[0]).HeaderLevel);
-            Assert.AreEqual(2, ((SetextHeader)doc.Elements[1]).HeaderLevel);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[1].Type);
+            Assert.AreEqual(1, ((Heading)doc.Elements[0]).HeaderLevel);
+            Assert.AreEqual(2, ((Heading)doc.Elements[1]).HeaderLevel);
             var inline = new InlineStructure(InlineElementType.InlineText,
                 new InlineStructure(InlineElementType.InlineText, "Foo "),
                 new InlineStructure(InlineElementType.Emphasis,
                     new InlineStructure(InlineElementType.InlineText, "bar")));
-            inline.AssertEqual(((SetextHeader)doc.Elements[0]).Inlines);
-            inline.AssertEqual(((SetextHeader)doc.Elements[1]).Inlines);
+            inline.AssertEqual(((Heading)doc.Elements[0]).Inlines);
+            inline.AssertEqual(((Heading)doc.Elements[1]).Inlines);
         }
 
         [TestMethod]
@@ -765,15 +765,15 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("Foo *bar\nbaz*\n====");
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[0].Type);
-            Assert.AreEqual(1, ((SetextHeader)doc.Elements[0]).HeaderLevel);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
+            Assert.AreEqual(1, ((Heading)doc.Elements[0]).HeaderLevel);
             var inline = new InlineStructure(InlineElementType.InlineText,
                 new InlineStructure(InlineElementType.InlineText, "Foo "),
                 new InlineStructure(InlineElementType.Emphasis,
                     new InlineStructure(InlineElementType.InlineText, "bar"),
                     new InlineStructure(InlineElementType.SoftLineBreak, ""),
                     new InlineStructure(InlineElementType.InlineText, "baz")));
-            inline.AssertEqual(((SetextHeader)doc.Elements[0]).Inlines);
+            inline.AssertEqual(((Heading)doc.Elements[0]).Inlines);
         }
 
         [TestMethod]
@@ -782,13 +782,13 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("Foo\n-------------------------\n\nFoo\n=");
             Assert.AreEqual(2, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[0].Type);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[1].Type);
-            Assert.AreEqual(2, ((SetextHeader)doc.Elements[0]).HeaderLevel);
-            Assert.AreEqual(1, ((SetextHeader)doc.Elements[1]).HeaderLevel);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[1].Type);
+            Assert.AreEqual(2, ((Heading)doc.Elements[0]).HeaderLevel);
+            Assert.AreEqual(1, ((Heading)doc.Elements[1]).HeaderLevel);
             var inline = new InlineStructure(InlineElementType.InlineText, "Foo");
-            inline.AssertEqual(((SetextHeader)doc.Elements[0]).Inlines);
-            inline.AssertEqual(((SetextHeader)doc.Elements[1]).Inlines);
+            inline.AssertEqual(((Heading)doc.Elements[0]).Inlines);
+            inline.AssertEqual(((Heading)doc.Elements[1]).Inlines);
         }
 
         [TestMethod]
@@ -797,16 +797,16 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("   Foo\n---\n\n  Foo\n-----\n\n  Foo\n  ===");
             Assert.AreEqual(3, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[0].Type);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[1].Type);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[2].Type);
-            Assert.AreEqual(2, ((SetextHeader)doc.Elements[0]).HeaderLevel);
-            Assert.AreEqual(2, ((SetextHeader)doc.Elements[1]).HeaderLevel);
-            Assert.AreEqual(1, ((SetextHeader)doc.Elements[2]).HeaderLevel);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[1].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[2].Type);
+            Assert.AreEqual(2, ((Heading)doc.Elements[0]).HeaderLevel);
+            Assert.AreEqual(2, ((Heading)doc.Elements[1]).HeaderLevel);
+            Assert.AreEqual(1, ((Heading)doc.Elements[2]).HeaderLevel);
             var inline = new InlineStructure(InlineElementType.InlineText, "Foo");
-            inline.AssertEqual(((SetextHeader)doc.Elements[0]).Inlines);
-            inline.AssertEqual(((SetextHeader)doc.Elements[1]).Inlines);
-            inline.AssertEqual(((SetextHeader)doc.Elements[2]).Inlines);
+            inline.AssertEqual(((Heading)doc.Elements[0]).Inlines);
+            inline.AssertEqual(((Heading)doc.Elements[1]).Inlines);
+            inline.AssertEqual(((Heading)doc.Elements[2]).Inlines);
         }
 
         [TestMethod]
@@ -826,10 +826,10 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("Foo\n   ----      ");
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[0].Type);
-            Assert.AreEqual(2, ((SetextHeader)doc.Elements[0]).HeaderLevel);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
+            Assert.AreEqual(2, ((Heading)doc.Elements[0]).HeaderLevel);
             var inlines = new InlineStructure(InlineElementType.InlineText, "Foo");
-            inlines.AssertEqual(((SetextHeader)doc.Elements[0]).Inlines);
+            inlines.AssertEqual(((Heading)doc.Elements[0]).Inlines);
         }
 
         [TestMethod]
@@ -870,10 +870,10 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("Foo  \n-----");
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[0].Type);
-            Assert.AreEqual(2, ((SetextHeader)doc.Elements[0]).HeaderLevel);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
+            Assert.AreEqual(2, ((Heading)doc.Elements[0]).HeaderLevel);
             var inlines = new InlineStructure(InlineElementType.InlineText, "Foo");
-            inlines.AssertEqual(((SetextHeader)doc.Elements[0]).Inlines);
+            inlines.AssertEqual(((Heading)doc.Elements[0]).Inlines);
         }
 
         [TestMethod]
@@ -882,10 +882,10 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("Foo\\\n-----");
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[0].Type);
-            Assert.AreEqual(2, ((SetextHeader)doc.Elements[0]).HeaderLevel);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
+            Assert.AreEqual(2, ((Heading)doc.Elements[0]).HeaderLevel);
             var inlines = new InlineStructure(InlineElementType.InlineText, "Foo\\");
-            inlines.AssertEqual(((SetextHeader)doc.Elements[0]).Inlines);
+            inlines.AssertEqual(((Heading)doc.Elements[0]).Inlines);
         }
 
         [TestMethod]
@@ -894,19 +894,19 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("`Foo\n----\n`\n\n<a title=\"a lot\n---\nof dashes\"/>");
             Assert.AreEqual(4, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[2].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[2].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[3].Type);
-            Assert.AreEqual(2, ((SetextHeader)doc.Elements[0]).HeaderLevel);
-            Assert.AreEqual(2, ((SetextHeader)doc.Elements[2]).HeaderLevel);
+            Assert.AreEqual(2, ((Heading)doc.Elements[0]).HeaderLevel);
+            Assert.AreEqual(2, ((Heading)doc.Elements[2]).HeaderLevel);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "`Foo");
             var inline1 = new InlineStructure(InlineElementType.InlineText, "`");
             var inline2 = new InlineStructure(InlineElementType.InlineText, "<a title=\"a lot");
             var inline3 = new InlineStructure(InlineElementType.InlineText, "of dashes\"/>");
-            inline0.AssertEqual(((SetextHeader)doc.Elements[0]).Inlines);
+            inline0.AssertEqual(((Heading)doc.Elements[0]).Inlines);
             inline1.AssertEqual(((Paragraph)doc.Elements[1]).Inlines);
-            inline2.AssertEqual(((SetextHeader)doc.Elements[2]).Inlines);
+            inline2.AssertEqual(((Heading)doc.Elements[2]).Inlines);
             inline3.AssertEqual(((Paragraph)doc.Elements[3]).Inlines);
         }
 
@@ -966,14 +966,14 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("Foo\nBar\n---");
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[0].Type);
-            Assert.AreEqual(2, ((HeaderElementBase)doc.Elements[0]).HeaderLevel);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
+            Assert.AreEqual(2, ((Heading)doc.Elements[0]).HeaderLevel);
 
             var inlines = new InlineStructure(InlineElementType.InlineText,
                 new InlineStructure(InlineElementType.InlineText, "Foo"),
                 new InlineStructure(InlineElementType.SoftLineBreak, ""),
                 new InlineStructure(InlineElementType.InlineText, "Bar"));
-            inlines.AssertEqual(((HeaderElementBase)doc.Elements[0]).Inlines);
+            inlines.AssertEqual(((Heading)doc.Elements[0]).Inlines);
         }
 
         [TestMethod]
@@ -983,17 +983,17 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(4, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.ThematicBreak, doc.Elements[0].Type);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[1].Type);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[2].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[1].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[2].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[3].Type);
-            Assert.AreEqual(2, ((HeaderElementBase)doc.Elements[1]).HeaderLevel);
-            Assert.AreEqual(2, ((HeaderElementBase)doc.Elements[2]).HeaderLevel);
+            Assert.AreEqual(2, ((Heading)doc.Elements[1]).HeaderLevel);
+            Assert.AreEqual(2, ((Heading)doc.Elements[2]).HeaderLevel);
 
             var inline1 = new InlineStructure(InlineElementType.InlineText, "Foo");
             var inline2 = new InlineStructure(InlineElementType.InlineText, "Bar");
             var inline3 = new InlineStructure(InlineElementType.InlineText, "Baz");
-            inline1.AssertEqual(((HeaderElementBase)doc.Elements[1]).Inlines);
-            inline2.AssertEqual(((HeaderElementBase)doc.Elements[2]).Inlines);
+            inline1.AssertEqual(((Heading)doc.Elements[1]).Inlines);
+            inline2.AssertEqual(((Heading)doc.Elements[2]).Inlines);
             inline3.AssertEqual(((Paragraph)doc.Elements[3]).Inlines);
         }
 
@@ -1065,10 +1065,10 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("\\> foo\n------");
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[0].Type);
-            Assert.AreEqual(2, (doc.Elements[0] as SetextHeader).HeaderLevel);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
+            Assert.AreEqual(2, (doc.Elements[0] as Heading).HeaderLevel);
             var inlines = new InlineStructure(InlineElementType.InlineText, "> foo");
-            inlines.AssertEqual(((SetextHeader)doc.Elements[0]).Inlines);
+            inlines.AssertEqual(((Heading)doc.Elements[0]).Inlines);
         }
 
         [TestMethod]
@@ -1078,9 +1078,9 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(3, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[1].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[1].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[2].Type);
-            Assert.AreEqual(2, (doc.Elements[1] as SetextHeader).HeaderLevel);
+            Assert.AreEqual(2, (doc.Elements[1] as Heading).HeaderLevel);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "Foo");
             var inline1 = new InlineStructure(InlineElementType.InlineText, "bar");
             var inline2 = new InlineStructure(InlineElementType.InlineText, "baz");
@@ -1260,16 +1260,16 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("# Heading\n    foo\nHeading\n------\n    foo\n----");
             Assert.AreEqual(5, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[1].Type);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[2].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[2].Type);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[3].Type);
             Assert.AreEqual(BlockElementType.ThematicBreak, doc.Elements[4].Type);
 
             var inline = new InlineStructure(InlineElementType.InlineText, "Heading");
-            inline.AssertEqual((doc.Elements[0] as HeaderElementBase).Inlines);
+            inline.AssertEqual((doc.Elements[0] as Heading).Inlines);
             Assert.AreEqual("foo", (doc.Elements[1] as CodeBlock).Content);
-            inline.AssertEqual((doc.Elements[2] as HeaderElementBase).Inlines);
+            inline.AssertEqual((doc.Elements[2] as Heading).Inlines);
             Assert.AreEqual("foo", (doc.Elements[3] as CodeBlock).Content);
         }
 
@@ -1547,9 +1547,9 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse("foo\n---\n~~~\nbar\n~~~\n# baz");
             Assert.AreEqual(3, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.SetextHeading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[1].Type);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[2].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[2].Type);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "foo");
             var inline2 = new InlineStructure(InlineElementType.InlineText, "baz");
             inline0.AssertEqual((doc.Elements[0] as LeafElement).Inlines);
@@ -2568,7 +2568,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(label, doc.LinkDefinition[label].Label, true);
             Assert.AreEqual(dest, doc.LinkDefinition[label].Destination);
             Assert.AreEqual(null, doc.LinkDefinition[label].Title);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.BlockQuote, doc.Elements[1].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].GetChild(0).Type);
             var inline0 = new InlineStructure(InlineElementType.Link,
@@ -2791,7 +2791,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
-                new BlockElementStructure(BlockElementType.AtxHeading),
+                new BlockElementStructure(BlockElementType.Heading),
                 new BlockElementStructure(BlockElementType.Paragraph));
             blocks.AssertTypeEqual(doc.Elements[0]);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "Foo");
@@ -2811,7 +2811,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
-                new BlockElementStructure(BlockElementType.AtxHeading),
+                new BlockElementStructure(BlockElementType.Heading),
                 new BlockElementStructure(BlockElementType.Paragraph));
             blocks.AssertTypeEqual(doc.Elements[0]);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "Foo");
@@ -2831,7 +2831,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
-                new BlockElementStructure(BlockElementType.AtxHeading),
+                new BlockElementStructure(BlockElementType.Heading),
                 new BlockElementStructure(BlockElementType.Paragraph));
             blocks.AssertTypeEqual(doc.Elements[0]);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "Foo");
@@ -2862,7 +2862,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             var blocks = new BlockElementStructure(BlockElementType.BlockQuote,
-                new BlockElementStructure(BlockElementType.AtxHeading),
+                new BlockElementStructure(BlockElementType.Heading),
                 new BlockElementStructure(BlockElementType.Paragraph));
             blocks.AssertTypeEqual(doc.Elements[0]);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "Foo");
@@ -4259,18 +4259,18 @@ namespace TestProject.MarkdownElementTest
 
             var blocks = new BlockElementStructure(BlockElementType.List,
                 new BlockElementStructure(BlockElementType.ListItem,
-                    new BlockElementStructure(BlockElementType.AtxHeading)),
+                    new BlockElementStructure(BlockElementType.Heading)),
                 new BlockElementStructure(BlockElementType.ListItem,
-                    new BlockElementStructure(BlockElementType.SetextHeading),
+                    new BlockElementStructure(BlockElementType.Heading),
                     new BlockElementStructure(BlockElementType.Paragraph)));
             blocks.AssertTypeEqual(doc.Elements[0]);
 
-            var head0 = doc.Elements[0].GetChild(0).GetChild(0) as AtxHeaderElement;
+            var head0 = doc.Elements[0].GetChild(0).GetChild(0) as Heading;
             Assert.AreEqual(1, head0.HeaderLevel);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "Foo");
             inline0.AssertEqual(head0.GetInlines());
 
-            var head1 = doc.Elements[0].GetChild(1).GetChild(0) as SetextHeader;
+            var head1 = doc.Elements[0].GetChild(1).GetChild(0) as Heading;
             Assert.AreEqual(2, head1.HeaderLevel);
             var inline1 = new InlineStructure(InlineElementType.InlineText, "Bar");
             inline1.AssertEqual(head1.GetInlines());
@@ -10422,7 +10422,7 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse(code);
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
 
             var inline = new InlineStructure(InlineElementType.InlineText, "foo\\");
             inline.AssertEqual(doc.Elements[0].GetInlines());
@@ -10435,7 +10435,7 @@ namespace TestProject.MarkdownElementTest
             var doc = MarkdownParser.Parse(code);
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
-            Assert.AreEqual(BlockElementType.AtxHeading, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Heading, doc.Elements[0].Type);
 
             var inline = new InlineStructure(InlineElementType.InlineText, "foo");
             inline.AssertEqual(doc.Elements[0].GetInlines());

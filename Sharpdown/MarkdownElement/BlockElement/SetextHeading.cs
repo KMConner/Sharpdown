@@ -18,22 +18,22 @@ namespace Sharpdown.MarkdownElement.BlockElement
     /// =======
     /// ]]>
     /// </remarks>
-    public class SetextHeader : HeaderElementBase
+    internal class SetextHeading : Heading
     {
         /// <summary>
         /// Gets the type of this block.
         /// </summary>
-        public override BlockElementType Type => BlockElementType.SetextHeading;
+        public override BlockElementType Type => BlockElementType.Heading;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="SetextHeader"/>
+        /// Initializes a new instance of <see cref="SetextHeading"/>
         /// with header level.
         /// </summary>
         /// <param name="elem">
         /// The <see cref="UnknownElement"/> object to create this object from.
         /// </param>
         /// <param name="level">The header level.</param>
-        internal SetextHeader(UnknownElement elem, int level)
+        internal SetextHeading(UnknownElement elem, int level)
         {
             if (level != 1 && level != 2)
             {

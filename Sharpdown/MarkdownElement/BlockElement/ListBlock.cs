@@ -230,7 +230,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         }
 
         /// <summary>
-        /// Adds a line of string to this <see cref="AtxHeaderElement"/>.
+        /// Adds a line of string to this <see cref="AtxHeading"/>.
         /// </summary>
         /// <param name="line">A single line to add to this element.</param>
         /// <param name="lazy">Whether <paramref name="line"/> is lazy continuation.</param>

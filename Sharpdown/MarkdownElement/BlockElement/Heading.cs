@@ -6,9 +6,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
     /// <summary>
     /// Represents the Header elements in markdown document.
     /// </summary>
-    /// <seealso cref="AtxHeaderElement"/>
-    /// <seealso cref="SetextHeader"/>
-    public abstract class HeaderElementBase : LeafElement
+    /// <seealso cref="AtxHeading"/>
+    /// <seealso cref="SetextHeading"/>
+    public abstract class Heading : LeafElement
     {
         /// <summary>
         /// The header level

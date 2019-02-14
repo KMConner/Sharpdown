@@ -13,12 +13,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
     /// ## Header2
     /// ]]>
     /// </remarks>
-    public class AtxHeaderElement : HeaderElementBase
+    internal class AtxHeading : Heading
     {
         /// <summary>
         /// Gets the type of this block.
         /// </summary>
-        public override BlockElementType Type => BlockElementType.AtxHeading;
+        public override BlockElementType Type => BlockElementType.Heading;
 
         /// <summary>
         /// Regular expression which matches lines which contains ATX Header.
@@ -28,14 +28,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
 
         /// <summary>
-        /// Initializes a new instance of <see cref="AtxHeaderElement"/>
+        /// Initializes a new instance of <see cref="AtxHeading"/>
         /// </summary>
-        internal AtxHeaderElement()
+        internal AtxHeading()
         {
         }
 
         /// <summary>
-        /// Returns whether the specified line can be a start line of <see cref="AtxHeaderElement"/>.
+        /// Returns whether the specified line can be a start line of <see cref="AtxHeading"/>.
         /// </summary>
         /// <remarks>
         /// These requirements must be satisfied to be the start line.
@@ -49,7 +49,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <param name="line">Single line string.</param>
         /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <returns>
-        /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="AtxHeaderElement"/>.
+        /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="AtxHeading"/>.
         /// Otherwise, returns <c>false</c>.
         /// </returns>
         public static bool CanStartBlock(string line, int currentIndent)
@@ -80,7 +80,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         }
 
         /// <summary>
-        /// Adds a line of string to this <see cref="AtxHeaderElement"/>.
+        /// Adds a line of string to this <see cref="AtxHeading"/>.
         /// </summary>
         /// <param name="line">A single line to add to this element.</param>
         /// <param name="lazy">Whether <paramref name="line"/> is lazy continuation.</param>
@@ -90,7 +90,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         {
             if (!headerRegex.IsMatch(line) || lazy)
             {
-                throw new InvalidBlockFormatException(BlockElementType.AtxHeading);
+                throw new InvalidBlockFormatException(BlockElementType.Heading);
             }
 
             Match match = headerRegex.Match(line);

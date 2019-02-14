@@ -11,7 +11,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
     /// </summary>
     /// <seealso cref="Paragraph"/>
     /// <seealso cref="LinkReferenceDefinition"/>
-    /// <seealso cref="SetextHeader"/>
+    /// <seealso cref="SetextHeading"/>
     public class UnknownElement : LeafElement
     {
         /// <summary>
@@ -80,7 +80,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     && (removed[0] == '-' || removed[0] == '=')
                     && removed.All(c => removed[0] == c))
                 {
-                    actualType = BlockElementType.SetextHeading;
+                    actualType = BlockElementType.Heading;
                     headerLevel = removed[0] == '=' ? 1 : 2;
                     return AddLineResult.Consumed | AddLineResult.NeedClose;
                 }
@@ -152,7 +152,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         {
             if (BlockQuote.CanStartBlock(line, currentIndent)
                 || ThematicBreak.CanStartBlock(line, currentIndent)
-                || AtxHeaderElement.CanStartBlock(line, currentIndent)
+                || AtxHeading.CanStartBlock(line, currentIndent)
                 || FencedCodeBlock.CanStartBlock(line, currentIndent)
                 || HtmlBlock.CanInterruptParagraph(line)
                 || BlankLine.CanStartBlock(line))
@@ -255,7 +255,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// 
         /// <para>
         /// If <see cref="actualType"/> is one of <see cref="BlockElementType.Paragraph"/>,
-        /// <see cref="BlockElementType.SetextHeading"/> or
+        /// <see cref="BlockElementType.Heading"/> or
         /// <see cref="BlockElementType.LinkReferenceDefinition"/>, the type of returned block
         /// will be the same type of <see cref="actualType"/>.
         /// Otherwise (<see cref="actualType"/> is <see cref="BlockElementType.Unknown"/>),
@@ -268,8 +268,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         {
             switch (actualType)
             {
-                case BlockElementType.SetextHeading:
-                    return new SetextHeader(this, headerLevel);
+                case BlockElementType.Heading:
+                    return new SetextHeading(this, headerLevel);
 
                 case BlockElementType.LinkReferenceDefinition:
                 {

@@ -11,14 +11,9 @@
         ThematicBreak,
 
         /// <summary>
-        /// ATX Header.
+        /// Heading.
         /// </summary>
-        AtxHeading,
-
-        /// <summary>
-        /// Setext Header.
-        /// </summary>
-        SetextHeading,
+        Heading,
 
         /// <summary>
         /// Indented/Fenced Code Block.

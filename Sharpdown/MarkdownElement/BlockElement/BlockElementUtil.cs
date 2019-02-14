@@ -27,9 +27,9 @@
                 return new ThematicBreak();
             }
 
-            if (AtxHeaderElement.CanStartBlock(line, currentIndent))
+            if (AtxHeading.CanStartBlock(line, currentIndent))
             {
-                return new AtxHeaderElement();
+                return new AtxHeading();
             }
 
             if (FencedCodeBlock.CanStartBlock(line, currentIndent))
