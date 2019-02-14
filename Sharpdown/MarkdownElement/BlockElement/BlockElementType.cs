@@ -21,14 +21,9 @@
         SetextHeading,
 
         /// <summary>
-        /// Indented Code Block.
+        /// Indented/Fenced Code Block.
         /// </summary>
-        IndentedCodeBlock,
-
-        /// <summary>
-        /// Fenced Code Block.
-        /// </summary>
-        FencedCodeBlock,
+        CodeBlock,
 
         /// <summary>
         /// HTML Block.

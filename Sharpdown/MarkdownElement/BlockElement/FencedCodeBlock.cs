@@ -19,7 +19,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
     /// ```
     /// ]]>
     /// </remarks>
-    public class FencedCodeBlock : CodeBlockBase
+    internal class FencedCodeBlock : CodeBlock
     {
         /// <summary>
         /// Regular expression which matches the open fence of fenced code block.
@@ -73,7 +73,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Gets the type of this block.
         /// </summary>
-        public override BlockElementType Type => BlockElementType.FencedCodeBlock;
+        public override BlockElementType Type => BlockElementType.CodeBlock;
 
         /// <summary>
         /// Gets the info string of this block.
@@ -166,7 +166,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         {
             if (lazy && line.GetIndentNum(currentIndent) >= 0)
             {
-                throw new InvalidBlockFormatException(BlockElementType.FencedCodeBlock);
+                throw new InvalidBlockFormatException(BlockElementType.CodeBlock);
             }
 
             if (!initialized) // When the first line is specified
@@ -174,7 +174,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 Match match = openFenceRegex.Match(line);
                 if (!match.Success) // When the first line does not contain open fence.
                 {
-                    throw new InvalidBlockFormatException(BlockElementType.FencedCodeBlock);
+                    throw new InvalidBlockFormatException(BlockElementType.CodeBlock);
                 }
 
                 string fence = match.Groups["fence"].Value;

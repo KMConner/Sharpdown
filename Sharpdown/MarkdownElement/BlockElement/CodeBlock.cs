@@ -3,11 +3,11 @@ using Sharpdown.MarkdownElement.InlineElement;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
-    public abstract class CodeBlockBase : LeafElement
+    public abstract class CodeBlock : LeafElement
     {
         public abstract string InfoString { get; }
 
-        internal CodeBlockBase()
+        internal CodeBlock()
         {
         }
 

@@ -13,7 +13,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
     ///     Bar
     /// ]]>
     /// </remarks>
-    public class IndentedCodeBlock : CodeBlockBase
+    internal class IndentedCodeBlock : CodeBlock
     {
         /// <summary>
         /// The lines in this block.
@@ -23,7 +23,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Gets the type of this block.
         /// </summary>
-        public override BlockElementType Type => BlockElementType.IndentedCodeBlock;
+        public override BlockElementType Type => BlockElementType.CodeBlock;
 
         /// <summary>
         /// Gets the info string of this block.
