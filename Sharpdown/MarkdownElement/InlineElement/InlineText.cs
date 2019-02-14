@@ -2202,7 +2202,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     continue;
                 }
 
-                // Numeric and entitiy character references.
+                // Numeric and entity character references.
                 if (text[i] == '&')
                 {
                     var colon = text.IndexOf(';', i + 1);

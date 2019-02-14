@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 namespace Sharpdown.MarkdownElement.BlockElement
 {
     /// <summary>
-    /// Represents markdown elements that the type cannnot be determined
+    /// Represents markdown elements that the type cannot be determined
     /// from only the first line.
     /// </summary>
     /// <seealso cref="Paragraph"/>
@@ -37,7 +37,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         private int headerLevel;
 
         /// <summary>
-        /// Wether this block can be a link reference definition.
+        /// Whether this block can be a link reference definition.
         /// </summary>
         private bool mayBeLinkReferenceDefinition;
 
@@ -74,7 +74,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     return AddLineResult.NeedClose;
                 }
 
-                string removed = line.Trim(whiteSpaceShars);
+                string removed = line.Trim(whiteSpaceChars);
                 if (removed.Length > 0
                     && !lazy
                     && (removed[0] == '-' || removed[0] == '=')
@@ -140,7 +140,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         }
 
         /// <summary>
-        /// Returns wether the paragraph needs to be interrupted.
+        /// Returns whether the paragraph needs to be interrupted.
         /// </summary>
         /// <param name="line">The single line of string.</param>
         /// <returns>
@@ -163,13 +163,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
         }
 
         /// <summary>
-        /// Returns wether parentheses in the specified string is balanecd.
+        /// Returns whether parentheses in the specified string is balanced.
         /// </summary>
         /// <param name="str">
-        /// String object to determine wether the parentheses are balanecd.
+        /// String object to determine whether the parentheses are balanced.
         /// </param>
         /// <returns>
-        /// <c>true</c> if  parentheses in the specified string is balanecd,
+        /// <c>true</c> if  parentheses in the specified string is balanced,
         /// otherwise, <c>false</c>.
         /// </returns>
         private bool AreParenthesesBalanced(string str)
@@ -321,7 +321,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         {
             foreach (var ch in str)
             {
-                if (!whiteSpaceShars.Contains(ch))
+                if (!whiteSpaceChars.Contains(ch))
                 {
                     return false;
                 }

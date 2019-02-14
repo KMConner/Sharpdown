@@ -22,7 +22,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         }
 
         /// <summary>
-        /// Returns wether the specified line can be a start line of <see cref="BlankLine"/>.
+        /// Returns whether the specified line can be a start line of <see cref="BlankLine"/>.
         /// </summary>
         /// <param name="line">Single line string.</param>
         /// <returns>
@@ -31,7 +31,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </returns>
         internal static bool CanStartBlock(string line)
         {
-            return line.TrimStart(whiteSpaceShars).Length == 0;
+            return line.TrimStart(whiteSpaceChars).Length == 0;
         }
 
         /// <summary>

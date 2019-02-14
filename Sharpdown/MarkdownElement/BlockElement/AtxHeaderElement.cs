@@ -42,7 +42,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// 
         /// <list type="bullet">
         /// <item>Starts with 1-6 # characters.</item>
-        /// <item>The opening # characters must be indented with 0-3 speces.</item>
+        /// <item>The opening # characters must be indented with 0-3 spaces.</item>
         /// <item>The opening # characters must be followed by one or more spaces. (Unless the text is empty.)</item>
         /// </list>
         /// </remarks>
@@ -55,11 +55,11 @@ namespace Sharpdown.MarkdownElement.BlockElement
         {
             if (line.GetIndentNum(currentIndent) >= 4)
             {
-                // Indented too many speces
+                // Indented too many spaces
                 return false;
             }
 
-            var trimmed = line.TrimStart(whiteSpaceShars);
+            var trimmed = line.TrimStart(whiteSpaceChars);
             int level = trimmed.Length;
             for (int i = 0; i < trimmed.Length; i++)
             {

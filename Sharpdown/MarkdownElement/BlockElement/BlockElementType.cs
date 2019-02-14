@@ -36,7 +36,7 @@
         HtmlBlock,
 
         /// <summary>
-        /// Link Refernce Definition.
+        /// Link Reference Definition.
         /// </summary>
         LinkReferenceDefinition,
 

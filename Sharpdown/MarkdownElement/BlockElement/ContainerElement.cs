@@ -49,7 +49,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         }
 
         /// <summary>
-        /// Returns wether the specified line satisfied proper conditions to 
+        /// Returns whether the specified line satisfied proper conditions to 
         /// continue (without lazy continuation).
         /// </summary>
         /// <param name="line">The line to continue.</param>
@@ -58,7 +58,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// (e.g. Extra indent, '> ' mark.)
         /// </param>
         /// <returns>
-        /// Wether the specified line satisfied proper conditions to 
+        /// Whether the specified line satisfied proper conditions to 
         /// continue (without lazy continuation).
         /// </returns>
         internal abstract bool HasMark(string line, int currentIndent, out string markRemoved, out int markLength);
@@ -67,7 +67,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Closes <see cref="openElement"/>.
         /// </summary>
         /// <seealso cref="BlockElement.Close"/>
-        protected void CloseOpenlement()
+        protected void CloseOpenElement()
         {
             if (openElement != null)
             {
@@ -95,7 +95,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         }
 
         /// <summary>
-        /// Returns wether this element allow lazy continuation.
+        /// Returns whether this element allow lazy continuation.
         /// </summary>
         /// <returns>
         /// Returns <c>true</c> when lazy continuation is allowed, <c>false</c> otherwise.
@@ -146,7 +146,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
             return this;
         }
-
 
         /// <summary>
         /// Adds a line of string to this block.

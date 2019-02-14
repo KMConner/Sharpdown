@@ -47,7 +47,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         }
 
         /// <summary>
-        /// Returns wether the specified line satisfied proper conditions to 
+        /// Returns whether the specified line satisfied proper conditions to 
         /// continue (without lazy continuation).
         /// </summary>
         /// <param name="line">The line to continue.</param>

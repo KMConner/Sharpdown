@@ -9,7 +9,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
     public abstract class LeafElement : BlockElement
     {
         /// <summary>
-        /// Gets warning messages which occuerd in parsing process.
+        /// Gets warning messages which occurred in parsing process.
         /// </summary>
         public override IReadOnlyList<string> Warnings => warnings.AsReadOnly();
 

@@ -23,14 +23,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
         public override string Content => throw new InvalidOperationException();
 
         /// <summary>
-        /// Initialzies a new instance of <see cref="BlockQuote"/>.
+        /// Initializes a new instance of <see cref="BlockQuote"/>.
         /// </summary>
         internal BlockQuote()
         {
         }
 
         /// <summary>
-        /// Returns wether the specified line can be a start line of <see cref="BlockQuote"/>.
+        /// Returns whether the specified line can be a start line of <see cref="BlockQuote"/>.
         /// </summary>
         /// <param name="line">Single line string.</param>
         /// <remarks>
@@ -55,7 +55,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 return false;
             }
 
-            if (line.TrimStart(whiteSpaceShars).StartsWith(">", StringComparison.Ordinal))
+            if (line.TrimStart(whiteSpaceChars).StartsWith(">", StringComparison.Ordinal))
             {
                 return true;
             }

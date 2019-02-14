@@ -7,7 +7,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
     /// Represents Thematic breaks in markdown documents.
     /// </summary>
     /// <remarks>
-    /// The typical thematic break is folloing.
+    /// The typical thematic break is following.
     /// 
     /// <![CDATA[
     /// ****

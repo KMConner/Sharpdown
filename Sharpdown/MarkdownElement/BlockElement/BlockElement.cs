@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Sharpdown.MarkdownElement.BlockElement
 {
     /// <summary>
-    /// Represents a block elements in makdown documents.
+    /// Represents a block elements in markdown documents.
     /// </summary>
     public abstract class BlockElement : MarkdownElementBase
     {
@@ -59,7 +59,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// The number of removed spaces is up to <paramref name="maxRemoveCount"/>.
         /// </summary>
         /// <param name="str">The string to remove indent.</param>
-        /// <param name="maxRemoveCount">The string after unindented.</param>
+        /// <param name="maxRemoveCount">The string after indent removal.</param>
         /// <returns></returns>
         protected string RemoveIndent(string str, int maxRemoveCount, int currentIndent)
         {

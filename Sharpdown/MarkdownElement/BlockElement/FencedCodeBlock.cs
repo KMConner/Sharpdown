@@ -61,12 +61,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
         private char fenceChar;
 
         /// <summary>
-        /// Wether the first line is added to this block.
+        /// Whether the first line is added to this block.
         /// </summary>
         private bool initialized;
 
         /// <summary>
-        /// Wether the line which contains the close fence has ocuuerd.
+        /// Whether the line which contains the close fence has occured.
         /// </summary>
         private bool closed;
 
@@ -103,7 +103,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// 
         /// <list type="bullet">
         /// <item>Starts with three or more ` or ~ characters. (Called open fence.)</item>
-        /// <item>Open fence must be indented with 0-3 speces.</item>
+        /// <item>Open fence must be indented with 0-3 spaces.</item>
         /// <item>
         /// Info string after the open fence must not contain ` characters.
         /// (Even if back slash escaped.).
@@ -124,7 +124,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 return false;
             }
 
-            var trimmed = line.TrimStart(whiteSpaceShars);
+            var trimmed = line.TrimStart(whiteSpaceChars);
 
             if (trimmed.Length < 3 || trimmed[0] != '`' && trimmed[0] != '~')
             {
@@ -166,7 +166,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 throw new InvalidBlockFormatException(BlockElementType.FencedCodeBlock);
             }
 
-            if (!initialized) // When the fiest line is slecified
+            if (!initialized) // When the first line is specified
             {
                 Match match = openFenceRegex.Match(line);
                 if (!match.Success) // When the first line does not contain open fence.
@@ -212,7 +212,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// When the close fence was not appear, a warning message is added.
         /// </summary>
         /// <returns>
-        /// The currnt object.
+        /// The current object.
         /// </returns>
         internal override BlockElement Close()
         {
