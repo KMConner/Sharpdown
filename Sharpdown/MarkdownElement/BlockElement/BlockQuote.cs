@@ -33,6 +33,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Returns whether the specified line can be a start line of <see cref="BlockQuote"/>.
         /// </summary>
         /// <param name="line">Single line string.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <remarks>
         /// These requirements must be satisfied to be the start line.
         /// 

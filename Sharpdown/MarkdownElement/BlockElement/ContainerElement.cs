@@ -53,9 +53,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// continue (without lazy continuation).
         /// </summary>
         /// <param name="line">The line to continue.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <param name="markRemoved">
         /// A line of string after removed mark.
         /// (e.g. Extra indent, '> ' mark.)
+        /// </param>
+        /// <param name="markLength">
+        /// The length of the mark of this block is set when this method returns.
         /// </param>
         /// <returns>
         /// Whether the specified line satisfied proper conditions to 
@@ -151,6 +155,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Adds a line of string to this block.
         /// </summary>
         /// <param name="line">A single line to add to this element.</param>
+        /// <param name="lazy">Whether <paramref name="line"/> is lazy continuation.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <returns></returns>
         internal override AddLineResult AddLine(string line, bool lazy, int currentIndent)
         {

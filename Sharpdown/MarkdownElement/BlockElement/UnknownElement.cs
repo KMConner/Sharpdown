@@ -143,6 +143,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Returns whether the paragraph needs to be interrupted.
         /// </summary>
         /// <param name="line">The single line of string.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <returns>
         /// <c>true</c> if the paragraph needs to be interrupted,
         /// otherwise, <c>false</c>.

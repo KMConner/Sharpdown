@@ -26,6 +26,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Add a line to this block.
         /// </summary>
         /// <param name="line">A line to add.</param>
+        /// <param name="lazy">Whether <paramref name="line"/> is lazy continuation.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <returns></returns>
         internal abstract AddLineResult AddLine(string line, bool lazy, int currentIndent);
 
@@ -60,6 +62,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         /// <param name="str">The string to remove indent.</param>
         /// <param name="maxRemoveCount">The string after indent removal.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="str"/>.</param>
         /// <returns></returns>
         protected string RemoveIndent(string str, int maxRemoveCount, int currentIndent)
         {

@@ -10,6 +10,7 @@
         /// Its type will be determined with the specified first line.
         /// </summary>
         /// <param name="line">The line which is the first line of the block.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <param name="createListItem">
         /// Creates a <see cref="ListItem"/> instead of <see cref="ListBlock"/> when <c>true</c> is specified.
         /// </param>

@@ -541,6 +541,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// </summary>
         /// <param name="text">The string object to @arse.</param>
         /// <param name="linkReferences">Link reference definitions.</param>
+        /// <param name="higherDelims">Delim Spans which represents higher priority.</param>
         /// <returns>The parse result.</returns>
         private static IEnumerable<InlineElementBase> ParseLinkEmphasis(string text,
             Dictionary<string, LinkReferenceDefinition> linkReferences, List<DelimSpan> higherDelims)

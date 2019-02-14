@@ -51,8 +51,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// continue (without lazy continuation).
         /// </summary>
         /// <param name="line">The line to continue.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <param name="markRemoved">
         /// This value is always equivalent to <paramref name="line"/>.
+        /// </param>
+        /// <param name="markLength">
+        /// The length of the mark of this block is set when this method returns.
         /// </param>
         /// <returns>
         /// Always <c>true</c>.

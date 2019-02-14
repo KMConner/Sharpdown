@@ -57,6 +57,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Therefore, no lines can be added to this block.
         /// </summary>
         /// <param name="line">A single line to add to this element.</param>
+        /// <param name="lazy">Whether <paramref name="line"/> is lazy continuation.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <returns>
         /// Always throws <see cref="InvalidOperationException"/>
         /// </returns>

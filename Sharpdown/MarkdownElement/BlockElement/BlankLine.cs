@@ -38,6 +38,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Adds a line of string to this <see cref="BlankLine"/>.
         /// </summary>
         /// <param name="line">The line to add.</param>
+        /// <param name="lazy">Whether <paramref name="line"/> is lazy continuation.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <returns>
         /// Always returns <c>AddLineResult.Consumed | AddLineResult.NeedClose</c>.
         /// </returns>

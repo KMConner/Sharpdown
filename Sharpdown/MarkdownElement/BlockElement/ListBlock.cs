@@ -71,6 +71,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </list>
         /// </remarks>
         /// <param name="line">Single line string.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <returns>
         /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="ListBlock"/>.
         /// Otherwise, returns <c>false</c>.
@@ -143,6 +144,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Creates a new <see cref="ListItem"/> from the specified line.
         /// </summary>
         /// <param name="line">A single line of string.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <returns>
         /// <see cref="ListItem"/> which is created from <paramref name="line"/>.
         /// </returns>
@@ -223,6 +225,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Whether the specified line can interrupt <see cref="Paragraph"/>.
         /// </summary>
         /// <param name="line">A single line of string.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <returns>
         /// If the line is the start line of bullet list which does not starts with blank
         /// line, 
@@ -245,6 +248,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Adds a line of string to this <see cref="AtxHeaderElement"/>.
         /// </summary>
         /// <param name="line">A single line to add to this element.</param>
+        /// <param name="lazy">Whether <paramref name="line"/> is lazy continuation.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <returns>
         /// Returns <c>AddLineResult.Consumed | AddLineResult.NeedClose</c>
         /// except when this block need to be interrupted.
@@ -341,7 +346,11 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// However <see cref="AddLine"/> does not use this.
         /// </summary>
         /// <param name="line">Ignored.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <param name="markRemoved">Ignored.</param>
+        /// <param name="markLength">
+        /// The length of the mark of this block is set when this method returns.
+        /// </param>
         /// <returns>Always throws <see cref="InvalidOperationException"/>.</returns>
         /// <exception cref="InvalidOperationException">Always.</exception>
         internal override bool HasMark(string line, int currentIndent, out string markRemoved, out int markLength)

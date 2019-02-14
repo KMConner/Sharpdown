@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sharpdown;
 using Sharpdown.MarkdownElement.BlockElement;
 using Sharpdown.MarkdownElement.InlineElement;
@@ -8,6 +9,7 @@ using TestProject.MarkdownElementTest.InlineElementTest;
 namespace TestProject.MarkdownElementTest
 {
     [TestClass]
+    [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
     public class CommonMarkTest
     {
         #region Tabs

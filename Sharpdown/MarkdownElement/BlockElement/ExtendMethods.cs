@@ -39,6 +39,7 @@
         /// The tab characters behave as if they are replaced to 4 spaces. 
         /// </summary>
         /// <param name="line">A line to count the indent.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <returns>The indent count of <paramref name="line"/>.</returns>
         public static int GetIndentNum(this string line, int currentIndent)
         {

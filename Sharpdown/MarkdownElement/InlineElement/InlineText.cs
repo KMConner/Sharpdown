@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 
@@ -13,7 +14,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <summary>
         /// HTML entity character listing.
         /// </summary>
-        private static readonly Dictionary<string, string> entityCharacter =
+        [SuppressMessage("ReSharper", "StringLiteralTypo")] private static readonly Dictionary<string, string> entityCharacter =
             new Dictionary<string, string>
             {
                 {"AElig", "\u00C6"},
@@ -2160,6 +2161,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// Creates <see cref="InlineText"/> object from the specified string.
         /// </summary>
         /// <param name="text"></param>
+        /// <param name="backslashEscapeEnabled">Whether backslash escape ios enabled.</param>
         /// <returns>
         /// A new <see cref="InlineText"/> element contains the equivalent text to <paramref name="text"/>
         /// after processing backslash escapes and html style character references.
