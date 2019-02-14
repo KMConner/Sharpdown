@@ -63,7 +63,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Whether the specified line satisfied proper conditions to 
         /// continue (without lazy continuation).
         /// </returns>
-        internal abstract bool HasMark(string line, int currentIndent, out string markRemoved, out int markLength);
+        protected abstract bool HasMark(string line, int currentIndent, out string markRemoved, out int markLength);
 
         /// <summary>
         /// Closes <see cref="openElement"/>.

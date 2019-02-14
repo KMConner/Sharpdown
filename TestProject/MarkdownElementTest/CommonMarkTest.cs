@@ -3480,7 +3480,6 @@ namespace TestProject.MarkdownElementTest
             var listItem = (ListItem)doc.Elements[0].GetChild(0);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "ok");
             inline0.AssertEqual(listItem.GetChild(0).GetInlines());
-            Assert.AreEqual(123456789, listItem.Index);
             Assert.AreEqual(123456789, (doc.Elements[0] as ListBlock).StartIndex);
         }
 
@@ -3513,7 +3512,6 @@ namespace TestProject.MarkdownElementTest
             var listItem = (ListItem)doc.Elements[0].GetChild(0);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "ok");
             inline0.AssertEqual(listItem.GetChild(0).GetInlines());
-            Assert.AreEqual(0, listItem.Index);
             Assert.AreEqual(0, (doc.Elements[0] as ListBlock).StartIndex);
         }
 
@@ -3533,7 +3531,6 @@ namespace TestProject.MarkdownElementTest
             var listItem = (ListItem)doc.Elements[0].GetChild(0);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "ok");
             inline0.AssertEqual(listItem.GetChild(0).GetInlines());
-            Assert.AreEqual(3, listItem.Index);
             Assert.AreEqual(3, (doc.Elements[0] as ListBlock).StartIndex);
         }
 

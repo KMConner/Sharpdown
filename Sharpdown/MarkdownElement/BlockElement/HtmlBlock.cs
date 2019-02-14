@@ -93,7 +93,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="HtmlBlock"/>.
         /// Otherwise, returns <c>false</c>.
         /// </returns>
-        public static bool CanStartBlock(string line, int currentIndent)
+        internal static bool CanStartBlock(string line, int currentIndent)
         {
             if (line.GetIndentNum(currentIndent) < 0 || line.GetIndentNum(currentIndent) >= 4)
             {

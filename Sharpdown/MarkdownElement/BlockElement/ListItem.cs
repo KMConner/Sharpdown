@@ -27,13 +27,17 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Gets or sets the bullet marker of bullet list item or
         /// deliminator character of ordered list items.
         /// </summary>
-        public char Deliminator { get; internal set; }
+        internal char Deliminator { get; set; }
 
         /// <summary>
         /// Gets or sets the index of current list item.
         /// If the current list item is a bullet list item, this value is 0 by default.
         /// </summary>
-        public int Index { get; internal set; }
+        internal int Index { get; set; }
+
+        internal ListType ItemType => ListBlock.bullets.Contains(Deliminator)
+            ? ListType.Bullet
+            : (ListBlock.orderedDelims.Contains(Deliminator) ? ListType.Ordered : ListType.Unknown);
 
         internal bool IsTight { get; private set; }
 
@@ -61,7 +65,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <returns>
         /// Always <c>true</c>.
         /// </returns>
-        internal override bool HasMark(string line, int currentIndent, out string markRemoved, out int markLength)
+        protected override bool HasMark(string line, int currentIndent, out string markRemoved, out int markLength)
         {
             markRemoved = line;
             markLength = 0;

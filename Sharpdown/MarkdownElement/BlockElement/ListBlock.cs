@@ -24,7 +24,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Characters which can be used as bullet list markers.
         /// </summary>
-        private static readonly char[] bullets = {'-', '*', '+'};
+        internal static readonly char[] bullets = {'-', '*', '+'};
+
+        internal static readonly char[] orderedDelims = {'.', ')'};
 
         /// <summary>
         /// Regular expression which matches the first line of list item which starts with a
@@ -54,6 +56,10 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         public int StartIndex => (children.FirstOrDefault() as ListItem)?.Index ?? 0;
 
+        public ListType ListType => (children.FirstOrDefault() as ListItem)?.ItemType ?? ListType.Unknown;
+
+        public char Deliminator => (children.FirstOrDefault() as ListItem)?.Deliminator ?? '?';
+
         /// <summary>
         /// Returns whether the specified line can be a start line of <see cref="ListBlock"/>.
         /// </summary>
@@ -74,7 +80,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="ListBlock"/>.
         /// Otherwise, returns <c>false</c>.
         /// </returns>
-        public static bool CanStartBlock(string line, int currentIndent)
+        internal static bool CanStartBlock(string line, int currentIndent)
         {
             if (line.GetIndentNum(currentIndent) >= 4)
             {
@@ -336,7 +342,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </param>
         /// <returns>Always throws <see cref="InvalidOperationException"/>.</returns>
         /// <exception cref="InvalidOperationException">Always.</exception>
-        internal override bool HasMark(string line, int currentIndent, out string markRemoved, out int markLength)
+        protected override bool HasMark(string line, int currentIndent, out string markRemoved, out int markLength)
         {
             throw new InvalidOperationException();
         }

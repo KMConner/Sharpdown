@@ -46,7 +46,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="BlockQuote"/>.
         /// Otherwise, returns <c>false</c>.
         /// </returns>
-        public static bool CanStartBlock(string line, int currentIndent)
+        internal static bool CanStartBlock(string line, int currentIndent)
         {
             if (line.GetIndentNum(currentIndent) >= 4)
             {
@@ -62,7 +62,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return false;
         }
 
-        internal override bool HasMark(string line, int currentIndent, out string markRemoved, out int markLength)
+        protected override bool HasMark(string line, int currentIndent, out string markRemoved, out int markLength)
         {
             markRemoved = null;
             markLength = 0;
