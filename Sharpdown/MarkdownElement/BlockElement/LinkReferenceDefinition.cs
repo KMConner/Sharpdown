@@ -30,8 +30,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         public override BlockElementType Type => BlockElementType.LinkReferenceDefinition;
 
-        public override string Content => Label;
-
         /// <summary>
         /// Initializes a new instance of <see cref="LinkReferenceDefinition"/>
         /// with link label ,destination, title.

@@ -20,8 +20,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         public override BlockElementType Type => BlockElementType.BlockQuote;
 
-        public override string Content => throw new InvalidOperationException();
-
         /// <summary>
         /// Initializes a new instance of <see cref="BlockQuote"/>.
         /// </summary>

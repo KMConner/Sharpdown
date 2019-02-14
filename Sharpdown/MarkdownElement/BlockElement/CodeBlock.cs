@@ -7,13 +7,15 @@ namespace Sharpdown.MarkdownElement.BlockElement
     {
         public abstract string InfoString { get; }
 
+        public abstract string Code { get; }
+
         internal CodeBlock()
         {
         }
 
         internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
         {
-            inlines.Add(new LiteralText(Content));
+            inlines.Add(new LiteralText(Code));
         }
     }
 }

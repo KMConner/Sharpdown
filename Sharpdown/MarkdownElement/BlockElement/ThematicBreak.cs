@@ -29,8 +29,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         public override BlockElementType Type => BlockElementType.ThematicBreak;
 
-        public override string Content => string.Empty;
-
         /// <summary>
         /// Returns whether the specified line can be a start line of <see cref="FencedCodeBlock"/>.
         /// </summary>

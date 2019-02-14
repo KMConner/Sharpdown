@@ -15,16 +15,11 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         public int HeaderLevel { get; protected set; }
 
-        /// <summary>
-        /// The content of this header.
-        /// </summary>
-        public override string Content => content;
-
         protected string content;
 
         internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
         {
-            inlines.AddRange(InlineElementUtils.ParseInlineElements(Content, linkDefinitions));
+            inlines.AddRange(InlineElementUtils.ParseInlineElements(content, linkDefinitions));
         }
     }
 }

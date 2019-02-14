@@ -23,11 +23,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
         private readonly List<string> contents;
 
         /// <summary>
-        /// Gets the content of this paragraph.
-        /// </summary>
-        public override string Content => string.Join("\r\n", contents);
-
-        /// <summary>
         /// Gets the type of this block.
         /// </summary>
         public override BlockElementType Type => BlockElementType.Paragraph;
@@ -74,7 +69,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
         {
-            inlines.AddRange(InlineElementUtils.ParseInlineElements(Content, linkDefinitions));
+            inlines.AddRange(InlineElementUtils.ParseInlineElements(string.Join("\r\n", contents), linkDefinitions));
         }
     }
 }

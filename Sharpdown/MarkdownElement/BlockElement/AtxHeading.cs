@@ -28,13 +28,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
 
         /// <summary>
-        /// Initializes a new instance of <see cref="AtxHeading"/>
-        /// </summary>
-        internal AtxHeading()
-        {
-        }
-
-        /// <summary>
         /// Returns whether the specified line can be a start line of <see cref="AtxHeading"/>.
         /// </summary>
         /// <remarks>

@@ -43,8 +43,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         public override BlockElementType Type => BlockElementType.Unknown;
 
-        public override string Content => string.Join("\n", content);
-
         internal UnknownElement()
         {
             content = new List<string>();

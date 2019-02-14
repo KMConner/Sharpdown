@@ -12,15 +12,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         public override BlockElementType Type => BlockElementType.BlankLine;
 
-        public override string Content => string.Empty;
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="BlankLine"/>
-        /// </summary>
-        internal BlankLine()
-        {
-        }
-
         /// <summary>
         /// Returns whether the specified line can be a start line of <see cref="BlankLine"/>.
         /// </summary>

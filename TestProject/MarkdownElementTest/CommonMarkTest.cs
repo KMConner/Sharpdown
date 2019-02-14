@@ -89,7 +89,7 @@ namespace TestProject.MarkdownElementTest
             var listItem = doc.Elements[0].GetChild(0) as ListItem;
             inline0.AssertEqual(listItem.GetChild(0).GetInlines());
 
-            Assert.AreEqual("  bar", listItem.GetChild(1).Content);
+            Assert.AreEqual("  bar", (listItem.GetChild(1) as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -103,7 +103,7 @@ namespace TestProject.MarkdownElementTest
                 new BlockElementStructure(BlockElementType.CodeBlock));
             blocks.AssertTypeEqual(doc.Elements[0]);
 
-            Assert.AreEqual("  foo", doc.Elements[0].GetChild(0).Content);
+            Assert.AreEqual("  foo", (doc.Elements[0].GetChild(0) as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -119,7 +119,7 @@ namespace TestProject.MarkdownElementTest
             blocks.AssertTypeEqual(doc.Elements[0]);
 
             var listItem = doc.Elements[0].GetChild(0) as ListItem;
-            Assert.AreEqual("  foo", listItem.GetChild(0).Content);
+            Assert.AreEqual("  foo", (listItem.GetChild(0) as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -129,7 +129,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("foo\r\nbar", doc.Elements[0].Content);
+            Assert.AreEqual("foo\r\nbar", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -153,9 +153,12 @@ namespace TestProject.MarkdownElementTest
             var listItem0 = doc.Elements[0].GetChild(0) as ListItem;
             var listItem1 = listItem0.GetChild(1).GetChild(0) as ListItem;
             var listItem2 = listItem1.GetChild(1).GetChild(0) as ListItem;
-            Assert.AreEqual("foo", listItem0.GetChild(0).Content);
-            Assert.AreEqual("bar", listItem1.GetChild(0).Content);
-            Assert.AreEqual("baz", listItem2.GetChild(0).Content);
+            var inline0=new InlineStructure(InlineElementType.InlineText, "foo");
+            var inline1=new InlineStructure(InlineElementType.InlineText, "bar");
+            var inline2=new InlineStructure(InlineElementType.InlineText, "baz");
+            inline0.AssertEqual(listItem0.GetChild(0).GetInlines());
+            inline1.AssertEqual(listItem1.GetChild(0).GetInlines());
+            inline2.AssertEqual(listItem2.GetChild(0).GetInlines());
         }
 
         [TestMethod]
@@ -198,8 +201,10 @@ namespace TestProject.MarkdownElementTest
 
             var listItem = doc.Elements[0].GetChild(0) as ListItem;
             var listItem2 = doc.Elements[0].GetChild(1) as ListItem;
-            Assert.AreEqual("`one", listItem.GetChild(0).Content);
-            Assert.AreEqual("two`", listItem2.GetChild(0).Content);
+            var inline0=new InlineStructure(InlineElementType.InlineText, "`one");
+            var inline1=new InlineStructure(InlineElementType.InlineText, "two`");
+            inline0.AssertEqual(listItem.GetChild(0).GetInlines());
+            inline1.AssertEqual(listItem2.GetChild(0).GetInlines());
         }
 
         #endregion
@@ -586,7 +591,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("# foo", ((CodeBlock)doc.Elements[0]).Content);
+            Assert.AreEqual("# foo", ((CodeBlock)doc.Elements[0]).Code);
         }
 
         [TestMethod]
@@ -817,7 +822,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.ThematicBreak, doc.Elements[1].Type);
-            Assert.AreEqual("Foo\r\n---\r\n\r\nFoo", ((CodeBlock)doc.Elements[0]).Content);
+            Assert.AreEqual("Foo\r\n---\r\n\r\nFoo", ((CodeBlock)doc.Elements[0]).Code);
         }
 
         [TestMethod]
@@ -1042,7 +1047,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.ThematicBreak, doc.Elements[1].Type);
-            Assert.AreEqual("foo", ((CodeBlock)doc.Elements[0]).Content);
+            Assert.AreEqual("foo", ((CodeBlock)doc.Elements[0]).Code);
         }
 
         [TestMethod]
@@ -1155,7 +1160,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
             Assert.AreEqual("a simple\r\n  indented code block",
-                (doc.Elements[0] as CodeBlock).Content);
+                (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1202,7 +1207,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("<a/>\r\n*hi*\r\n\r\n- one", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("<a/>\r\n*hi*\r\n\r\n- one", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1213,7 +1218,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
             Assert.AreEqual("chunk1\r\n\r\nchunk2\r\n\r\n\r\n\r\nchunk3",
-                (doc.Elements[0] as CodeBlock).Content);
+                (doc.Elements[0] as CodeBlock).Code);
         }
 
 
@@ -1224,7 +1229,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("chunk1\r\n  \r\n  chunk2", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("chunk1\r\n  \r\n  chunk2", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1249,7 +1254,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
-            Assert.AreEqual("Foo", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("Foo", (doc.Elements[0] as CodeBlock).Code);
             var inline = new InlineStructure(InlineElementType.InlineText, "bar");
             inline.AssertEqual((doc.Elements[1] as Paragraph).Inlines);
         }
@@ -1268,9 +1273,9 @@ namespace TestProject.MarkdownElementTest
 
             var inline = new InlineStructure(InlineElementType.InlineText, "Heading");
             inline.AssertEqual((doc.Elements[0] as Heading).Inlines);
-            Assert.AreEqual("foo", (doc.Elements[1] as CodeBlock).Content);
+            Assert.AreEqual("foo", (doc.Elements[1] as CodeBlock).Code);
             inline.AssertEqual((doc.Elements[2] as Heading).Inlines);
-            Assert.AreEqual("foo", (doc.Elements[3] as CodeBlock).Content);
+            Assert.AreEqual("foo", (doc.Elements[3] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1280,7 +1285,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("    foo\r\nbar", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("    foo\r\nbar", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1290,7 +1295,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("foo", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("foo", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1300,7 +1305,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("foo  ", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("foo  ", (doc.Elements[0] as CodeBlock).Code);
         }
 
         #endregion
@@ -1314,7 +1319,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("<\r\n >", doc.Elements[0].Content);
+            Assert.AreEqual("<\r\n >", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1324,7 +1329,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("<\r\n >", doc.Elements[0].Content);
+            Assert.AreEqual("<\r\n >", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1345,7 +1350,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("aaa\r\n~~~", doc.Elements[0].Content);
+            Assert.AreEqual("aaa\r\n~~~", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1355,7 +1360,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("aaa\r\n```", doc.Elements[0].Content);
+            Assert.AreEqual("aaa\r\n```", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1365,7 +1370,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("aaa\r\n```", doc.Elements[0].Content);
+            Assert.AreEqual("aaa\r\n```", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1375,7 +1380,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("aaa\r\n~~~", doc.Elements[0].Content);
+            Assert.AreEqual("aaa\r\n~~~", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1385,7 +1390,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("", doc.Elements[0].Content);
+            Assert.AreEqual("", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1395,7 +1400,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("\r\n```\r\naaa", doc.Elements[0].Content);
+            Assert.AreEqual("\r\n```\r\naaa", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1408,7 +1413,7 @@ namespace TestProject.MarkdownElementTest
                 new BlockElementStructure(BlockElementType.CodeBlock));
             blockStructure.AssertTypeEqual(doc.Elements[0]);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
-            Assert.AreEqual("aaa", ((doc.Elements[0] as BlockQuote).Children[0] as CodeBlock).Content);
+            Assert.AreEqual("aaa", ((doc.Elements[0] as BlockQuote).Children[0] as CodeBlock).Code);
             var inline = new InlineStructure(InlineElementType.InlineText, "bbb");
             inline.AssertEqual((doc.Elements[1] as Paragraph).Inlines);
         }
@@ -1420,7 +1425,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("\r\n  ", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("\r\n  ", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1430,7 +1435,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1440,7 +1445,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("aaa\r\naaa", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("aaa\r\naaa", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1450,7 +1455,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("aaa\r\naaa\r\naaa", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("aaa\r\naaa\r\naaa", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1460,7 +1465,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("aaa\r\n aaa\r\naaa", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("aaa\r\n aaa\r\naaa", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1470,7 +1475,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("```\r\naaa\r\n```", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("```\r\naaa\r\n```", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1480,7 +1485,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("aaa", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("aaa", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1490,7 +1495,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("aaa", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("aaa", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1500,7 +1505,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("aaa\r\n    ```", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("aaa\r\n    ```", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1524,7 +1529,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("aaa\r\n~~~ ~~", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("aaa\r\n~~~ ~~", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -1537,7 +1542,7 @@ namespace TestProject.MarkdownElementTest
             var inline0 = new InlineStructure(InlineElementType.InlineText, "foo");
             var inline2 = new InlineStructure(InlineElementType.InlineText, "baz");
             inline0.AssertEqual((doc.Elements[0] as Paragraph).Inlines);
-            Assert.AreEqual("bar", (doc.Elements[1] as CodeBlock).Content);
+            Assert.AreEqual("bar", (doc.Elements[1] as CodeBlock).Code);
             inline2.AssertEqual((doc.Elements[2] as Paragraph).Inlines);
         }
 
@@ -1553,7 +1558,7 @@ namespace TestProject.MarkdownElementTest
             var inline0 = new InlineStructure(InlineElementType.InlineText, "foo");
             var inline2 = new InlineStructure(InlineElementType.InlineText, "baz");
             inline0.AssertEqual((doc.Elements[0] as LeafElement).Inlines);
-            Assert.AreEqual("bar", (doc.Elements[1] as CodeBlock).Content);
+            Assert.AreEqual("bar", (doc.Elements[1] as CodeBlock).Code);
             inline2.AssertEqual((doc.Elements[2] as LeafElement).Inlines);
         }
 
@@ -1564,7 +1569,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("def foo(x)\r\n  return 3\r\nend", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("def foo(x)\r\n  return 3\r\nend", (doc.Elements[0] as CodeBlock).Code);
             Assert.AreEqual("ruby", (doc.Elements[0] as CodeBlock).InfoString);
         }
 
@@ -1575,7 +1580,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("def foo(x)\r\n  return 3\r\nend", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("def foo(x)\r\n  return 3\r\nend", (doc.Elements[0] as CodeBlock).Code);
             Assert.AreEqual("ruby startline=3 $%@#$", (doc.Elements[0] as CodeBlock).InfoString);
         }
 
@@ -1586,7 +1591,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("", (doc.Elements[0] as CodeBlock).Code);
             Assert.AreEqual(";", (doc.Elements[0] as CodeBlock).InfoString);
         }
 
@@ -1611,7 +1616,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("```aaa", (doc.Elements[0] as CodeBlock).Content);
+            Assert.AreEqual("```aaa", (doc.Elements[0] as CodeBlock).Code);
         }
 
         #endregion
@@ -1628,7 +1633,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[2].Type);
-            Assert.AreEqual("<table><tr><td>\r\n<pre>\r\n**Hello**,", (doc.Elements[0] as HtmlBlock).Content);
+            Assert.AreEqual("<table><tr><td>\r\n<pre>\r\n**Hello**,", (doc.Elements[0] as HtmlBlock).Code);
             var inline = new InlineStructure(InlineElementType.InlineText,
                 new InlineStructure(InlineElementType.Emphasis,
                     new InlineStructure(InlineElementType.InlineText, "world")),
@@ -1636,7 +1641,7 @@ namespace TestProject.MarkdownElementTest
                 new InlineStructure(InlineElementType.SoftLineBreak, ""),
                 new InlineStructure(InlineElementType.InlineHtml, "</pre>"));
             inline.AssertEqual((doc.Elements[1] as Paragraph).Inlines);
-            Assert.AreEqual("</td></tr></table>", (doc.Elements[2] as HtmlBlock).Content);
+            Assert.AreEqual("</td></tr></table>", (doc.Elements[2] as HtmlBlock).Code);
         }
 
 
@@ -1651,7 +1656,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
             Assert.AreEqual(
                 "<table>\r\n  <tr>\r\n    <td>\r\n           hi\r\n    </td>\r\n  </tr>\r\n</table>",
-                (doc.Elements[0] as HtmlBlock).Content);
+                (doc.Elements[0] as HtmlBlock).Code);
             var inline = new InlineStructure(InlineElementType.InlineText, "okay.");
             inline.AssertEqual((doc.Elements[1] as Paragraph).Inlines);
         }
@@ -1663,7 +1668,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
-            Assert.AreEqual(" <div>\r\n  *hello*\r\n         <foo><a>", (doc.Elements[0] as HtmlBlock).Content);
+            Assert.AreEqual(" <div>\r\n  *hello*\r\n         <foo><a>", (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -1673,7 +1678,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
-            Assert.AreEqual("</div>\r\n*foo*", (doc.Elements[0] as HtmlBlock).Content);
+            Assert.AreEqual("</div>\r\n*foo*", (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -1685,8 +1690,8 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[2].Type);
-            Assert.AreEqual("<DIV CLASS=\"foo\">", (doc.Elements[0] as HtmlBlock).Content);
-            Assert.AreEqual("</DIV>", (doc.Elements[2] as HtmlBlock).Content);
+            Assert.AreEqual("<DIV CLASS=\"foo\">", (doc.Elements[0] as HtmlBlock).Code);
+            Assert.AreEqual("</DIV>", (doc.Elements[2] as HtmlBlock).Code);
             var inline = new InlineStructure(InlineElementType.Emphasis,
                 new InlineStructure(InlineElementType.InlineText, "Markdown"));
             inline.AssertEqual((doc.Elements[1] as Paragraph).Inlines);
@@ -1700,7 +1705,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
             Assert.AreEqual("<div id=\"foo\"\r\n  class=\"bar\">\r\n</div>",
-                (doc.Elements[0] as HtmlBlock).Content);
+                (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -1711,7 +1716,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
             Assert.AreEqual("<div id=\"foo\" class=\"bar\r\n  baz\">\r\n</div>",
-                (doc.Elements[0] as HtmlBlock).Content);
+                (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -1722,7 +1727,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
-            Assert.AreEqual("<div>\r\n*foo*", (doc.Elements[0] as HtmlBlock).Content);
+            Assert.AreEqual("<div>\r\n*foo*", (doc.Elements[0] as HtmlBlock).Code);
             var inline = new InlineStructure(InlineElementType.Emphasis,
                 new InlineStructure(InlineElementType.InlineText, "bar"));
             inline.AssertEqual((doc.Elements[1] as Paragraph).Inlines);
@@ -1735,7 +1740,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
-            Assert.AreEqual("<div id=\"foo\"\r\n*hi*", (doc.Elements[0] as HtmlBlock).Content);
+            Assert.AreEqual("<div id=\"foo\"\r\n*hi*", (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -1745,7 +1750,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
-            Assert.AreEqual("<div class\r\nfoo", (doc.Elements[0] as HtmlBlock).Content);
+            Assert.AreEqual("<div class\r\nfoo", (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -1755,7 +1760,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
-            Assert.AreEqual("<div *???-&&&-<---\r\n*foo*", (doc.Elements[0] as HtmlBlock).Content);
+            Assert.AreEqual("<div *???-&&&-<---\r\n*foo*", (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -1765,7 +1770,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
-            Assert.AreEqual("<div><a href=\"bar\">*foo*</a></div>", (doc.Elements[0] as HtmlBlock).Content);
+            Assert.AreEqual("<div><a href=\"bar\">*foo*</a></div>", (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -1776,7 +1781,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
             Assert.AreEqual("<table><tr><td>\r\nfoo\r\n</td></tr></table>",
-                (doc.Elements[0] as HtmlBlock).Content);
+                (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -1787,7 +1792,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
-            Assert.AreEqual(html, (doc.Elements[0] as HtmlBlock).Content);
+            Assert.AreEqual(html, (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -1798,7 +1803,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
-            Assert.AreEqual(html, (doc.Elements[0] as HtmlBlock).Content);
+            Assert.AreEqual(html, (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -1809,7 +1814,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
-            Assert.AreEqual(html, (doc.Elements[0] as HtmlBlock).Content);
+            Assert.AreEqual(html, (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -1820,7 +1825,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
-            Assert.AreEqual(html, (doc.Elements[0] as HtmlBlock).Content);
+            Assert.AreEqual(html, (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -1831,7 +1836,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
-            Assert.AreEqual(html, (doc.Elements[0] as HtmlBlock).Content);
+            Assert.AreEqual(html, (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -1842,7 +1847,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
-            Assert.AreEqual(html, (doc.Elements[0] as HtmlBlock).Content);
+            Assert.AreEqual(html, (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -1855,11 +1860,11 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[2].Type);
-            Assert.AreEqual("<del>", (doc.Elements[0] as HtmlBlock).Content);
+            Assert.AreEqual("<del>", (doc.Elements[0] as HtmlBlock).Code);
             var inlines = new InlineStructure(InlineElementType.Emphasis,
                 new InlineStructure(InlineElementType.InlineText, "foo"));
             inlines.AssertEqual((doc.Elements[1] as LeafElement).Inlines);
-            Assert.AreEqual("</del>", (doc.Elements[2] as HtmlBlock).Content);
+            Assert.AreEqual("</del>", (doc.Elements[2] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -1892,7 +1897,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
             Assert.AreEqual("<pre language=\"haskell\"><code>\r\nimport Text.HTML.TagSoup\r\n\r\n" +
                             "main :: IO ()\r\nmain = print $ parseTags tags\r\n</code></pre>",
-                (doc.Elements[0] as HtmlBlock).Content);
+                (doc.Elements[0] as HtmlBlock).Code);
 
             var inlines = new InlineStructure(InlineElementType.InlineText, "okay");
             inlines.AssertEqual((doc.Elements[1] as LeafElement).Inlines);
@@ -1910,7 +1915,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
             Assert.AreEqual("<script type=\"text/javascript\">\r\n// JavaScript example\r\n\r\n" +
                             "document.getElementById(\"demo\").innerHTML=\"Hello JavaScript!\";\r\n</script>",
-                doc.Elements[0].Content);
+                (doc.Elements[0] as HtmlBlock).Code);
 
             var inlines = new InlineStructure(InlineElementType.InlineText, "okay");
             inlines.AssertEqual(doc.Elements[1].GetInlines());
@@ -1928,7 +1933,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
             Assert.AreEqual(
                 "<style\r\n  type=\"text/css\">\r\nh1 {color:red;}\r\n\r\np {color:blue;}\r\n</style>",
-                doc.Elements[0].Content);
+                (doc.Elements[0] as HtmlBlock).Code);
             var inlines = new InlineStructure(InlineElementType.InlineText, "okay");
             inlines.AssertEqual(doc.Elements[1].GetInlines());
         }
@@ -1942,7 +1947,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
             Assert.AreEqual("<style\r\n  type=\"text/css\">\r\n\r\nfoo",
-                doc.Elements[0].Content);
+                (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -1956,7 +1961,7 @@ namespace TestProject.MarkdownElementTest
                 new BlockElementStructure(BlockElementType.HtmlBlock));
             blocks.AssertTypeEqual(doc.Elements[0]);
 
-            Assert.AreEqual("<div>\r\nfoo", doc.Elements[0].GetChildren()[0].Content);
+            Assert.AreEqual("<div>\r\nfoo", (doc.Elements[0].GetChildren()[0] as HtmlBlock).Code);
             var inline = new InlineStructure(InlineElementType.InlineText, "bar");
             inline.AssertEqual(doc.Elements[1].GetInlines());
         }
@@ -1975,7 +1980,7 @@ namespace TestProject.MarkdownElementTest
                     new BlockElementStructure(BlockElementType.Paragraph)));
             blocks.AssertTypeEqual(doc.Elements[0]);
 
-            Assert.AreEqual("<div>", doc.Elements[0].GetChild(0).GetChild(0).Content);
+            Assert.AreEqual("<div>", (doc.Elements[0].GetChild(0).GetChild(0) as HtmlBlock).Code);
             var inline = new InlineStructure(InlineElementType.InlineText, "foo");
             inline.AssertEqual(doc.Elements[0].GetChild(1).GetChild(0).GetInlines());
         }
@@ -1989,7 +1994,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
-            Assert.AreEqual("<style>p{color:red;}</style>", doc.Elements[0].Content);
+            Assert.AreEqual("<style>p{color:red;}</style>", (doc.Elements[0] as HtmlBlock).Code);
             var inline = new InlineStructure(InlineElementType.Emphasis,
                 new InlineStructure(InlineElementType.InlineText, "foo"));
             inline.AssertEqual(doc.Elements[1].GetInlines());
@@ -2004,7 +2009,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
-            Assert.AreEqual("<!-- foo -->*bar*", doc.Elements[0].Content);
+            Assert.AreEqual("<!-- foo -->*bar*", (doc.Elements[0] as HtmlBlock).Code);
             var inline = new InlineStructure(InlineElementType.Emphasis,
                 new InlineStructure(InlineElementType.InlineText, "baz"));
             inline.AssertEqual(doc.Elements[1].GetInlines());
@@ -2018,7 +2023,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
-            Assert.AreEqual(html, doc.Elements[0].Content);
+            Assert.AreEqual(html, (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -2030,7 +2035,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
-            Assert.AreEqual("<!-- Foo\r\n\r\nbar\r\n   baz -->", doc.Elements[0].Content);
+            Assert.AreEqual("<!-- Foo\r\n\r\nbar\r\n   baz -->", (doc.Elements[0] as HtmlBlock).Code);
             var inline = new InlineStructure(InlineElementType.InlineText, "okay");
             inline.AssertEqual(doc.Elements[1].GetInlines());
         }
@@ -2044,7 +2049,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
-            Assert.AreEqual("<?php\r\n\r\n  echo '>';\r\n\r\n?>", doc.Elements[0].Content);
+            Assert.AreEqual("<?php\r\n\r\n  echo '>';\r\n\r\n?>", (doc.Elements[0] as HtmlBlock).Code);
             var inline = new InlineStructure(InlineElementType.InlineText, "okay");
             inline.AssertEqual(doc.Elements[1].GetInlines());
         }
@@ -2057,7 +2062,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
-            Assert.AreEqual("<!DOCTYPE html>", doc.Elements[0].Content);
+            Assert.AreEqual("<!DOCTYPE html>", (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -2072,7 +2077,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
             Assert.AreEqual("<![CDATA[\r\nfunction matchwo(a,b)\r\n{\r\n" +
                             "  if (a < b && a < 0) then {\r\n    return 1;\r\n\r\n  } else {\r\n\r\n" +
-                            "    return 0;\r\n  }\r\n}\r\n]]>", doc.Elements[0].Content);
+                            "    return 0;\r\n  }\r\n}\r\n]]>", (doc.Elements[0] as HtmlBlock).Code);
             var inline = new InlineStructure(InlineElementType.InlineText, "okay");
             inline.AssertEqual(doc.Elements[1].GetInlines());
         }
@@ -2086,8 +2091,8 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[1].Type);
-            Assert.AreEqual("  <!-- foo -->", doc.Elements[0].Content);
-            Assert.AreEqual("<!-- foo -->", doc.Elements[1].Content);
+            Assert.AreEqual("  <!-- foo -->", (doc.Elements[0] as HtmlBlock).Code);
+            Assert.AreEqual("<!-- foo -->", (doc.Elements[1] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -2099,8 +2104,8 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[1].Type);
-            Assert.AreEqual("  <div>", doc.Elements[0].Content);
-            Assert.AreEqual("<div>", doc.Elements[1].Content);
+            Assert.AreEqual("  <div>", (doc.Elements[0] as HtmlBlock).Code);
+            Assert.AreEqual("<div>", (doc.Elements[1] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -2114,7 +2119,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[1].Type);
             var inline = new InlineStructure(InlineElementType.InlineText, "Foo");
             inline.AssertEqual(doc.Elements[0].GetInlines());
-            Assert.AreEqual("<div>\r\nbar\r\n</div>", doc.Elements[1].Content);
+            Assert.AreEqual("<div>\r\nbar\r\n</div>", (doc.Elements[1] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -2125,7 +2130,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
-            Assert.AreEqual(html, doc.Elements[0].Content);
+            Assert.AreEqual(html, (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -2155,13 +2160,13 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[2].Type);
-            Assert.AreEqual("<div>", doc.Elements[0].Content);
+            Assert.AreEqual("<div>", (doc.Elements[0] as HtmlBlock).Code);
             var inline = new InlineStructure(InlineElementType.SoftLineBreak,
                 new InlineStructure(InlineElementType.Emphasis,
                     new InlineStructure(InlineElementType.InlineText, "Emphasized")),
                 new InlineStructure(InlineElementType.InlineText, " text."));
             inline.AssertEqual(doc.Elements[1].GetInlines());
-            Assert.AreEqual("</div>", doc.Elements[2].Content);
+            Assert.AreEqual("</div>", (doc.Elements[2] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -2172,7 +2177,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
-            Assert.AreEqual(html, doc.Elements[0].Content);
+            Assert.AreEqual(html, (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -2187,11 +2192,11 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[2].Type);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[3].Type);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[4].Type);
-            Assert.AreEqual("<table>", doc.Elements[0].Content);
-            Assert.AreEqual("<tr>", doc.Elements[1].Content);
-            Assert.AreEqual("<td>\r\nHi\r\n</td>", doc.Elements[2].Content);
-            Assert.AreEqual("</tr>", doc.Elements[3].Content);
-            Assert.AreEqual("</table>", doc.Elements[4].Content);
+            Assert.AreEqual("<table>", (doc.Elements[0] as HtmlBlock).Code);
+            Assert.AreEqual("<tr>", (doc.Elements[1] as HtmlBlock).Code);
+            Assert.AreEqual("<td>\r\nHi\r\n</td>", (doc.Elements[2] as HtmlBlock).Code);
+            Assert.AreEqual("</tr>", (doc.Elements[3] as HtmlBlock).Code);
+            Assert.AreEqual("</table>", (doc.Elements[4] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -2207,11 +2212,11 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[2].Type);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[3].Type);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[4].Type);
-            Assert.AreEqual("<table>", doc.Elements[0].Content);
-            Assert.AreEqual("  <tr>", doc.Elements[1].Content);
-            Assert.AreEqual("<td>\r\n  Hi\r\n</td>", doc.Elements[2].Content);
-            Assert.AreEqual("  </tr>", doc.Elements[3].Content);
-            Assert.AreEqual("</table>", doc.Elements[4].Content);
+            Assert.AreEqual("<table>", (doc.Elements[0] as HtmlBlock).Code);
+            Assert.AreEqual("  <tr>", (doc.Elements[1] as HtmlBlock).Code);
+            Assert.AreEqual("<td>\r\n  Hi\r\n</td>", (doc.Elements[2] as  CodeBlock).Code);
+            Assert.AreEqual("  </tr>", (doc.Elements[3] as HtmlBlock).Code);
+            Assert.AreEqual("</table>",(doc.Elements[4] as HtmlBlock).Code);
         }
 
         #endregion
@@ -2519,7 +2524,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
-            Assert.AreEqual("[foo]: /url \"title\"", doc.Elements[0].Content);
+            Assert.AreEqual("[foo]: /url \"title\"", (doc.Elements[0] as CodeBlock).Code);
             var inline = new InlineStructure(InlineElementType.InlineText, "[foo]");
             inline.AssertEqual(doc.Elements[1].GetInlines());
         }
@@ -2533,7 +2538,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
-            Assert.AreEqual("[foo]: /url", doc.Elements[0].Content);
+            Assert.AreEqual("[foo]: /url",(doc.Elements[0] as CodeBlock).Code);
             var inline = new InlineStructure(InlineElementType.InlineText, "[foo]");
             inline.AssertEqual(doc.Elements[1].GetInlines());
         }
@@ -2742,7 +2747,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
-            Assert.AreEqual("aaa", doc.Elements[0].Content);
+            Assert.AreEqual("aaa", (doc.Elements[0] as CodeBlock).Code);
             var inline = new InlineStructure(InlineElementType.InlineText, "bbb");
             inline.AssertEqual(doc.Elements[1].GetInlines());
         }
@@ -2851,7 +2856,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("> # Foo\r\n> bar\r\n> baz", doc.Elements[0].Content);
+            Assert.AreEqual("> # Foo\r\n> bar\r\n> baz", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -2941,8 +2946,8 @@ namespace TestProject.MarkdownElementTest
                 new BlockElementStructure(BlockElementType.CodeBlock));
             block1.AssertTypeEqual(doc.Elements[0]);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[1].Type);
-            Assert.AreEqual("foo", doc.Elements[0].GetChild(0).Content);
-            Assert.AreEqual("bar", doc.Elements[1].Content);
+            Assert.AreEqual("foo", (doc.Elements[0].GetChild(0) as CodeBlock).Code);
+            Assert.AreEqual("bar", (doc.Elements[1] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -2957,12 +2962,12 @@ namespace TestProject.MarkdownElementTest
             block1.AssertTypeEqual(doc.Elements[0]);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[2].Type);
-            Assert.AreEqual("", doc.Elements[0].GetChild(0).Content);
+            Assert.AreEqual("", (doc.Elements[0].GetChild(0) as CodeBlock).Code);
 
             var inline = new InlineStructure(InlineElementType.InlineText, "foo");
             inline.AssertEqual(doc.Elements[1].GetInlines());
 
-            Assert.AreEqual("", doc.Elements[2].Content);
+            Assert.AreEqual("", (doc.Elements[2] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -3213,7 +3218,7 @@ namespace TestProject.MarkdownElementTest
                 new BlockElementStructure(BlockElementType.Paragraph));
             blocks1.AssertTypeEqual(doc.Elements[1]);
 
-            Assert.AreEqual("code", doc.Elements[0].GetChild(0).Content);
+            Assert.AreEqual("code", (doc.Elements[0].GetChild(0) as CodeBlock).Code);
             var inline = new InlineStructure(InlineElementType.InlineText, "not code");
             inline.AssertEqual(doc.Elements[1].GetChild(0).GetInlines());
         }
@@ -3242,7 +3247,7 @@ namespace TestProject.MarkdownElementTest
                 new InlineStructure(InlineElementType.SoftLineBreak, ""),
                 new InlineStructure(InlineElementType.InlineText, "with two lines."));
             inline0.AssertEqual(doc.Elements[0].GetInlines());
-            Assert.AreEqual("indented code", doc.Elements[1].Content);
+            Assert.AreEqual("indented code", (doc.Elements[1] as CodeBlock).Code);
             var inline2 = new InlineStructure(InlineElementType.InlineText, "A block quote.");
             inline2.AssertEqual(doc.Elements[2].GetChild(0).GetInlines());
         }
@@ -3304,7 +3309,7 @@ namespace TestProject.MarkdownElementTest
 
             var inline0 = new InlineStructure(InlineElementType.InlineText, "one");
             inline0.AssertEqual(doc.Elements[0].GetChild(0).GetChild(0).GetInlines());
-            Assert.AreEqual(" two", doc.Elements[1].Content);
+            Assert.AreEqual(" two", (doc.Elements[1] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -3432,7 +3437,7 @@ namespace TestProject.MarkdownElementTest
             var listItem = doc.Elements[0].GetChild(0);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "foo");
             inline0.AssertEqual(listItem.GetChild(0).GetInlines());
-            Assert.AreEqual("bar", listItem.GetChild(1).Content);
+            Assert.AreEqual("bar", (listItem.GetChild(1) as CodeBlock).Code);
             var inline2 = new InlineStructure(InlineElementType.InlineText, "baz");
             inline2.AssertEqual(listItem.GetChild(2).GetInlines());
             var inline3 = new InlineStructure(InlineElementType.InlineText, "bam");
@@ -3456,7 +3461,7 @@ namespace TestProject.MarkdownElementTest
             var listItem = doc.Elements[0].GetChild(0);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "Foo");
             inline0.AssertEqual(listItem.GetChild(0).GetInlines());
-            Assert.AreEqual("bar\r\n\r\n\r\nbaz", listItem.GetChild(1).Content);
+            Assert.AreEqual("bar\r\n\r\n\r\nbaz",(listItem.GetChild(1) as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -3562,7 +3567,7 @@ namespace TestProject.MarkdownElementTest
             var listItem = doc.Elements[0].GetChild(0);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "foo");
             inline0.AssertEqual(listItem.GetChild(0).GetInlines());
-            Assert.AreEqual("bar", listItem.GetChild(1).Content);
+            Assert.AreEqual("bar", (listItem.GetChild(1) as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -3582,7 +3587,7 @@ namespace TestProject.MarkdownElementTest
             var listItem = doc.Elements[0].GetChild(0);
             var inline0 = new InlineStructure(InlineElementType.InlineText, "foo");
             inline0.AssertEqual(listItem.GetChild(0).GetInlines());
-            Assert.AreEqual("bar", listItem.GetChild(1).Content);
+            Assert.AreEqual("bar", (listItem.GetChild(1) as CodeBlock).Code);
             Assert.AreEqual(10, (doc.Elements[0] as ListBlock).StartIndex);
         }
 
@@ -3597,10 +3602,10 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[2].Type);
 
-            Assert.AreEqual("indented code", doc.Elements[0].Content);
+            Assert.AreEqual("indented code", (doc.Elements[0] as CodeBlock).Code);
             var inline = new InlineStructure(InlineElementType.InlineText, "paragraph");
             inline.AssertEqual(doc.Elements[1].GetInlines());
-            Assert.AreEqual("more code", doc.Elements[2].Content);
+            Assert.AreEqual("more code", (doc.Elements[2] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -3619,10 +3624,10 @@ namespace TestProject.MarkdownElementTest
             blocks.AssertTypeEqual(doc.Elements[0]);
 
             var listItem = doc.Elements[0].GetChild(0);
-            Assert.AreEqual("indented code", listItem.GetChild(0).Content);
+            Assert.AreEqual("indented code", (listItem.GetChild(0) as CodeBlock).Code);
             var inline = new InlineStructure(InlineElementType.InlineText, "paragraph");
             inline.AssertEqual(listItem.GetChild(1).GetInlines());
-            Assert.AreEqual("more code", listItem.GetChild(2).Content);
+            Assert.AreEqual("more code", (listItem.GetChild(2) as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -3641,10 +3646,10 @@ namespace TestProject.MarkdownElementTest
             blocks.AssertTypeEqual(doc.Elements[0]);
 
             var listItem = doc.Elements[0].GetChild(0);
-            Assert.AreEqual(" indented code", listItem.GetChild(0).Content);
+            Assert.AreEqual(" indented code", (listItem.GetChild(0) as CodeBlock).Code);
             var inline = new InlineStructure(InlineElementType.InlineText, "paragraph");
             inline.AssertEqual(listItem.GetChild(1).GetInlines());
-            Assert.AreEqual("more code", listItem.GetChild(2).Content);
+            Assert.AreEqual("more code", (listItem.GetChild(2) as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -3725,8 +3730,8 @@ namespace TestProject.MarkdownElementTest
 
             var inline = new InlineStructure(InlineElementType.InlineText, "foo");
             inline.AssertEqual(doc.Elements[0].GetChild(0).GetChild(0).GetInlines());
-            Assert.AreEqual("bar", doc.Elements[0].GetChild(1).GetChild(0).Content);
-            Assert.AreEqual("baz", doc.Elements[0].GetChild(2).GetChild(0).Content);
+            Assert.AreEqual("bar", (doc.Elements[0].GetChild(1).GetChild(0) as CodeBlock).Code);
+            Assert.AreEqual("baz", (doc.Elements[0].GetChild(2).GetChild(0) as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -3894,7 +3899,7 @@ namespace TestProject.MarkdownElementTest
                 new InlineStructure(InlineElementType.InlineText, "with two lines."));
             inline0.AssertEqual(listItem.GetChild(0).GetInlines());
 
-            Assert.AreEqual("indented code", listItem.GetChild(1).Content);
+            Assert.AreEqual("indented code", (listItem.GetChild(1) as CodeBlock).Code);
 
             var inline1 = new InlineStructure(InlineElementType.InlineText, "A block quote.");
             inline1.AssertEqual(listItem.GetChild(2).GetChild(0).GetInlines());
@@ -3924,7 +3929,7 @@ namespace TestProject.MarkdownElementTest
                 new InlineStructure(InlineElementType.InlineText, "with two lines."));
             inline0.AssertEqual(listItem.GetChild(0).GetInlines());
 
-            Assert.AreEqual("indented code", listItem.GetChild(1).Content);
+            Assert.AreEqual("indented code", (listItem.GetChild(1) as CodeBlock).Code);
 
             var inline1 = new InlineStructure(InlineElementType.InlineText, "A block quote.");
             inline1.AssertEqual(listItem.GetChild(2).GetChild(0).GetInlines());
@@ -3955,7 +3960,7 @@ namespace TestProject.MarkdownElementTest
                 new InlineStructure(InlineElementType.InlineText, "with two lines."));
             inline0.AssertEqual(listItem.GetChild(0).GetInlines());
 
-            Assert.AreEqual("indented code", listItem.GetChild(1).Content);
+            Assert.AreEqual("indented code", (listItem.GetChild(1) as CodeBlock).Code);
 
             var inline1 = new InlineStructure(InlineElementType.InlineText, "A block quote.");
             inline1.AssertEqual(listItem.GetChild(2).GetChild(0).GetInlines());
@@ -3974,7 +3979,7 @@ namespace TestProject.MarkdownElementTest
 
             Assert.AreEqual(
                 "1.  A paragraph\r\n    with two lines.\r\n\r\n        indented code\r\n\r\n    > A block quote.",
-                doc.Elements[0].Content);
+                (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -4001,7 +4006,7 @@ namespace TestProject.MarkdownElementTest
                 new InlineStructure(InlineElementType.InlineText, "with two lines."));
             inline0.AssertEqual(listItem.GetChild(0).GetInlines());
 
-            Assert.AreEqual("indented code", listItem.GetChild(1).Content);
+            Assert.AreEqual("indented code", (listItem.GetChild(1) as CodeBlock).Code);
 
             var inline1 = new InlineStructure(InlineElementType.InlineText, "A block quote.");
             inline1.AssertEqual(listItem.GetChild(2).GetChild(0).GetInlines());
@@ -4521,7 +4526,7 @@ namespace TestProject.MarkdownElementTest
             inline2.AssertEqual(para2.GetInlines());
             inline3.AssertEqual(para3.GetInlines());
 
-            Assert.AreEqual("<!-- -->", doc.Elements[1].Content);
+            Assert.AreEqual("<!-- -->", (doc.Elements[1] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -4554,8 +4559,8 @@ namespace TestProject.MarkdownElementTest
             inline1.AssertEqual(para1.GetInlines());
             inline2.AssertEqual(para2.GetInlines());
 
-            Assert.AreEqual("<!-- -->", doc.Elements[1].Content);
-            Assert.AreEqual("code", doc.Elements[2].Content);
+            Assert.AreEqual("<!-- -->", (doc.Elements[1] as HtmlBlock).Code);
+            Assert.AreEqual("code", (doc.Elements[2] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -4799,7 +4804,7 @@ namespace TestProject.MarkdownElementTest
             inlineA.AssertEqual(paraA.GetInlines());
             inlineC.AssertEqual(paraC.GetInlines());
 
-            Assert.AreEqual("b\r\n\r\n", doc.Elements[0].GetChild(1).GetChild(0).Content);
+            Assert.AreEqual("b\r\n\r\n", (doc.Elements[0].GetChild(1).GetChild(0) as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -4900,7 +4905,7 @@ namespace TestProject.MarkdownElementTest
             inlineA.AssertEqual(paraA.GetInlines());
             inlineB.AssertEqual(paraB.GetInlines());
             inlineD.AssertEqual(paraD.GetInlines());
-            Assert.AreEqual("c", doc.Elements[0].GetChild(0).GetChild(2).Content);
+            Assert.AreEqual("c", (doc.Elements[0].GetChild(0).GetChild(2) as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -4966,7 +4971,7 @@ namespace TestProject.MarkdownElementTest
             blocks.AssertTypeEqual(doc.Elements[0]);
             Assert.IsFalse((doc.Elements[0] as ListBlock).IsTight);
 
-            Assert.AreEqual("foo", doc.Elements[0].GetChild(0).GetChild(0).Content);
+            Assert.AreEqual("foo", (doc.Elements[0].GetChild(0).GetChild(0) as CodeBlock).Code);
 
             var para1 = doc.Elements[0].GetChild(0).GetChild(1);
             var inline1 = new InlineStructure(InlineElementType.InlineText, "bar");
@@ -5183,7 +5188,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("\\[\\]", doc.Elements[0].Content);
+            Assert.AreEqual("\\[\\]", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -5194,7 +5199,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("\\[\\]", doc.Elements[0].Content);
+            Assert.AreEqual("\\[\\]", (doc.Elements[0] as CodeBlock).Code);
         }
 
         [TestMethod]
@@ -5222,7 +5227,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
-            Assert.AreEqual("<a href=\"/bar\\/)\">", doc.Elements[0].Content);
+            Assert.AreEqual("<a href=\"/bar\\/)\">", (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -5266,7 +5271,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
             var block = (CodeBlock)doc.Elements[0];
-            Assert.AreEqual("foo", block.Content);
+            Assert.AreEqual("foo", block.Code);
             Assert.AreEqual("foo+bar", block.InfoString);
         }
 
@@ -5369,7 +5374,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.HtmlBlock, doc.Elements[0].Type);
-            Assert.AreEqual("<a href=\"&ouml;&ouml;.html\">", doc.Elements[0].Content);
+            Assert.AreEqual("<a href=\"&ouml;&ouml;.html\">", (doc.Elements[0] as HtmlBlock).Code);
         }
 
         [TestMethod]
@@ -5412,7 +5417,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("foo", doc.Elements[0].Content);
+            Assert.AreEqual("foo", (doc.Elements[0] as CodeBlock).Code);
             Assert.AreEqual("föö", (doc.Elements[0] as CodeBlock).InfoString);
         }
 
@@ -5437,7 +5442,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
-            Assert.AreEqual("f&ouml;f&ouml;", doc.Elements[0].Content);
+            Assert.AreEqual("f&ouml;f&ouml;", (doc.Elements[0] as CodeBlock).Code);
         }
 
         #endregion

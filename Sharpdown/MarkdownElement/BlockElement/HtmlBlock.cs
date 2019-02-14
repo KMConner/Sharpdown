@@ -73,7 +73,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Gets the contents of this block.
         /// </summary>
-        public override string Content => string.Join("\r\n", contents);
+        public string Code => string.Join("\r\n", contents);
 
         internal HtmlBlock()
         {
@@ -540,7 +540,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
         {
-            inlines.Add(new LiteralText(Content));
+            inlines.Add(new LiteralText(Code));
         }
     }
 }

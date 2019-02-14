@@ -83,7 +83,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Gets the content of this block.
         /// </summary>
-        public override string Content => string.Join("\r\n", contents);
+        public override string Code => string.Join("\r\n", contents);
 
         /// <summary>
         /// Initializes a new instance of <see cref="FencedCodeBlock"/>.

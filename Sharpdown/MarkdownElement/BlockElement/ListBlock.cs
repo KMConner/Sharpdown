@@ -54,8 +54,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         public int StartIndex => (children.FirstOrDefault() as ListItem)?.Index ?? 0;
 
-        public override string Content => throw new NotImplementedException();
-
         /// <summary>
         /// Returns whether the specified line can be a start line of <see cref="ListBlock"/>.
         /// </summary>
