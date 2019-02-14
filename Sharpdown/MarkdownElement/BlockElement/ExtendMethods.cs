@@ -6,7 +6,7 @@
     static class ExtendMethods
     {
         /// <summary>
-        /// Remove the all occurences of specified <see cref="string"/> from this.
+        /// Remove the all occurrences of specified <see cref="string"/> from this.
         /// </summary>
         /// <param name="str">
         /// The <see cref="string"/> to remove <paramref name="remove"/> from.
@@ -24,28 +24,30 @@
         }
 
         /// <summary>
-        /// Returns wether the specified <see cref="char"/> is a ascii white space.
+        /// Returns whether the specified <see cref="char"/> is a ascii white space.
         /// </summary>
         /// <param name="ch">The character to determine.</param>
-        /// <returns>Wether thespecified <see cref="char"/> is a ascii white space.</returns>
+        /// <returns>Whether the specified <see cref="char"/> is a ascii white space.</returns>
         public static bool IsAsciiWhiteSpace(this char ch)
         {
             return ch == ' ' || ch == '\t' || ch == '\x000B' || ch == '\x000C';
         }
 
         /// <summary>
-        /// Reterns the indent count of the specified <see cref="string"/>.
+        /// Returns the indent count of the specified <see cref="string"/>.
         /// 
         /// The tab characters behave as if they are replaced to 4 spaces. 
         /// </summary>
         /// <param name="line">A line to count the indent.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <returns>The indent count of <paramref name="line"/>.</returns>
         public static int GetIndentNum(this string line, int currentIndent)
         {
-            if (line.TrimStart(MarkdownElementBase.whiteSpaceShars).Length == 0)
+            if (line.TrimStart(MarkdownElementBase.whiteSpaceChars).Length == 0)
             {
                 return -1;
             }
+
             int ret = 0;
             foreach (var item in line)
             {
@@ -61,15 +63,16 @@
                         return ret;
                 }
             }
+
             return ret;
         }
 
         /// <summary>
-        /// Removes all leading occurences of a set of
-        /// <see cref="MarkdownElementBase.whiteSpaceShars"/>.
+        /// Removes all leading occurrences of a set of
+        /// <see cref="MarkdownElementBase.whiteSpaceChars"/>.
         /// </summary>
         /// <param name="str">
-        /// The string to remove all reading occurences of ascii white space characters.
+        /// The string to remove all reading occurrences of ascii white space characters.
         /// </param>
         /// <returns>
         /// The string that remains after all occurrences of ascii white space characters
@@ -77,7 +80,7 @@
         /// </returns>
         public static string TrimStartAscii(this string str)
         {
-            return str.TrimStart(MarkdownElementBase.whiteSpaceShars);
+            return str.TrimStart(MarkdownElementBase.whiteSpaceChars);
         }
     }
 }

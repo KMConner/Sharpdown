@@ -13,6 +13,7 @@ namespace Sharpdown
             {
                 ret.AddLine(line);
             }
+
             ret.Close();
             ret.ParseInline();
             return ret;
@@ -25,10 +26,10 @@ namespace Sharpdown
 
         public static MarkdownDocument Parse(Stream stream)
         {
-            return Parse(EnumurateLines(stream));
+            return Parse(EnumerateLines(stream));
         }
 
-        private static IEnumerable<string> EnumurateLines(Stream stream, Encoding encoding = null)
+        private static IEnumerable<string> EnumerateLines(Stream stream, Encoding encoding = null)
         {
             encoding = encoding ?? Encoding.UTF8;
             using (var reader = new StreamReader(stream, encoding))

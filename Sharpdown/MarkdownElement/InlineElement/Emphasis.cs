@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Sharpdown.MarkdownElement.InlineElement
+﻿namespace Sharpdown.MarkdownElement.InlineElement
 {
     public class Emphasis : ContainerInlineElement
     {
-        public bool IsStrong { get; private set; }
+        public bool IsStrong { get; }
 
-        public override InlineElementType Type => IsStrong ? InlineElementType.StrongEmphasis : InlineElementType.Emphasis;
+        public override InlineElementType Type =>
+            IsStrong ? InlineElementType.StrongEmphasis : InlineElementType.Emphasis;
 
-        public Emphasis(InlineElementBase[] children, bool isStrong)
+        internal Emphasis(InlineElement[] children, bool isStrong)
         {
             Children = children;
             IsStrong = isStrong;

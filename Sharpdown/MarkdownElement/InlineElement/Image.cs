@@ -15,17 +15,17 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <summary>
         /// Gets the description of this image.
         /// </summary>
-        public string Alt { get; private set; }
+        public string Alt { get; }
 
         /// <summary>
         /// Gets the image source.
         /// </summary>
-        public string Source { get; private set; }
+        public string Source { get; }
 
         /// <summary>
         /// Gets the title of this image.
         /// </summary>
-        public string Title { get; private set; }
+        public string Title { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Sharpdown.MarkdownElement.InlineElement.Image"/> class.
@@ -33,10 +33,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <param name="text">The description.</param>
         /// <param name="src">The source of this image.</param>
         /// <param name="title">The title of this image.</param>
-        public Image(InlineElementBase[] text, string src, string title)
+        public Image(InlineElement[] text, string src, string title)
         {
+            // TODO: Contain Alt as inline array (not flatten to a text.)
             Alt = TextFromInlines(text);
-            Children = new[] { InlineText.CreateFromText(Alt) };
+            Children = new InlineElement[] {InlineText.CreateFromText(Alt)};
             Source = src;
             Title = title;
         }
@@ -46,7 +47,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// </summary>
         /// <param name="inlines">The inline elements to convert from.</param>
         /// <returns></returns>
-        private string TextFromInlines(InlineElementBase[] inlines)
+        private string TextFromInlines(InlineElement[] inlines)
         {
             var builder = new StringBuilder();
             TextFromInlines(inlines, builder);
@@ -58,12 +59,13 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// </summary>
         /// <param name="inlines">Inlines.</param>
         /// <param name="builder">The <see cref="StringBuilder"/>.</param>
-        private void TextFromInlines(InlineElementBase[] inlines, StringBuilder builder)
+        private void TextFromInlines(InlineElement[] inlines, StringBuilder builder)
         {
             if (inlines == null)
             {
                 return;
             }
+
             foreach (var item in inlines)
             {
                 switch (item.Type)
@@ -83,7 +85,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     case InlineElementType.Link:
                     case InlineElementType.Emphasis:
                     case InlineElementType.StrongEmphasis:
-                        TextFromInlines(((ContainerInlineElement)item).Children,builder);
+                        TextFromInlines(((ContainerInlineElement)item).Children, builder);
                         break;
                 }
             }

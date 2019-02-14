@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Sharpdown.MarkdownElement.BlockElement
 {
     /// <summary>
-    /// Represents a block elements in makdown documents.
+    /// Represents a block elements in markdown documents.
     /// </summary>
     public abstract class BlockElement : MarkdownElementBase
     {
@@ -26,10 +26,10 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Add a line to this block.
         /// </summary>
         /// <param name="line">A line to add.</param>
+        /// <param name="lazy">Whether <paramref name="line"/> is lazy continuation.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <returns></returns>
         internal abstract AddLineResult AddLine(string line, bool lazy, int currentIndent);
-
-        public abstract string Content { get; }
 
         /// <summary>
         /// Initializes a new instance of <see cref="BlockElement"/>.
@@ -59,7 +59,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// The number of removed spaces is up to <paramref name="maxRemoveCount"/>.
         /// </summary>
         /// <param name="str">The string to remove indent.</param>
-        /// <param name="maxRemoveCount">The string after unindented.</param>
+        /// <param name="maxRemoveCount">The string after indent removal.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="str"/>.</param>
         /// <returns></returns>
         protected string RemoveIndent(string str, int maxRemoveCount, int currentIndent)
         {
@@ -67,15 +68,19 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return str;
             }
-            if (str[0]==' ')
+
+            if (str[0] == ' ')
             {
                 return RemoveIndent(str.Substring(1), maxRemoveCount - 1, currentIndent + 1);
             }
-            if (str[0]=='\t')
+
+            if (str[0] == '\t')
             {
                 int tabWidth = 4 - (currentIndent % 4);
-                return RemoveIndent(new string(' ', tabWidth - 1) + str.Substring(1), maxRemoveCount - 1, currentIndent + 1);
+                return RemoveIndent(new string(' ', tabWidth - 1) + str.Substring(1), maxRemoveCount - 1,
+                    currentIndent + 1);
             }
+
             return str;
         }
 

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Web;
-using System.Linq;
 using Sharpdown.MarkdownElement.InlineElement;
 
 namespace Sharpdown.MarkdownElement.BlockElement
@@ -32,8 +30,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         public override BlockElementType Type => BlockElementType.LinkReferenceDefinition;
 
-        public override string Content => Label;
-
         /// <summary>
         /// Initializes a new instance of <see cref="LinkReferenceDefinition"/>
         /// with link label ,destination, title.
@@ -44,7 +40,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <param name="elem"></param>
         internal LinkReferenceDefinition(string label, string destination, string title, UnknownElement elem)
         {
-            Label = GetSimpleName(label?.Trim(whiteSpaceShars) ?? throw new ArgumentNullException(nameof(title)));
+            Label = GetSimpleName(label?.Trim(whiteSpaceChars) ?? throw new ArgumentNullException(nameof(title)));
             Destination = InlineElementUtils.UrlEncode(InlineText.HandleEscapeAndHtmlEntity(
                 destination ?? throw new ArgumentNullException(nameof(destination))));
             Title = title == null ? null : InlineText.HandleEscapeAndHtmlEntity(title);
@@ -59,6 +55,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Therefore, no lines can be added to this block.
         /// </summary>
         /// <param name="line">A single line to add to this element.</param>
+        /// <param name="lazy">Whether <paramref name="line"/> is lazy continuation.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <returns>
         /// Always throws <see cref="InvalidOperationException"/>
         /// </returns>
@@ -82,29 +80,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
             throw new InvalidCastException();
         }
 
-        internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions) { }
-
-        private string ProcessBackslashEscape(string unescaped)
+        internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
         {
-            var builder = new StringBuilder(unescaped.Length);
-            for (int i = 0; i < unescaped.Length; i++)
-            {
-                if (i == unescaped.Length - 1)
-                {
-                    builder.Append(unescaped[i]);
-                    continue;
-                }
-
-                if (unescaped[i] == '\\' && Array.IndexOf(asciiPunctuationChars, unescaped[i + 1]) >= 0)
-                {
-                    builder.Append(unescaped[i + 1]);
-                    i++;
-                    continue;
-                }
-
-                builder.Append(unescaped[i]);
-            }
-            return builder.ToString();
         }
 
         public static string GetSimpleName(string name)
@@ -117,11 +94,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     builder.Append(name[i]);
                     continue;
                 }
+
                 if (i < name.Length - 1 && !char.IsWhiteSpace(name, i + 1))
                 {
                     builder.Append(' ');
                 }
             }
+
             return builder.ToString();
         }
     }

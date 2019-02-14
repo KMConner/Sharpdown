@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Reflection;
 
 namespace TestProject
@@ -14,7 +13,6 @@ namespace TestProject
         /// are not accessible from this project.
         /// </summary>
         /// <typeparam name="T">The object type to initialize.</typeparam>
-        /// <param name="parameters">The parameters passed to the constructor.</param>
         /// <returns>The created object.</returns>
         public static T CreateInternal<T>()
         {
@@ -24,7 +22,7 @@ namespace TestProject
         public static T CreateInternal<T>(Type[] types, object[] parameters)
         {
             ConstructorInfo constructorInfo = typeof(T).GetConstructor(
-                BindingFlags.NonPublic|BindingFlags.Instance, null, types, null);
+                BindingFlags.NonPublic | BindingFlags.Instance, null, types, null);
             return (T)constructorInfo.Invoke(parameters);
         }
     }

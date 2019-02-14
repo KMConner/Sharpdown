@@ -6,29 +6,19 @@
     public enum BlockElementType
     {
         /// <summary>
-        /// Themantic Break.
+        /// Thematic Break.
         /// </summary>
-        ThemanticBreak,
+        ThematicBreak,
 
         /// <summary>
-        /// ATX Header.
+        /// Heading.
         /// </summary>
-        AtxHeading,
+        Heading,
 
         /// <summary>
-        /// Setext Header.
+        /// Indented/Fenced Code Block.
         /// </summary>
-        SetextHeading,
-
-        /// <summary>
-        /// Indented Code Block.
-        /// </summary>
-        IndentedCodeBlock,
-
-        /// <summary>
-        /// Fenced Code Block.
-        /// </summary>
-        FencedCodeBlock,
+        CodeBlock,
 
         /// <summary>
         /// HTML Block.
@@ -36,7 +26,7 @@
         HtmlBlock,
 
         /// <summary>
-        /// Link Refernce Definition.
+        /// Link Reference Definition.
         /// </summary>
         LinkReferenceDefinition,
 

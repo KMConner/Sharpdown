@@ -19,7 +19,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         /// <param name="elementType"></param>
         public InvalidBlockFormatException(BlockElementType elementType)
-            : base()
         {
             ElementType = elementType;
         }
@@ -35,10 +34,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         public override string Message
         {
-            get
-            {
-                return message ?? $"Given format is invalid for block type {ElementType}";
-            }
+            get { return message ?? $"Given format is invalid for block type {ElementType}"; }
         }
     }
 }

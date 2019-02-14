@@ -19,7 +19,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
     /// ```
     /// ]]>
     /// </remarks>
-    public class FencedCodeBlock : CodeBlockBase
+    internal class FencedCodeBlock : CodeBlock
     {
         /// <summary>
         /// Regular expression which matches the open fence of fenced code block.
@@ -61,19 +61,19 @@ namespace Sharpdown.MarkdownElement.BlockElement
         private char fenceChar;
 
         /// <summary>
-        /// Wether the first line is added to this block.
+        /// Whether the first line is added to this block.
         /// </summary>
         private bool initialized;
 
         /// <summary>
-        /// Wether the line which contains the close fence has ocuuerd.
+        /// Whether the line which contains the close fence has occured.
         /// </summary>
         private bool closed;
 
         /// <summary>
         /// Gets the type of this block.
         /// </summary>
-        public override BlockElementType Type => BlockElementType.FencedCodeBlock;
+        public override BlockElementType Type => BlockElementType.CodeBlock;
 
         /// <summary>
         /// Gets the info string of this block.
@@ -83,12 +83,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Gets the content of this block.
         /// </summary>
-        public override string Content => string.Join("\r\n", contents);
+        public override string Code => string.Join("\r\n", contents);
 
         /// <summary>
         /// Initializes a new instance of <see cref="FencedCodeBlock"/>.
         /// </summary>
-        internal FencedCodeBlock() : base()
+        internal FencedCodeBlock()
         {
             contents = new List<string>();
             indentNum = -1;
@@ -103,7 +103,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// 
         /// <list type="bullet">
         /// <item>Starts with three or more ` or ~ characters. (Called open fence.)</item>
-        /// <item>Open fence must be indented with 0-3 speces.</item>
+        /// <item>Open fence must be indented with 0-3 spaces.</item>
         /// <item>
         /// Info string after the open fence must not contain ` characters.
         /// (Even if back slash escaped.).
@@ -113,6 +113,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </list>
         /// </remarks>
         /// <param name="line">Single line string.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <returns>
         /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="FencedCodeBlock"/>.
         /// Otherwise, returns <c>false</c>.
@@ -124,7 +125,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 return false;
             }
 
-            var trimmed = line.TrimStart(whiteSpaceShars);
+            var trimmed = line.TrimStart(whiteSpaceChars);
 
             if (trimmed.Length < 3 || trimmed[0] != '`' && trimmed[0] != '~')
             {
@@ -155,6 +156,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Adds a line of string to this <see cref="FencedCodeBlock"/>.
         /// </summary>
         /// <param name="line">A single line to add to this element.</param>
+        /// <param name="lazy">Whether <paramref name="line"/> is lazy continuation.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <returns>
         /// Returns <c>AddLineResult.Consumed</c> except when <paramref name="line"/>
         /// contains the close fence.
@@ -163,15 +166,17 @@ namespace Sharpdown.MarkdownElement.BlockElement
         {
             if (lazy && line.GetIndentNum(currentIndent) >= 0)
             {
-                throw new InvalidBlockFormatException(BlockElementType.FencedCodeBlock);
+                throw new InvalidBlockFormatException(BlockElementType.CodeBlock);
             }
-            if (!initialized) // When the fiest line is slecified
+
+            if (!initialized) // When the first line is specified
             {
                 Match match = openFenceRegex.Match(line);
                 if (!match.Success) // When the first line does not contain open fence.
                 {
-                    throw new InvalidBlockFormatException(BlockElementType.FencedCodeBlock);
+                    throw new InvalidBlockFormatException(BlockElementType.CodeBlock);
                 }
+
                 string fence = match.Groups["fence"].Value;
                 fenceLength = fence.Length;
                 fenceChar = fence[0];
@@ -180,6 +185,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 {
                     infoString = InlineText.HandleEscapeAndHtmlEntity(match.Groups["info"].Value);
                 }
+
                 initialized = true;
                 return AddLineResult.Consumed;
             }
@@ -198,11 +204,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 closed = true;
                 return AddLineResult.Consumed | AddLineResult.NeedClose;
             }
-            else
-            {
-                contents.Add(RemoveIndent(line, indentNum, currentIndent));
-                return AddLineResult.Consumed;
-            }
+
+            contents.Add(RemoveIndent(line, indentNum, currentIndent));
+            return AddLineResult.Consumed;
         }
 
         /// <summary>
@@ -211,7 +215,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// When the close fence was not appear, a warning message is added.
         /// </summary>
         /// <returns>
-        /// The currnt object.
+        /// The current object.
         /// </returns>
         internal override BlockElement Close()
         {
@@ -219,6 +223,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 warnings.Add("Code Block is not closed.");
             }
+
             return this;
         }
     }

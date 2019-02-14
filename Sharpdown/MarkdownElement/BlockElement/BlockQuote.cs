@@ -20,17 +20,18 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         public override BlockElementType Type => BlockElementType.BlockQuote;
 
-        public override string Content => throw new InvalidOperationException();
-
         /// <summary>
-        /// Initialzies a new instance of <see cref="BlockQuote"/>.
+        /// Initializes a new instance of <see cref="BlockQuote"/>.
         /// </summary>
-        internal BlockQuote() : base() { }
+        internal BlockQuote()
+        {
+        }
 
         /// <summary>
-        /// Returns wether the specified line can be a start line of <see cref="BlockQuote"/>.
+        /// Returns whether the specified line can be a start line of <see cref="BlockQuote"/>.
         /// </summary>
         /// <param name="line">Single line string.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <remarks>
         /// These requirements must be satisfied to be the start line.
         /// 
@@ -45,14 +46,15 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="BlockQuote"/>.
         /// Otherwise, returns <c>false</c>.
         /// </returns>
-        public static bool CanStartBlock(string line, int currentIndent)
+        internal static bool CanStartBlock(string line, int currentIndent)
         {
             if (line.GetIndentNum(currentIndent) >= 4)
-            { // Too many indent
+            {
+                // Too many indent
                 return false;
             }
 
-            if (line.TrimStart(whiteSpaceShars).StartsWith(">"))
+            if (line.TrimStart(whiteSpaceChars).StartsWith(">", StringComparison.Ordinal))
             {
                 return true;
             }
@@ -60,7 +62,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             return false;
         }
 
-        internal override bool HasMark(string line, int currentIndent, out string markRemoved, out int markLength)
+        protected override bool HasMark(string line, int currentIndent, out string markRemoved, out int markLength)
         {
             markRemoved = null;
             markLength = 0;
@@ -68,25 +70,25 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return false;
             }
+
             string trimmed = line.TrimStartAscii();
 
-            if (!trimmed.StartsWith(">"))
+            if (!trimmed.StartsWith(">", StringComparison.Ordinal))
             {
                 return false;
             }
 
-            if (trimmed.StartsWith("> ") || trimmed.StartsWith(">\t"))
+            if (trimmed.StartsWith("> ", StringComparison.Ordinal) ||
+                trimmed.StartsWith(">\t", StringComparison.Ordinal))
             {
                 markRemoved = SubStringExpandingTabs(trimmed, 2, currentIndent);
                 markLength = 2;
                 return true;
             }
-            else
-            {
-                markRemoved = trimmed.Substring(1);
-                markLength = 1;
-                return true;
-            }
+
+            markRemoved = trimmed.Substring(1);
+            markLength = 1;
+            return true;
         }
     }
 }

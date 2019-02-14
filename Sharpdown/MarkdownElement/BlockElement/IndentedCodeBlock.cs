@@ -13,7 +13,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
     ///     Bar
     /// ]]>
     /// </remarks>
-    public class IndentedCodeBlock : CodeBlockBase
+    internal class IndentedCodeBlock : CodeBlock
     {
         /// <summary>
         /// The lines in this block.
@@ -23,7 +23,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Gets the type of this block.
         /// </summary>
-        public override BlockElementType Type => BlockElementType.IndentedCodeBlock;
+        public override BlockElementType Type => BlockElementType.CodeBlock;
 
         /// <summary>
         /// Gets the info string of this block.
@@ -34,12 +34,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Gets the content of this block.
         /// </summary>
-        public override string Content => string.Join("\r\n", contents);
+        public override string Code => string.Join("\r\n", contents);
 
         /// <summary>
         /// Initializes a new instance of <see cref="IndentedCodeBlock"/>.
         /// </summary>
-        internal IndentedCodeBlock() : base()
+        internal IndentedCodeBlock()
         {
             contents = new List<string>();
         }
@@ -55,6 +55,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </list>
         /// </remarks>
         /// <param name="line">Single line string.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <returns>
         /// Returns <c>true</c> if <paramref name="line"/> can be a start line of <see cref="FencedCodeBlock"/>.
         /// Otherwise, returns <c>false</c>.
@@ -68,6 +69,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Adds a line of string to this <see cref="IndentedCodeBlock"/>.
         /// </summary>
         /// <param name="line">A single line to add to this element.</param>
+        /// <param name="lazy">Whether <paramref name="line"/> is lazy continuation.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <returns>
         /// Returns <c>AddLineResult.Consumed</c> except when <paramref name="line"/>
         /// is indented less than 4 spaces.
@@ -78,6 +81,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 // throw new InvalidBlockFormatException(BlockElementType.IndentedCodeBlock);
             }
+
             int indent = line.GetIndentNum(currentIndent);
             if (indent >= 0 && indent < 4)
             {
@@ -92,6 +96,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                         break;
                     }
                 }
+
                 return AddLineResult.NeedClose;
             }
 
@@ -114,6 +119,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     break;
                 }
             }
+
             return base.Close();
         }
     }

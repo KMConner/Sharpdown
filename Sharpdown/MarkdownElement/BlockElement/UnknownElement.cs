@@ -6,12 +6,12 @@ using System.Text.RegularExpressions;
 namespace Sharpdown.MarkdownElement.BlockElement
 {
     /// <summary>
-    /// Represents markdown elements that the type cannnot be determined
+    /// Represents markdown elements that the type cannot be determined
     /// from only the first line.
     /// </summary>
     /// <seealso cref="Paragraph"/>
     /// <seealso cref="LinkReferenceDefinition"/>
-    /// <seealso cref="SetextHeader"/>
+    /// <seealso cref="SetextHeading"/>
     public class UnknownElement : LeafElement
     {
         /// <summary>
@@ -37,13 +37,11 @@ namespace Sharpdown.MarkdownElement.BlockElement
         private int headerLevel;
 
         /// <summary>
-        /// Wether this block can be a link reference definition.
+        /// Whether this block can be a link reference definition.
         /// </summary>
         private bool mayBeLinkReferenceDefinition;
 
         public override BlockElementType Type => BlockElementType.Unknown;
-
-        public override string Content => string.Join("\n", content);
 
         internal UnknownElement()
         {
@@ -74,13 +72,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     return AddLineResult.NeedClose;
                 }
 
-                string removed = line.Trim(whiteSpaceShars);
+                string removed = line.Trim(whiteSpaceChars);
                 if (removed.Length > 0
                     && !lazy
                     && (removed[0] == '-' || removed[0] == '=')
                     && removed.All(c => removed[0] == c))
                 {
-                    actualType = BlockElementType.SetextHeading;
+                    actualType = BlockElementType.Heading;
                     headerLevel = removed[0] == '=' ? 1 : 2;
                     return AddLineResult.Consumed | AddLineResult.NeedClose;
                 }
@@ -90,7 +88,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 var match = linkDefinitionRegex.Match(string.Join("\n", content));
                 actualType = match.Success && !IsBlank(match.Groups["label"].Value)
-                    ? BlockElementType.LinkReferenceDefinition : BlockElementType.Paragraph;
+                    ? BlockElementType.LinkReferenceDefinition
+                    : BlockElementType.Paragraph;
                 return AddLineResult.NeedClose;
             }
 
@@ -110,13 +109,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
                             actualType = BlockElementType.LinkReferenceDefinition;
                             return AddLineResult.Consumed | AddLineResult.NeedClose;
                         }
-                        else if (linkDefinitionRegex.IsMatch(string.Join("\n", content.GetRange(0, content.Count - 1))))
+
+                        if (linkDefinitionRegex.IsMatch(string.Join("\n", content.GetRange(0, content.Count - 1))))
                         {
                             content.RemoveAt(content.Count - 1);
                             actualType = BlockElementType.LinkReferenceDefinition;
                             return AddLineResult.NeedClose;
                         }
-
                     }
                     else
                     {
@@ -139,9 +138,10 @@ namespace Sharpdown.MarkdownElement.BlockElement
         }
 
         /// <summary>
-        /// Returns wether the paragraph needs to be interrupted.
+        /// Returns whether the paragraph needs to be interrupted.
         /// </summary>
         /// <param name="line">The single line of string.</param>
+        /// <param name="currentIndent">The indent count of <paramref name="line"/>.</param>
         /// <returns>
         /// <c>true</c> if the paragraph needs to be interrupted,
         /// otherwise, <c>false</c>.
@@ -149,25 +149,26 @@ namespace Sharpdown.MarkdownElement.BlockElement
         private bool Interrupted(string line, int currentIndent)
         {
             if (BlockQuote.CanStartBlock(line, currentIndent)
-                || ThemanticBreak.CanStartBlock(line, currentIndent)
-                || AtxHeaderElement.CanStartBlock(line, currentIndent)
+                || ThematicBreak.CanStartBlock(line, currentIndent)
+                || AtxHeading.CanStartBlock(line, currentIndent)
                 || FencedCodeBlock.CanStartBlock(line, currentIndent)
                 || HtmlBlock.CanInterruptParagraph(line)
                 || BlankLine.CanStartBlock(line))
             {
                 return true;
             }
+
             return false;
         }
 
         /// <summary>
-        /// Returns wether parentheses in the specified string is balanecd.
+        /// Returns whether parentheses in the specified string is balanced.
         /// </summary>
         /// <param name="str">
-        /// String object to determine wether the parentheses are balanecd.
+        /// String object to determine whether the parentheses are balanced.
         /// </param>
         /// <returns>
-        /// <c>true</c> if  parentheses in the specified string is balanecd,
+        /// <c>true</c> if  parentheses in the specified string is balanced,
         /// otherwise, <c>false</c>.
         /// </returns>
         private bool AreParenthesesBalanced(string str)
@@ -186,15 +187,15 @@ namespace Sharpdown.MarkdownElement.BlockElement
                         {
                             return false;
                         }
+
                         break;
 
                     case '\\':
                         i++;
                         break;
-                    default:
-                        break;
                 }
             }
+
             return depth == 0;
         }
 
@@ -217,6 +218,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return titleString.Substring(1, titleString.Length - 2);
             }
+
             return titleString;
         }
 
@@ -233,10 +235,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
             {
                 return destString;
             }
+
             if (destString[0] == '<' && destString[destString.Length - 1] == '>')
             {
                 return destString.Substring(1, destString.Length - 2);
             }
+
             return destString;
         }
 
@@ -249,7 +253,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// 
         /// <para>
         /// If <see cref="actualType"/> is one of <see cref="BlockElementType.Paragraph"/>,
-        /// <see cref="BlockElementType.SetextHeading"/> or
+        /// <see cref="BlockElementType.Heading"/> or
         /// <see cref="BlockElementType.LinkReferenceDefinition"/>, the type of returned block
         /// will be the same type of <see cref="actualType"/>.
         /// Otherwise (<see cref="actualType"/> is <see cref="BlockElementType.Unknown"/>),
@@ -262,42 +266,46 @@ namespace Sharpdown.MarkdownElement.BlockElement
         {
             switch (actualType)
             {
-                case BlockElementType.SetextHeading:
-                    return new SetextHeader(this, headerLevel);
+                case BlockElementType.Heading:
+                    return new SetextHeading(this, headerLevel);
 
                 case BlockElementType.LinkReferenceDefinition:
+                {
+                    Match match = linkDefinitionRegex.Match(string.Join("\n", content));
+                    if (!match.Success || IsBlank(match.Groups["label"].Value))
                     {
-
-                        Match match = linkDefinitionRegex.Match(string.Join("\n", content));
-                        if (!match.Success || IsBlank(match.Groups["label"].Value))
-                        {
-                            throw new InvalidBlockFormatException(BlockElementType.LinkReferenceDefinition);
-                        }
-                        return new LinkReferenceDefinition(match.Groups["label"].Value,
-                            ExtractDestination(match.Groups["destination"].Value),
-                            match.Groups["title"].Success ? ExtractTitle(match.Groups["title"].Value) : null, this);
+                        throw new InvalidBlockFormatException(BlockElementType.LinkReferenceDefinition);
                     }
+
+                    return new LinkReferenceDefinition(match.Groups["label"].Value,
+                        ExtractDestination(match.Groups["destination"].Value),
+                        match.Groups["title"].Success ? ExtractTitle(match.Groups["title"].Value) : null, this);
+                }
 
                 case BlockElementType.Paragraph:
                     return new Paragraph(this);
 
                 case BlockElementType.Unknown:
+                {
+                    if (mayBeLinkReferenceDefinition)
                     {
-                        if (mayBeLinkReferenceDefinition)
-                        {
-                            string joined = string.Join("\n", content);
-                            Match match = linkDefinitionRegex.Match(joined);
+                        string joined = string.Join("\n", content);
+                        Match match = linkDefinitionRegex.Match(joined);
 
-                            if (match.Success && !IsBlank(match.Groups["label"].Value))
+                        if (match.Success && !IsBlank(match.Groups["label"].Value))
+                        {
+                            if (AreParenthesesBalanced(match.Groups["destination"].Value))
                             {
-                                if (AreParenthesesBalanced(match.Groups["destination"].Value))
-                                {
-                                    return new LinkReferenceDefinition(match.Groups["label"].Value, ExtractDestination(match.Groups["destination"].Value), match.Groups["title"].Success ? ExtractTitle(match.Groups["title"].Value) : null, this);
-                                }
+                                return new LinkReferenceDefinition(match.Groups["label"].Value,
+                                    ExtractDestination(match.Groups["destination"].Value),
+                                    match.Groups["title"].Success ? ExtractTitle(match.Groups["title"].Value) : null,
+                                    this);
                             }
                         }
-                        return new Paragraph(this);
                     }
+
+                    return new Paragraph(this);
+                }
                 default:
                     throw new InvalidBlockFormatException(BlockElementType.Unknown);
             }
@@ -312,11 +320,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
         {
             foreach (var ch in str)
             {
-                if (!whiteSpaceShars.Contains(ch))
+                if (!whiteSpaceChars.Contains(ch))
                 {
                     return false;
                 }
             }
+
             return true;
         }
     }

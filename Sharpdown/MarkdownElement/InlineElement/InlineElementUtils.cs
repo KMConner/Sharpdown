@@ -54,7 +54,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             'z',
             '0', '1', '2', '3', '4',
             '5', '6', '7', '8', '9',
-            ';', '/' ,'?', ':', '@',
+            ';', '/', '?', ':', '@',
             '&', '=', '+', '$', ',',
             '-', '_', '.', '!', '~',
             '*', '\'', '(', ')', '#',
@@ -151,18 +151,18 @@ namespace Sharpdown.MarkdownElement.InlineElement
         }
 
         /// <summary>
-        /// Returns <see cref="InlineElementBase[]"/> 
+        /// Returns <see cref="InlineElement"/> 
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        private static IEnumerable<InlineElementBase> ParseLineBreak(string text)
+        private static IEnumerable<InlineElement> ParseLineBreak(string text)
         {
-            string[] lines = text.Replace("\r\n", "\n").Replace("\r", "\n").Split(new[] { '\n' });
+            string[] lines = text.Replace("\r\n", "\n").Replace("\r", "\n").Split(new[] {'\n'});
             for (int i = 0; i < lines.Length; i++)
             {
-
                 bool isHardBreak = lines[i].EndsWith("  ", StringComparison.Ordinal)
-                    || (lines[i].EndsWith("\\", StringComparison.Ordinal) && !IsEscaped(lines[i], lines.Length - 1));
+                                   || (lines[i].EndsWith("\\", StringComparison.Ordinal) &&
+                                       !IsEscaped(lines[i], lines.Length - 1));
                 if (i < lines.Length - 1)
                 {
                     if (lines[i] != string.Empty)
@@ -173,11 +173,12 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         }
                         else
                         {
-                            yield return InlineText.CreateFromText(lines[i].TrimEnd(new[] { ' ' }));
+                            yield return InlineText.CreateFromText(lines[i].TrimEnd(new[] {' '}));
                         }
                     }
+
                     yield return isHardBreak
-                        ? (InlineElementBase)new HardLineBreak()
+                        ? (InlineElement)new HardLineBreak()
                         : new SoftLineBreak();
                 }
                 else
@@ -209,7 +210,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 OpenLink,
 
                 /// <summary>
-                /// Opem Image (![).
+                /// Open Image (![).
                 /// </summary>
                 OpenImage,
 
@@ -219,9 +220,9 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 Star,
 
                 /// <summary>
-                /// Underbar (_).
+                /// UnderBar (_).
                 /// </summary>
-                Underbar,
+                UnderBar,
             }
 
             /// <summary>
@@ -287,7 +288,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 Link,
                 Image,
                 Emphasis,
-                StrongEmplasis,
+                StrongEmphasis,
                 CodeSpan,
                 AutoLink,
                 InlineHtml,
@@ -297,7 +298,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             public SortedList<int, DelimSpan> Children { get; private set; }
             public DelimSpan Parent { get; set; }
 
-            public InlineElementBase DelimElem { get; set; }
+            public InlineElement DelimElem { get; set; }
 
             public DelimSpan()
             {
@@ -336,11 +337,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// </summary>
         /// <param name="text">The string object.</param>
         /// <param name="delim">The <see cref="DelimSpan"/> tree.</param>
-        /// <returns>The inline elemets which is equivalent to <paramref name="delim"/>.</returns>
-        private static InlineElementBase[] ToInlines(string text, DelimSpan delim)
+        /// <returns>The inline elements which is equivalent to <paramref name="delim"/>.</returns>
+        private static InlineElement[] ToInlines(string text, DelimSpan delim)
         {
             int lastEnd = delim.ParseBegin;
-            List<InlineElementBase> newChildren = new List<InlineElementBase>();
+            List<InlineElement> newChildren = new List<InlineElement>();
             foreach (var item in delim.Children.Where(d => d.Value.End <= delim.ParseEnd))
             {
                 DelimSpan delimSpan = item.Value;
@@ -361,17 +362,17 @@ namespace Sharpdown.MarkdownElement.InlineElement
             switch (delim.DeliminatorType)
             {
                 case DelimSpan.DelimType.Link:
-                    return new InlineElementBase[] { new Link(newChildren.ToArray(), delim.Destination, delim.Title) };
+                    return new InlineElement[] {new Link(newChildren.ToArray(), delim.Destination, delim.Title)};
                 case DelimSpan.DelimType.Image:
-                    return new InlineElementBase[] { new Image(newChildren.ToArray(), delim.Destination, delim.Title) };
+                    return new InlineElement[] {new Image(newChildren.ToArray(), delim.Destination, delim.Title)};
                 case DelimSpan.DelimType.Emphasis:
-                    return new InlineElementBase[] { new Emphasis(newChildren.ToArray(), false) };
-                case DelimSpan.DelimType.StrongEmplasis:
-                    return new InlineElementBase[] { new Emphasis(newChildren.ToArray(), true) };
+                    return new InlineElement[] {new Emphasis(newChildren.ToArray(), false)};
+                case DelimSpan.DelimType.StrongEmphasis:
+                    return new InlineElement[] {new Emphasis(newChildren.ToArray(), true)};
                 case DelimSpan.DelimType.Root:
                     return newChildren.ToArray();
                 default:
-                    return new InlineElementBase[] { delim.DelimElem };
+                    return new[] {delim.DelimElem};
             }
         }
 
@@ -383,7 +384,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <returns>The tree of <see cref="DelimSpan"/> which is equivalent to <paramref name="spans"/>.</returns>
         private static DelimSpan GetInlineTree(SortedList<int, DelimSpan> spans, int rootLength)
         {
-            var root = new DelimSpan()
+            var root = new DelimSpan
             {
                 Begin = 0,
                 End = rootLength,
@@ -408,7 +409,6 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
         /// <summary>
         /// Parses the structure and add the <see cref="DelimSpan"/> to <paramref name="delimSpans"/>.
-        /// See https://spec.commonmark.org/0.28/#%2Dprocess%2Demphasis%2D  for the details of this algorithm. 
         /// </summary>
         /// <param name="deliminators">The list of <see cref="DeliminatorInfo"/>.</param>
         /// <param name="delimSpans">The list of <see cref="DelimSpan"/>.</param>
@@ -466,44 +466,40 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 {
                     return;
                 }
-                else
-                {
-                    ParseEmphasis(deliminators, delimSpans, firstClose?.Value);
-                    return;
-                }
+
+                ParseEmphasis(deliminators, delimSpans, firstClose.Value);
+                return;
             }
-            else
+
+            DeliminatorInfo openInfo = startDelimNode.Value;
+            DeliminatorInfo closeInfo = firstClose.Value;
+            int delimLength = openInfo.DeliminatorLength > 1 && closeInfo.DeliminatorLength > 1 ? 2 : 1;
+            var delimSpan = new DelimSpan
             {
-                DeliminatorInfo openInfo = startDelimNode.Value;
-                DeliminatorInfo closeInfo = firstClose.Value;
-                int delimLength = openInfo.DeliminatorLength > 1 && closeInfo.DeliminatorLength > 1 ? 2 : 1;
-                var delimSpan = new DelimSpan()
-                {
-                    Begin = openInfo.Index + openInfo.DeliminatorLength - delimLength,
-                    End = closeInfo.Index + delimLength,
-                    DeliminatorType =
-                        delimLength > 1 ? DelimSpan.DelimType.StrongEmplasis : DelimSpan.DelimType.Emphasis,
-                };
-                delimSpan.ParseBegin = delimSpan.Begin + delimLength;
-                delimSpan.ParseEnd = delimSpan.End - delimLength;
-                delimSpans.Add(delimSpan.Begin, delimSpan);
-                while ((infoNode = infoNode.Next) != null && infoNode != firstClose)
-                {
-                    deliminators.Remove(infoNode);
-                }
+                Begin = openInfo.Index + openInfo.DeliminatorLength - delimLength,
+                End = closeInfo.Index + delimLength,
+                DeliminatorType =
+                    delimLength > 1 ? DelimSpan.DelimType.StrongEmphasis : DelimSpan.DelimType.Emphasis,
+            };
+            delimSpan.ParseBegin = delimSpan.Begin + delimLength;
+            delimSpan.ParseEnd = delimSpan.End - delimLength;
+            delimSpans.Add(delimSpan.Begin, delimSpan);
+            while ((infoNode = infoNode.Next) != null && infoNode != firstClose)
+            {
+                deliminators.Remove(infoNode);
+            }
 
-                openInfo.DeliminatorLength -= delimLength;
-                if (openInfo.DeliminatorLength <= 0)
-                {
-                    deliminators.Remove(openInfo);
-                }
+            openInfo.DeliminatorLength -= delimLength;
+            if (openInfo.DeliminatorLength <= 0)
+            {
+                deliminators.Remove(openInfo);
+            }
 
-                closeInfo.DeliminatorLength -= delimLength;
-                closeInfo.Index += delimLength;
-                if (closeInfo.DeliminatorLength <= 0)
-                {
-                    deliminators.Remove(closeInfo);
-                }
+            closeInfo.DeliminatorLength -= delimLength;
+            closeInfo.Index += delimLength;
+            if (closeInfo.DeliminatorLength <= 0)
+            {
+                deliminators.Remove(closeInfo);
             }
 
             if (deliminators.Find(firstClose.Value) == null)
@@ -516,7 +512,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             }
         }
 
-        private static bool AreBlacketsBlanced(string text)
+        private static bool AreBracketsBalanced(string text)
         {
             int depth = 0;
             for (int i = 0; i < text.Length; i++)
@@ -525,15 +521,18 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 {
                     depth++;
                 }
+
                 if (text[i] == ']' && !IsEscaped(text, i))
                 {
                     depth--;
                 }
+
                 if (depth < 0)
                 {
                     return false;
                 }
             }
+
             return depth == 0;
         }
 
@@ -542,8 +541,10 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// </summary>
         /// <param name="text">The string object to @arse.</param>
         /// <param name="linkReferences">Link reference definitions.</param>
+        /// <param name="higherDelims">Delim Spans which represents higher priority.</param>
         /// <returns>The parse result.</returns>
-        private static IEnumerable<InlineElementBase> ParseLinkEmphasis(string text, Dictionary<string, LinkReferenceDefinition> linkReferences, List<DelimSpan> higherDelims)
+        private static IEnumerable<InlineElement> ParseLinkEmphasis(string text,
+            Dictionary<string, LinkReferenceDefinition> linkReferences, List<DelimSpan> higherDelims)
         {
             bool IsDelim(int index)
             {
@@ -558,7 +559,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 if (text[i] == '*' && !IsEscaped(text, i) && IsDelim(i))
                 {
                     int length = CountSameChars(text, i);
-                    var delimInfo = new DeliminatorInfo()
+                    var delimInfo = new DeliminatorInfo
                     {
                         Type = DeliminatorInfo.DeliminatorType.Star,
                         DeliminatorLength = length,
@@ -575,9 +576,9 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 else if (text[i] == '_' && !IsEscaped(text, i) && IsDelim(i))
                 {
                     int length = CountSameChars(text, i);
-                    var delimInfo = new DeliminatorInfo()
+                    var delimInfo = new DeliminatorInfo
                     {
-                        Type = DeliminatorInfo.DeliminatorType.Underbar,
+                        Type = DeliminatorInfo.DeliminatorType.UnderBar,
                         DeliminatorLength = length,
                         CanOpen = true,
                         CanClose = true,
@@ -596,7 +597,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 }
                 else if (text[i] == '[' && !IsEscaped(text, i) && IsDelim(i))
                 {
-                    deliminators.AddLast(new DeliminatorInfo()
+                    deliminators.AddLast(new DeliminatorInfo
                     {
                         Type = DeliminatorInfo.DeliminatorType.OpenLink,
                         DeliminatorLength = 1,
@@ -605,9 +606,10 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         Index = i
                     });
                 }
-                else if (text.Length > i + 1 && text[i] == '!' && text[i + 1] == '[' && !IsEscaped(text, i) && IsDelim(i))
+                else if (text.Length > i + 1 && text[i] == '!' && text[i + 1] == '[' && !IsEscaped(text, i) &&
+                         IsDelim(i))
                 {
-                    deliminators.AddLast(new DeliminatorInfo()
+                    deliminators.AddLast(new DeliminatorInfo
                     {
                         Type = DeliminatorInfo.DeliminatorType.OpenImage,
                         DeliminatorLength = 2,
@@ -639,8 +641,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
                         // Inline Link/Image
                         if (text[Math.Min(i + 1, text.Length - 1)] == '('
-                        && AreBlacketsBlanced(text.Substring(openInfo.Index, i - openInfo.Index + 1))
-                        && linkLabel >= 0 && linkBody >= 0)
+                            && AreBracketsBalanced(text.Substring(openInfo.Index, i - openInfo.Index + 1))
+                            && linkLabel >= 0 && linkBody >= 0)
                         {
                             if (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink)
                             {
@@ -653,7 +655,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                                 }
                             }
 
-                            delimSpans.Add(openInfo.Index, new DelimSpan()
+                            delimSpans.Add(openInfo.Index, new DelimSpan
                             {
                                 Begin = openInfo.Index,
                                 End = linkBody,
@@ -689,7 +691,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
                                     }
                                 }
                             }
-                            delimSpans.Add(openInfo.Index, new DelimSpan()
+
+                            delimSpans.Add(openInfo.Index, new DelimSpan
                             {
                                 Begin = openInfo.Index,
                                 End = i + 3,
@@ -705,11 +708,13 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             ParseEmphasis(deliminators, delimSpans, openInfo);
                             i += 2;
                             deliminators.Remove(openInfo);
-
                         }
                         // Full Reference Link
                         else if (text[Math.Min(i + 1, text.Length - 1)] == '[' && linkLabel2 >= 0
-                            && TryGetReference(linkReferences, text.Substring(i + 2, linkLabel2 - i - 3), out definition))
+                                                                               && TryGetReference(linkReferences,
+                                                                                   text.Substring(i + 2,
+                                                                                       linkLabel2 - i - 3),
+                                                                                   out definition))
                         {
                             if (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink)
                             {
@@ -738,11 +743,12 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             ParseEmphasis(deliminators, delimSpans, openInfo);
                             i = linkLabel2 - 1;
                             deliminators.Remove(openInfo);
-
                         }
                         // shortcut link
-                        else if (TryGetReference(linkReferences, text.Substring(openInfo.Index + openInfo.DeliminatorLength, i - openInfo.Index - openInfo.DeliminatorLength),
-                            out definition) && GetEndIndexOfLinkLabel(text, i + 1, higherDelims) < 0)
+                        else if (TryGetReference(linkReferences,
+                                     text.Substring(openInfo.Index + openInfo.DeliminatorLength,
+                                         i - openInfo.Index - openInfo.DeliminatorLength),
+                                     out definition) && GetEndIndexOfLinkLabel(text, i + 1, higherDelims) < 0)
                         {
                             if (openInfo.Type == DeliminatorInfo.DeliminatorType.OpenLink)
                             {
@@ -755,7 +761,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                                 }
                             }
 
-                            delimSpans.Add(openInfo.Index, new DelimSpan()
+                            delimSpans.Add(openInfo.Index, new DelimSpan
                             {
                                 Begin = openInfo.Index,
                                 End = i + 1,
@@ -770,7 +776,6 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             });
                             ParseEmphasis(deliminators, delimSpans, openInfo);
                             deliminators.Remove(openInfo);
-
                         }
                         else
                         {
@@ -827,13 +832,13 @@ namespace Sharpdown.MarkdownElement.InlineElement
         }
 
         /// <summary>
-        /// Parses raw html or autolinks which starts with the specified index.
+        /// Parses raw html or auto links which starts with the specified index.
         /// </summary>
-        /// <param name="text">String object which contains autolinks or raw html.</param>
+        /// <param name="text">String object which contains auto links or raw html.</param>
         /// <param name="index">The index where the element starts.</param>
         /// <param name="currentIndex">Updates this value to the index of the next character of the span end.</param>
-        /// <returns>The autolinks or raw html if one is found, otherwise <c>null</c>.</returns>
-        private static InlineElementBase GetInlineHtmlOrLink(string text, int index, ref int currentIndex)
+        /// <returns>The auto links or raw html if one is found, otherwise <c>null</c>.</returns>
+        private static InlineElement GetInlineHtmlOrLink(string text, int index, ref int currentIndex)
         {
             // Auto link (URL)
             Match urlMatch = UrlRegex.Match(text, index);
@@ -851,7 +856,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             {
                 currentIndex += emailMatch.Length;
                 var target = emailMatch.Groups["addr"].Value;
-                return new Link(target,true);
+                return new Link(target, true);
             }
 
             // Inline html
@@ -875,6 +880,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 {
                     return ret;
                 }
+
                 ret++;
             }
         }
@@ -883,10 +889,10 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// Parses inline elements and returns them.
         /// </summary>
         /// <param name="text">The text to parse.</param>
-        /// <param name="linkRefernces">Reference definitions in this document.</param>
+        /// <param name="linkReferences">Reference definitions in this document.</param>
         /// <returns>Inline elements in <paramref name="text"/>.</returns>
-        public static IEnumerable<InlineElementBase> ParseInlineElements(string text,
-            Dictionary<string, LinkReferenceDefinition> linkRefernces)
+        public static IEnumerable<InlineElement> ParseInlineElements(string text,
+            Dictionary<string, LinkReferenceDefinition> linkReferences)
         {
             var highPriorityDelims = new List<DelimSpan>();
             int currentIndex = 0;
@@ -894,9 +900,9 @@ namespace Sharpdown.MarkdownElement.InlineElement
             int nextLessThan = GetNextUnescaped(text, '<', 0);
             while (currentIndex < text.Length)
             {
-                var newIndex = currentIndex;
+                int newIndex;
                 int nextElemIndex;
-                InlineElementBase newInline = null;
+                InlineElement newInline;
 
                 // Find `
                 if (nextBacktick >= 0 && (nextLessThan < 0 || nextBacktick < nextLessThan))
@@ -912,14 +918,14 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     newIndex = nextElemIndex;
                     newInline = GetInlineHtmlOrLink(text, nextLessThan, ref newIndex);
                 }
-                else // Find neigher ` nor <
+                else // Find neither ` nor <
                 {
                     break;
                 }
 
                 if (newInline != null)
                 {
-                    var span = new DelimSpan()
+                    var span = new DelimSpan
                     {
                         Begin = nextElemIndex,
                         End = newIndex,
@@ -927,17 +933,10 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         DelimElem = newInline,
                     };
                     highPriorityDelims.Add(span);
-                    //foreach (var element in
-                    //    ParseLinkEmphasis(text.Substring(currentIndex, nextElemIndex - currentIndex),
-                    //        linkRefernces))
-                    //{
-                    //    yield return element;
-                    //}
 
                     currentIndex = newIndex;
                     nextBacktick = GetNextUnescaped(text, '`', currentIndex);
                     nextLessThan = GetNextUnescaped(text, '<', currentIndex);
-                    //yield return newInline;
                 }
                 else
                 {
@@ -947,17 +946,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 }
             }
 
-            return ParseLinkEmphasis(text, linkRefernces, highPriorityDelims);
-
-            //if (currentIndex < text.Length)
-            //{
-            //    foreach (var element in
-            //        ParseLinkEmphasis(text.Substring(currentIndex, text.Length - currentIndex),
-            //            linkRefernces))
-            //    {
-            //        yield return element;
-            //    }
-            //}
+            return ParseLinkEmphasis(text, linkReferences, highPriorityDelims);
         }
 
         private static DelimSpan.DelimType ToDelimType(InlineElementType elemType)
@@ -989,6 +978,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     return count % 2 != 0;
                 }
             }
+
             return index % 2 != 0;
         }
 
@@ -998,7 +988,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             for (int i = 0; i < text.Length; i++)
             {
                 if (i < text.Length - 1 && text[i] == '\\'
-                    && MarkdownElementBase.asciiPunctuationChars.Contains(text[i + 1]))
+                                        && MarkdownElementBase.asciiPunctuationChars.Contains(text[i + 1]))
                 {
                     builder.Append(text[i + 1]);
                     i++;
@@ -1008,6 +998,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     builder.Append(text[i]);
                 }
             }
+
             return builder.ToString();
         }
 
@@ -1019,14 +1010,17 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 {
                     return true;
                 }
+
                 if (ch >= 0x41 && ch <= 0x5A)
                 {
                     return true;
                 }
+
                 if (ch >= 0x61 && ch <= 0x7A)
                 {
                     return true;
                 }
+
                 return false;
             }
 
@@ -1034,9 +1028,10 @@ namespace Sharpdown.MarkdownElement.InlineElement
             {
                 return false;
             }
+
             return text[index] == '%'
-                && IsHexChar(text[index + 1])
-                && IsHexChar(text[index + 2]);
+                   && IsHexChar(text[index + 1])
+                   && IsHexChar(text[index + 2]);
         }
 
         /// <summary>
@@ -1045,7 +1040,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <returns>The text to encode.</returns>
         /// <param name="text">The encoded text.</param>
         /// <remarks>
-        /// Ascii alphabets, degits and some other ascii characters (see <see cref="unreservedChars"/>)
+        /// Ascii alphabets, digits and some other ascii characters (see <see cref="unreservedChars"/>)
         /// will not be encoded which is different from the specification of url.
         /// % characters will be escaped only when it is not the beginning of percent encoded letters.
         /// </remarks>
@@ -1064,7 +1059,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 }
                 else
                 {
-                    var bytes = Encoding.UTF8.GetBytes(new[] { text[i] });
+                    var bytes = Encoding.UTF8.GetBytes(new[] {text[i]});
                     foreach (var b in bytes)
                     {
                         builder.Append("%");
@@ -1072,6 +1067,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     }
                 }
             }
+
             return builder.ToString();
         }
 
@@ -1105,14 +1101,17 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 {
                     continue;
                 }
+
                 if (ch != '[' && ch != ']')
                 {
                     continue;
                 }
+
                 if (!IsDelim(i))
                 {
                     continue;
                 }
+
                 if (ch == '[')
                 {
                     depth--;
@@ -1122,6 +1121,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         {
                             return i - 1;
                         }
+
                         return i;
                     }
                 }
@@ -1130,6 +1130,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     depth++;
                 }
             }
+
             return -1;
         }
 
@@ -1139,14 +1140,17 @@ namespace Sharpdown.MarkdownElement.InlineElement
             {
                 return !higherDelims.Any(d => d.Begin <= index && d.End > index);
             }
+
             if (wholeText.Length <= begin)
             {
                 return -1;
             }
+
             if (wholeText[begin] != '[')
             {
                 return -1;
             }
+
             int depth = 0;
             for (int i = begin; i < wholeText.Length; i++)
             {
@@ -1154,16 +1158,19 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 {
                     continue;
                 }
+
                 if (!IsDelim(i))
                 {
                     continue;
                 }
+
                 char ch = wholeText[i];
                 if (ch == '[')
                 {
                     depth++;
                     continue;
                 }
+
                 if (ch == ']')
                 {
                     depth--;
@@ -1171,13 +1178,16 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     {
                         return i + 1;
                     }
+
                     if (depth < 0)
                     {
                         return -1;
                     }
+
                     break;
                 }
             }
+
             return -1;
         }
 
@@ -1204,17 +1214,19 @@ namespace Sharpdown.MarkdownElement.InlineElement
             // Search begging of the destination.
             for (; current < wholeText.Length; current++)
             {
-                if (!MarkdownElementBase.whiteSpaceShars.Contains(wholeText[current]))
+                if (!MarkdownElementBase.whiteSpaceChars.Contains(wholeText[current]))
                 {
                     break;
                 }
             }
+
             int destinationStart = current;
 
             if (wholeText[destinationStart] == ')')
             {
                 return begin + 2;
             }
+
             // Extract destination
             if (wholeText[destinationStart] == '<')
             {
@@ -1222,14 +1234,16 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 for (; current < wholeText.Length; current++)
                 {
                     char ch = wholeText[current];
-                    if (MarkdownElementBase.whiteSpaceShars.Contains(ch))
+                    if (MarkdownElementBase.whiteSpaceChars.Contains(ch))
                     {
                         return -1;
                     }
+
                     if (ch == '<' && !IsEscaped(wholeText, current))
                     {
                         return -1;
                     }
+
                     if (ch == '>' && !IsEscaped(wholeText, current))
                     {
                         destination = wholeText.Substring(destinationStart + 1, current - destinationStart - 1);
@@ -1239,27 +1253,30 @@ namespace Sharpdown.MarkdownElement.InlineElement
             }
             else
             {
-                int pharenDepth = 0;
+                int parenDepth = 0;
                 for (; current < wholeText.Length; current++)
                 {
                     char ch = wholeText[current];
-                    if (MarkdownElementBase.whiteSpaceShars.Contains(ch) || char.IsControl(ch))
+                    if (MarkdownElementBase.whiteSpaceChars.Contains(ch) || char.IsControl(ch))
                     {
-                        if (pharenDepth != 0)
+                        if (parenDepth != 0)
                         {
                             return -1;
                         }
+
                         destination = wholeText.Substring(destinationStart, current - destinationStart);
                         break;
                     }
+
                     if (ch == '(' && !IsEscaped(wholeText, current))
                     {
-                        pharenDepth++;
+                        parenDepth++;
                     }
+
                     if (ch == ')' && !IsEscaped(wholeText, current))
                     {
-                        pharenDepth--;
-                        if (pharenDepth < 0)
+                        parenDepth--;
+                        if (parenDepth < 0)
                         {
                             current--;
                             destination = wholeText.Substring(destinationStart, current - destinationStart + 1);
@@ -1274,7 +1291,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             // Search begging of the title
             for (; current < wholeText.Length; current++)
             {
-                if (!MarkdownElementBase.whiteSpaceShars.Contains(wholeText[current]))
+                if (!MarkdownElementBase.whiteSpaceChars.Contains(wholeText[current]))
                 {
                     break;
                 }
@@ -1308,15 +1325,17 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
             for (; current < wholeText.Length; current++)
             {
-                if (!MarkdownElementBase.whiteSpaceShars.Contains(wholeText[current]))
+                if (!MarkdownElementBase.whiteSpaceChars.Contains(wholeText[current]))
                 {
                     break;
                 }
             }
+
             if (wholeText[current] != ')')
             {
                 return -1;
             }
+
             return current + 1;
         }
 

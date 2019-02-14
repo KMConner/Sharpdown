@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents code spans in markdown documents.
     /// </summary>
-    public class CodeSpan : InlineElementBase
+    public class CodeSpan : InlineElement
     {
         /// <summary>
         /// Gets the type of the current element.
@@ -19,22 +19,23 @@
         /// Creates a new instance of <see cref="CodeSpan"/> with the specified code.
         /// </summary>
         /// <param name="code"></param>
-        public CodeSpan(string code)
+        internal CodeSpan(string code)
         {
             Code = CollapseWhiteSpaces(code);
         }
 
         private static string CollapseWhiteSpaces(string text)
         {
-            var ret = text.Trim(new[] { '\r', '\n', ' ' })
+            var ret = text.Trim(new[] {'\r', '\n', ' '})
                 .Replace('\t', ' ')
                 .Replace('\r', ' ')
                 .Replace('\n', ' ')
                 .Replace("  ", " ");
-            while (ret.IndexOf("  ") >= 0)
+            while (ret.IndexOf("  ", System.StringComparison.Ordinal) >= 0)
             {
                 ret = ret.Replace("  ", " ");
             }
+
             return ret;
         }
     }

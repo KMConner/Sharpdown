@@ -6,9 +6,9 @@ namespace Sharpdown
 {
     public class MarkdownDocument
     {
-        public List<BlockElement> Elements { get; private set; }
+        public List<BlockElement> Elements { get; }
 
-        public Dictionary<string, LinkReferenceDefinition> LinkDefinition { get; private set; }
+        public Dictionary<string, LinkReferenceDefinition> LinkDefinition { get; }
 
         private BlockElement openElement;
 
@@ -27,6 +27,7 @@ namespace Sharpdown
             {
                 openElement = BlockElementUtil.CreateBlockFromLine(line, 0);
             }
+
             AddLineResult result = openElement.AddLine(line, false, 0);
 
             if ((result & AddLineResult.NeedClose) != 0)
@@ -35,8 +36,10 @@ namespace Sharpdown
                 {
                     Elements.Add(openElement.Close());
                 }
+
                 openElement = null;
             }
+
             if ((result & AddLineResult.Consumed) == 0)
             {
                 AddLine(line);
@@ -80,6 +83,7 @@ namespace Sharpdown
                     ExtractLinkDefinition(Elements[i]);
                 }
             }
+
             foreach (var element in Elements)
             {
                 element.ParseInline(LinkDefinition);
@@ -94,6 +98,7 @@ namespace Sharpdown
                 {
                     Elements.Add(openElement.Close());
                 }
+
                 openElement = null;
             }
         }

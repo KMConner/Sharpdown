@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Sharpdown.MarkdownElement.InlineElement
+﻿namespace Sharpdown.MarkdownElement.InlineElement
 {
-    public class SoftLineBreak : InlineElementBase
+    public class SoftLineBreak : InlineElement
     {
         public override InlineElementType Type => InlineElementType.SoftLineBreak;
     }

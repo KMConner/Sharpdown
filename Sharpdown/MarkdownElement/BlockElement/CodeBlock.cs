@@ -3,13 +3,19 @@ using Sharpdown.MarkdownElement.InlineElement;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
-    public abstract class CodeBlockBase : LeafElement
+    public abstract class CodeBlock : LeafElement
     {
         public abstract string InfoString { get; }
-        internal CodeBlockBase() : base() { }
+
+        public abstract string Code { get; }
+
+        internal CodeBlock()
+        {
+        }
+
         internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
         {
-            inlines.Add(new LiteralText(Content));
+            inlines.Add(new LiteralText(Code));
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Sharpdown.MarkdownElement.InlineElement
 {
-    public class LiteralText : InlineElementBase
+    public class LiteralText : InlineElement
     {
         public string Content { get; private set; }
 
