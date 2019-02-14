@@ -1,6 +1,6 @@
 ﻿namespace Sharpdown.MarkdownElement.InlineElement
 {
-    class HardLineBreak : InlineElementBase
+    class HardLineBreak : InlineElement
     {
         public override InlineElementType Type => InlineElementType.HardLineBreak;
     }

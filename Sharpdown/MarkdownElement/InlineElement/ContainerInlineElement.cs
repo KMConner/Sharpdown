@@ -1,7 +1,7 @@
 ﻿namespace Sharpdown.MarkdownElement.InlineElement
 {
-    public abstract class ContainerInlineElement : InlineElementBase
+    public abstract class ContainerInlineElement : InlineElement
     {
-        public InlineElementBase[] Children { get; protected set; }
+        public InlineElement[] Children { get; protected set; }
     }
 }

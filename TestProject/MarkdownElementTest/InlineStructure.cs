@@ -37,7 +37,7 @@ namespace TestProject.MarkdownElementTest
             Content = type;
         }
 
-        private void AssertEqual(InlineElementBase element)
+        private void AssertEqual(InlineElement element)
         {
             Assert.AreEqual(Content, element.Type);
             if (element is InlineText text)
@@ -65,9 +65,9 @@ namespace TestProject.MarkdownElementTest
             }
         }
 
-        public void AssertEqual(IEnumerable<InlineElementBase> element)
+        public void AssertEqual(IEnumerable<InlineElement> element)
         {
-            IEnumerable<InlineElementBase> inlineElementBases = element as InlineElementBase[] ?? element.ToArray();
+            IEnumerable<InlineElement> inlineElementBases = element as InlineElement[] ?? element.ToArray();
             if (inlineElementBases.Count() == 1)
             {
                 AssertEqual(inlineElementBases.First());

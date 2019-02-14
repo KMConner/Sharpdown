@@ -6,10 +6,10 @@ namespace Sharpdown.MarkdownElement.InlineElement
     {
         public override InlineElementType Type => InlineElementType.Link;
 
-        public string Destination { get; private set; }
-        public string Title { get; private set; }
+        public string Destination { get; }
+        public string Title { get; }
 
-        public Link(InlineElementBase[] linkText, string destination, string title)
+        public Link(InlineElement[] linkText, string destination, string title)
         {
             Children = linkText;
             Destination =
@@ -17,9 +17,9 @@ namespace Sharpdown.MarkdownElement.InlineElement
             Title = title == null ? null : InlineText.HandleEscapeAndHtmlEntity(RemoveQuotes(title));
         }
 
-        public Link(string destination, bool mailto = false)
+        internal Link(string destination, bool mailto = false)
         {
-            Children = new InlineElementBase[] {InlineText.CreateFromText(destination, false)};
+            Children = new InlineElement[] {InlineText.CreateFromText(destination, false)};
             Destination = (mailto ? "mailto:" : string.Empty) + InlineElementUtils.UrlEncode(destination);
         }
 

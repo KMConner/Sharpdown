@@ -6,9 +6,9 @@ namespace Sharpdown
 {
     public class MarkdownDocument
     {
-        public List<BlockElement> Elements { get; private set; }
+        public List<BlockElement> Elements { get; }
 
-        public Dictionary<string, LinkReferenceDefinition> LinkDefinition { get; private set; }
+        public Dictionary<string, LinkReferenceDefinition> LinkDefinition { get; }
 
         private BlockElement openElement;
 

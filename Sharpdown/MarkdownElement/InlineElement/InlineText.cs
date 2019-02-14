@@ -9,7 +9,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
     /// <summary>
     /// Represents text nodes in markdown documents.
     /// </summary>
-    public class InlineText : InlineElementBase
+    public class InlineText : InlineElement
     {
         /// <summary>
         /// HTML entity character listing.

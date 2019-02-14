@@ -7,7 +7,7 @@ namespace TestProject.MarkdownElementTest
 {
     static class ExtendMethod
     {
-        public static IReadOnlyList<InlineElementBase> GetInlines(this BlockElement element)
+        public static IReadOnlyList<InlineElement> GetInlines(this BlockElement element)
         {
             if (!(element is LeafElement leaf))
             {
@@ -17,7 +17,7 @@ namespace TestProject.MarkdownElementTest
             return leaf.Inlines;
         }
 
-        public static InlineElementBase GetInline(this BlockElement element, int index)
+        public static InlineElement GetInline(this BlockElement element, int index)
         {
             return element.GetInlines()[index];
         }

@@ -4,7 +4,7 @@
     {
         public override InlineElementType Type => InlineElementType.InlineHtml;
 
-        public string Content { get; private set; }
+        public string Content { get; }
 
         public InlineHtml(string html)
         {
