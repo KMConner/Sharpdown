@@ -32,13 +32,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
         public override string Content => string.Empty;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="ThemanticBreak"/>.
-        /// </summary>
-        internal ThemanticBreak()
-        {
-        }
-
-        /// <summary>
         /// Returns whether the specified line can be a start line of <see cref="FencedCodeBlock"/>.
         /// </summary>
         /// <remarks>

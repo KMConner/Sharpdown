@@ -36,7 +36,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         public Image(InlineElementBase[] text, string src, string title)
         {
             Alt = TextFromInlines(text);
-            Children = new[] {InlineText.CreateFromText(Alt)};
+            Children = new InlineElementBase[] {InlineText.CreateFromText(Alt)};
             Source = src;
             Title = title;
         }

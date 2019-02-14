@@ -27,11 +27,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
         private static readonly char[] bullets = {'-', '*', '+'};
 
         /// <summary>
-        /// Characters which can be used as ordered list deliminators.
-        /// </summary>
-        private static readonly char[] deliminators = {'.', ')'};
-
-        /// <summary>
         /// Regular expression which matches the first line of list item which starts with a
         /// blank line.
         /// </summary>

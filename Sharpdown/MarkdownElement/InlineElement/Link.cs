@@ -19,7 +19,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
         public Link(string destination, bool mailto = false)
         {
-            Children = new[] {InlineText.CreateFromText(destination, false)};
+            Children = new InlineElementBase[] {InlineText.CreateFromText(destination, false)};
             Destination = (mailto ? "mailto:" : string.Empty) + InlineElementUtils.UrlEncode(destination);
         }
 

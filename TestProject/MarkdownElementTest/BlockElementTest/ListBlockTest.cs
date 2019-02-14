@@ -123,6 +123,7 @@ namespace TestProject.MarkdownElementTest.BlockElementTest
                     BlockElementType.Paragraph,
                     new BlockElementStructure(BlockElementType.List,
                         new BlockElementStructure(BlockElementType.ListItem, BlockElementType.Unknown))));
+            structure.AssertTypeEqual(block);
         }
 
         [TestMethod]

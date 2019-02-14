@@ -194,8 +194,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     case '\\':
                         i++;
                         break;
-                    default:
-                        break;
                 }
             }
 

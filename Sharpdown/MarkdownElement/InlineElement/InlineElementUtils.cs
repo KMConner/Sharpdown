@@ -337,7 +337,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// </summary>
         /// <param name="text">The string object.</param>
         /// <param name="delim">The <see cref="DelimSpan"/> tree.</param>
-        /// <returns>The inline elemets which is equivalent to <paramref name="delim"/>.</returns>
+        /// <returns>The inline elements which is equivalent to <paramref name="delim"/>.</returns>
         private static InlineElementBase[] ToInlines(string text, DelimSpan delim)
         {
             int lastEnd = delim.ParseBegin;
@@ -372,7 +372,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 case DelimSpan.DelimType.Root:
                     return newChildren.ToArray();
                 default:
-                    return new InlineElementBase[] {delim.DelimElem};
+                    return new[] {delim.DelimElem};
             }
         }
 
