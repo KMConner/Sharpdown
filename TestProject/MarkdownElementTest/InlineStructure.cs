@@ -4,7 +4,7 @@ using Sharpdown.MarkdownElement.InlineElement;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace TestProject.MarkdownElementTest.InlineElementTest
+namespace TestProject.MarkdownElementTest
 {
     class InlineStructure
     {

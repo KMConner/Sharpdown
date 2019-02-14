@@ -4,7 +4,7 @@ using Sharpdown;
 using Sharpdown.MarkdownElement.BlockElement;
 using Sharpdown.MarkdownElement.InlineElement;
 using TestProject.MarkdownElementTest.BlockElementTest;
-using TestProject.MarkdownElementTest.InlineElementTest;
+using TestProject.MarkdownElementTest;
 
 namespace TestProject.MarkdownElementTest
 {
