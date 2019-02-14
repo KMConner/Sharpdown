@@ -6,7 +6,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
     /// Represents the result of adding a single line to <see cref="BlockElement"/>.
     /// </summary>
     [Flags]
-    public enum AddLineResult
+    internal enum AddLineResult
     {
         /// <summary>
         /// This <see cref="BlockElement"/> need to be closed (More lines must not be added.).
