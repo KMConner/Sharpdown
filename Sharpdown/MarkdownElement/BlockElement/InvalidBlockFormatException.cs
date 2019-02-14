@@ -19,7 +19,6 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         /// <param name="elementType"></param>
         public InvalidBlockFormatException(BlockElementType elementType)
-            : base()
         {
             ElementType = elementType;
         }

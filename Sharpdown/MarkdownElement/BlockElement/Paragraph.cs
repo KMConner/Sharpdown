@@ -38,7 +38,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <param name="element">
         /// The <see cref="UnknownElement"/> object to create this object from.
         /// </param>
-        internal Paragraph(UnknownElement element) : base()
+        internal Paragraph(UnknownElement element)
         {
             contents = element.content;
             contents[contents.Count - 1] = contents[contents.Count - 1].TrimEnd(' ');

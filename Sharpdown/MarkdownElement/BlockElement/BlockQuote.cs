@@ -25,7 +25,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Initialzies a new instance of <see cref="BlockQuote"/>.
         /// </summary>
-        internal BlockQuote() : base()
+        internal BlockQuote()
         {
         }
 

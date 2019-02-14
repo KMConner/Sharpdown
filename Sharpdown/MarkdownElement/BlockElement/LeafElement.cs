@@ -20,7 +20,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Initializes a new instance of <see cref="LeafElement"/>.
         /// </summary>
-        internal LeafElement() : base()
+        internal LeafElement()
         {
             inlines = new List<InlineElementBase>();
         }

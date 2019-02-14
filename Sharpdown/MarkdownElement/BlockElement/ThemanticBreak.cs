@@ -34,7 +34,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Initializes a new instance of <see cref="ThemanticBreak"/>.
         /// </summary>
-        internal ThemanticBreak() : base()
+        internal ThemanticBreak()
         {
         }
 

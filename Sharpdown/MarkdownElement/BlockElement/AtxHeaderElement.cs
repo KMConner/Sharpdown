@@ -30,7 +30,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Initializes a new instance of <see cref="AtxHeaderElement"/>
         /// </summary>
-        internal AtxHeaderElement() : base()
+        internal AtxHeaderElement()
         {
         }
 

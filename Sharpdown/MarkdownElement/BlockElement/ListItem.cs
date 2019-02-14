@@ -42,7 +42,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Initializes a new instance of <see cref="ListItem"/>
         /// </summary>
-        internal ListItem() : base()
+        internal ListItem()
         {
         }
 

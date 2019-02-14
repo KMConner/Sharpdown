@@ -39,7 +39,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Initializes a new instance of <see cref="IndentedCodeBlock"/>.
         /// </summary>
-        internal IndentedCodeBlock() : base()
+        internal IndentedCodeBlock()
         {
             contents = new List<string>();
         }

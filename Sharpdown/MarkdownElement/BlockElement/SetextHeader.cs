@@ -33,7 +33,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// The <see cref="UnknownElement"/> object to create this object from.
         /// </param>
         /// <param name="level">The header level.</param>
-        internal SetextHeader(UnknownElement elem, int level) : base()
+        internal SetextHeader(UnknownElement elem, int level)
         {
             if (level != 1 && level != 2)
             {
