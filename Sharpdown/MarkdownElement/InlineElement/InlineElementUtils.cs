@@ -167,71 +167,6 @@ namespace Sharpdown.MarkdownElement.InlineElement
         }
 
         /// <summary>
-        /// Represents the nodes of deliminator stack.
-        /// </summary>
-        /// <remarks>
-        /// See https://spec.commonmark.org/0.28/#delimiter-stack for more information about deliminator stack.
-        /// </remarks>
-        internal class DeliminatorInfo
-        {
-            /// <summary>
-            /// The types of deliminators.
-            /// </summary>
-            public enum DeliminatorType2
-            {
-                /// <summary>
-                /// Open Link ([).
-                /// </summary>
-                OpenLink,
-
-                /// <summary>
-                /// Open Image (![).
-                /// </summary>
-                OpenImage,
-
-                /// <summary>
-                /// Star (*).
-                /// </summary>
-                Star,
-
-                /// <summary>
-                /// UnderBar (_).
-                /// </summary>
-                UnderBar,
-            }
-
-            /// <summary>
-            /// The length of the deliminator.
-            /// </summary>
-            public int DeliminatorLength { get; set; }
-
-            /// <summary>
-            /// The type pf the deliminator.
-            /// </summary>
-            public DeliminatorType2 Type { get; set; }
-
-            /// <summary>
-            /// Whether the deliminator is active.
-            /// </summary>
-            public bool Active { get; set; } = true;
-
-            /// <summary>
-            /// Whether the deliminator is a potential opener.
-            /// </summary>
-            public bool CanOpen { get; set; }
-
-            /// <summary>
-            /// Whether the deliminator is potential closer.
-            /// </summary>
-            public bool CanClose { get; set; }
-
-            /// <summary>
-            /// The index of the first character of the current deliminator.
-            /// </summary>
-            public int Index { get; set; }
-        }
-
-        /// <summary>
         /// Counts how many times the same characters are repeated.
         /// </summary>
         /// <param name="str">The string object.</param>
@@ -491,7 +426,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     int length = CountSameChars(text, i);
                     var delimInfo = new DeliminatorInfo
                     {
-                        Type = DeliminatorInfo.DeliminatorType2.Star,
+                        Type = DeliminatorType.Star,
                         DeliminatorLength = length,
                         CanOpen = true,
                         CanClose = true,
@@ -508,7 +443,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     int length = CountSameChars(text, i);
                     var delimInfo = new DeliminatorInfo
                     {
-                        Type = DeliminatorInfo.DeliminatorType2.UnderBar,
+                        Type = DeliminatorType.UnderBar,
                         DeliminatorLength = length,
                         CanOpen = true,
                         CanClose = true,
@@ -529,7 +464,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 {
                     deliminators.AddLast(new DeliminatorInfo
                     {
-                        Type = DeliminatorInfo.DeliminatorType2.OpenLink,
+                        Type = DeliminatorType.OpenLink,
                         DeliminatorLength = 1,
                         CanOpen = true,
                         CanClose = false,
@@ -541,7 +476,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 {
                     deliminators.AddLast(new DeliminatorInfo
                     {
-                        Type = DeliminatorInfo.DeliminatorType2.OpenImage,
+                        Type = DeliminatorType.OpenImage,
                         DeliminatorLength = 2,
                         CanOpen = true,
                         CanClose = false,
@@ -552,8 +487,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 else if (i > 0 && text[i] == ']' && !IsEscaped(text, i) && IsDelim(i))
                 {
                     DeliminatorInfo openInfo = deliminators
-                        .LastOrDefault(info => info.Type == DeliminatorInfo.DeliminatorType2.OpenImage
-                                               || info.Type == DeliminatorInfo.DeliminatorType2.OpenLink);
+                        .LastOrDefault(info => info.Type == DeliminatorType.OpenImage
+                                               || info.Type == DeliminatorType.OpenLink);
                     if (openInfo == null)
                     {
                         continue;
@@ -574,11 +509,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             && AreBracketsBalanced(text.Substring(openInfo.Index, i - openInfo.Index + 1))
                             && linkLabel >= 0 && linkBody >= 0)
                         {
-                            if (openInfo.Type == DeliminatorInfo.DeliminatorType2.OpenLink)
+                            if (openInfo.Type == DeliminatorType.OpenLink)
                             {
                                 foreach (var item in deliminators.TakeWhile(c => c != openInfo))
                                 {
-                                    if (item.Type == DeliminatorInfo.DeliminatorType2.OpenLink)
+                                    if (item.Type == DeliminatorType.OpenLink)
                                     {
                                         item.Active = false;
                                     }
@@ -589,11 +524,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             {
                                 Begin = openInfo.Index,
                                 End = linkBody,
-                                SpanType = openInfo.Type == DeliminatorInfo.DeliminatorType2.OpenLink
+                                SpanType = openInfo.Type == DeliminatorType.OpenLink
                                     ? InlineSpanType.Link
                                     : InlineSpanType.Image,
                                 ParseBegin = openInfo.Index
-                                             + (openInfo.Type == DeliminatorInfo.DeliminatorType2.OpenLink ? 1 : 2),
+                                             + (openInfo.Type == DeliminatorType.OpenLink ? 1 : 2),
                                 ParseEnd = i,
                                 Title = title,
                                 Destination = dest ?? string.Empty,
@@ -611,11 +546,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
                                      openInfo.Index + openInfo.DeliminatorLength,
                                      i - openInfo.Index - openInfo.DeliminatorLength), out var definition))
                         {
-                            if (openInfo.Type == DeliminatorInfo.DeliminatorType2.OpenLink)
+                            if (openInfo.Type == DeliminatorType.OpenLink)
                             {
                                 foreach (var item in deliminators.TakeWhile(c => c != openInfo))
                                 {
-                                    if (item.Type == DeliminatorInfo.DeliminatorType2.OpenLink)
+                                    if (item.Type == DeliminatorType.OpenLink)
                                     {
                                         item.Active = false;
                                     }
@@ -626,11 +561,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             {
                                 Begin = openInfo.Index,
                                 End = i + 3,
-                                SpanType = openInfo.Type == DeliminatorInfo.DeliminatorType2.OpenLink
+                                SpanType = openInfo.Type == DeliminatorType.OpenLink
                                     ? InlineSpanType.Link
                                     : InlineSpanType.Image,
                                 ParseBegin = openInfo.Index
-                                             + (openInfo.Type == DeliminatorInfo.DeliminatorType2.OpenLink ? 1 : 2),
+                                             + (openInfo.Type == DeliminatorType.OpenLink ? 1 : 2),
                                 ParseEnd = i,
                                 Destination = definition.Destination,
                                 Title = definition.Title,
@@ -646,11 +581,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
                                                                                        linkLabel2 - i - 3),
                                                                                    out definition))
                         {
-                            if (openInfo.Type == DeliminatorInfo.DeliminatorType2.OpenLink)
+                            if (openInfo.Type == DeliminatorType.OpenLink)
                             {
                                 foreach (var item in deliminators.TakeWhile(c => c != openInfo))
                                 {
-                                    if (item.Type == DeliminatorInfo.DeliminatorType2.OpenLink)
+                                    if (item.Type == DeliminatorType.OpenLink)
                                     {
                                         item.Active = false;
                                     }
@@ -661,11 +596,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             {
                                 Begin = openInfo.Index,
                                 End = linkLabel2,
-                                SpanType = openInfo.Type == DeliminatorInfo.DeliminatorType2.OpenLink
+                                SpanType = openInfo.Type == DeliminatorType.OpenLink
                                     ? InlineSpanType.Link
                                     : InlineSpanType.Image,
                                 ParseBegin = openInfo.Index
-                                             + (openInfo.Type == DeliminatorInfo.DeliminatorType2.OpenLink ? 1 : 2),
+                                             + (openInfo.Type == DeliminatorType.OpenLink ? 1 : 2),
                                 ParseEnd = i,
                                 Destination = definition.Destination,
                                 Title = definition.Title,
@@ -680,11 +615,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
                                          i - openInfo.Index - openInfo.DeliminatorLength),
                                      out definition) && GetEndIndexOfLinkLabel(text, i + 1, higherDelims) < 0)
                         {
-                            if (openInfo.Type == DeliminatorInfo.DeliminatorType2.OpenLink)
+                            if (openInfo.Type == DeliminatorType.OpenLink)
                             {
                                 foreach (var item in deliminators.TakeWhile(c => c != openInfo))
                                 {
-                                    if (item.Type == DeliminatorInfo.DeliminatorType2.OpenLink)
+                                    if (item.Type == DeliminatorType.OpenLink)
                                     {
                                         item.Active = false;
                                     }
@@ -695,11 +630,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             {
                                 Begin = openInfo.Index,
                                 End = i + 1,
-                                SpanType = openInfo.Type == DeliminatorInfo.DeliminatorType2.OpenLink
+                                SpanType = openInfo.Type == DeliminatorType.OpenLink
                                     ? InlineSpanType.Link
                                     : InlineSpanType.Image,
                                 ParseBegin = openInfo.Index
-                                             + (openInfo.Type == DeliminatorInfo.DeliminatorType2.OpenLink ? 1 : 2),
+                                             + (openInfo.Type == DeliminatorType.OpenLink ? 1 : 2),
                                 ParseEnd = i,
                                 Destination = definition.Destination,
                                 Title = definition.Title,
