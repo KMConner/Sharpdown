@@ -198,7 +198,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <remarks>
         /// See https://spec.commonmark.org/0.28/#delimiter-stack for more information about deliminator stack.
         /// </remarks>
-        private class DeliminatorInfo
+        internal class DeliminatorInfo
         {
             /// <summary>
             /// The types of deliminators.
@@ -260,7 +260,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <summary>
         /// Represents the open and close pair of <see cref="DeliminatorInfo"/>.
         /// </summary>
-        private class DelimSpan
+        internal class DelimSpan
         {
             public int Begin { get; set; }
             public int End { get; set; }
@@ -315,7 +315,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <returns>
         /// How many times the same characters are repeated. (1 or more.)
         /// </returns>
-        private static int CountSameChars(string str, int index)
+        internal static int CountSameChars(string str, int index)
         {
             if (index < 0)
             {
@@ -548,7 +548,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <param name="higherDelims">Delim Spans which represents higher priority.</param>
         /// <param name="config">Configuration of the parser.</param>
         /// <returns>The parse result.</returns>
-        private static IEnumerable<InlineElement> ParseLinkEmphasis(string text,
+        internal static IEnumerable<InlineElement> ParseLinkEmphasis(string text,
             Dictionary<string, LinkReferenceDefinition> linkReferences, List<DelimSpan> higherDelims,
             ParserConfig config)
         {
@@ -811,7 +811,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <param name="currentIndex">Updates this value to the index of the next character of the span end.</param>
         /// <param name="config">Configuration of the parser.</param>
         /// <returns>The code span which starts with the specified index.</returns>
-        private static CodeSpan GetCodeSpan(string text, int index, ref int currentIndex, ParserConfig config)
+        internal static CodeSpan GetCodeSpan(string text, int index, ref int currentIndex, ParserConfig config)
         {
             int openLength = CountSameChars(text, index);
             int closeIndex = index + openLength;
@@ -846,7 +846,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <param name="currentIndex">Updates this value to the index of the next character of the span end.</param>
         /// <param name="config">Configuration of the parser.</param>
         /// <returns>The auto links or raw html if one is found, otherwise <c>null</c>.</returns>
-        private static InlineElement GetInlineHtmlOrLink(string text, int index, ref int currentIndex,
+        internal static InlineElement GetInlineHtmlOrLink(string text, int index, ref int currentIndex,
             ParserConfig config)
         {
             // Auto link (URL)
@@ -879,7 +879,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             return null;
         }
 
-        private static int GetNextUnescaped(string str, char ch, int index)
+        internal static int GetNextUnescaped(string str, char ch, int index)
         {
             int ret = index;
             while (true)
@@ -894,72 +894,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             }
         }
 
-        /// <summary>
-        /// Parses inline elements and returns them.
-        /// </summary>
-        /// <param name="text">The text to parse.</param>
-        /// <param name="linkReferences">Reference definitions in this document.</param>
-        /// <param name="config">Configuration of the parser.</param>
-        /// <returns>Inline elements in <paramref name="text"/>.</returns>
-        public static IEnumerable<InlineElement> ParseInlineElements(string text,
-            Dictionary<string, LinkReferenceDefinition> linkReferences, ParserConfig config)
-        {
-            var highPriorityDelims = new List<DelimSpan>();
-            int currentIndex = 0;
-            int nextBacktick = GetNextUnescaped(text, '`', 0);
-            int nextLessThan = GetNextUnescaped(text, '<', 0);
-            while (currentIndex < text.Length)
-            {
-                int newIndex;
-                int nextElemIndex;
-                InlineElement newInline;
-
-                // Find `
-                if (nextBacktick >= 0 && (nextLessThan < 0 || nextBacktick < nextLessThan))
-                {
-                    nextElemIndex = nextBacktick;
-                    newIndex = nextElemIndex;
-                    newInline = GetCodeSpan(text, nextBacktick, ref newIndex, config);
-                }
-                // Find <
-                else if (nextLessThan >= 0 && (nextBacktick < 0 || nextLessThan < nextBacktick))
-                {
-                    nextElemIndex = nextLessThan;
-                    newIndex = nextElemIndex;
-                    newInline = GetInlineHtmlOrLink(text, nextLessThan, ref newIndex, config);
-                }
-                else // Find neither ` nor <
-                {
-                    break;
-                }
-
-                if (newInline != null)
-                {
-                    var span = new DelimSpan
-                    {
-                        Begin = nextElemIndex,
-                        End = newIndex,
-                        DeliminatorType = ToDelimType(newInline.Type),
-                        DelimElem = newInline,
-                    };
-                    highPriorityDelims.Add(span);
-
-                    currentIndex = newIndex;
-                    nextBacktick = GetNextUnescaped(text, '`', currentIndex);
-                    nextLessThan = GetNextUnescaped(text, '<', currentIndex);
-                }
-                else
-                {
-                    nextElemIndex += CountSameChars(text, nextElemIndex);
-                    nextBacktick = GetNextUnescaped(text, '`', nextElemIndex);
-                    nextLessThan = GetNextUnescaped(text, '<', nextElemIndex);
-                }
-            }
-
-            return ParseLinkEmphasis(text, linkReferences, highPriorityDelims, config);
-        }
-
-        private static DelimSpan.DelimType ToDelimType(InlineElementType elemType)
+        internal static DelimSpan.DelimType ToDelimType(InlineElementType elemType)
         {
             switch (elemType)
             {
@@ -990,26 +925,6 @@ namespace Sharpdown.MarkdownElement.InlineElement
             }
 
             return index % 2 != 0;
-        }
-
-        public static string HandleEscape(string text)
-        {
-            var builder = new StringBuilder(text.Length);
-            for (int i = 0; i < text.Length; i++)
-            {
-                if (i < text.Length - 1 && text[i] == '\\'
-                                        && MarkdownElementBase.asciiPunctuationChars.Contains(text[i + 1]))
-                {
-                    builder.Append(text[i + 1]);
-                    i++;
-                }
-                else
-                {
-                    builder.Append(text[i]);
-                }
-            }
-
-            return builder.ToString();
         }
 
         private static bool IsPercentEncoded(string text, int index)
