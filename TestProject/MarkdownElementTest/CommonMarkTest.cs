@@ -2355,6 +2355,22 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
+        public void TestCase_166()
+        {
+            const string html = "[foo]:\n\n[foo]";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(2, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[1].Type);
+            var inline0 = new InlineStructure(InlineElementType.InlineText, "[foo]:");
+            var inline1 = new InlineStructure(InlineElementType.InlineText, "[foo]");
+            inline0.AssertEqual(doc.Elements[0].GetInlines());
+            inline1.AssertEqual(doc.Elements[1].GetInlines());
+        }
+
+        [TestMethod]
         public void TestCase_167()
         {
             const string html = "[foo]: /url\\bar\\*baz \"foo\\\"bar\\baz\"\r\n\r\n[foo]";
@@ -3250,6 +3266,34 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual("indented code", (doc.Elements[1] as CodeBlock).Code);
             var inline2 = new InlineStructure(InlineElementType.InlineText, "A block quote.");
             inline2.AssertEqual(doc.Elements[2].GetChild(0).GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_217()
+        {
+            const string html = "1.  A paragraph\n    with two lines.\n\n        indented code\n\n    > A block quote.";
+            var doc = MarkdownParser.Parse(html);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+
+            var blocks = new BlockElementStructure(BlockElementType.List,
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.Paragraph),
+                    new BlockElementStructure(BlockElementType.CodeBlock),
+                    new BlockElementStructure(BlockElementType.BlockQuote,
+                        new BlockElementStructure(BlockElementType.Paragraph))));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+
+            var listItem = doc.Elements[0].GetChild(0);
+            var inline0 = new InlineStructure(InlineElementType.InlineText,
+                new InlineStructure(InlineElementType.InlineText, "A paragraph"),
+                new InlineStructure(InlineElementType.SoftLineBreak, ""),
+                new InlineStructure(InlineElementType.InlineText, "with two lines."));
+            inline0.AssertEqual(listItem.GetChild(0).GetInlines());
+
+            Assert.AreEqual("indented code", (listItem.GetChild(1) as CodeBlock).Code);
+            var inline2 = new InlineStructure(InlineElementType.InlineText, "A block quote.");
+            inline2.AssertEqual(listItem.GetChild(2).GetChild(0).GetInlines());
         }
 
 
