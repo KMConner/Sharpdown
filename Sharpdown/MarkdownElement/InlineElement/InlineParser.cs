@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Sharpdown.MarkdownElement.BlockElement;
+using Sharpdown.MarkdownElement.InlineElement.InlineParserObjects;
 
 namespace Sharpdown.MarkdownElement.InlineElement
 {
@@ -54,7 +55,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <returns>Inline elements in <paramref name="text"/>.</returns>
         public IEnumerable<InlineElement> ParseInlineElements(string text)
         {
-            var highPriorityDelims = new List<InlineElementUtils.DelimSpan>();
+            var highPriorityDelims = new List<InlineSpan>();
             int currentIndex = 0;
             int nextBacktick = InlineElementUtils.GetNextUnescaped(text, '`', 0);
             int nextLessThan = InlineElementUtils.GetNextUnescaped(text, '<', 0);
@@ -90,11 +91,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
                 if (newInline != null)
                 {
-                    var span = new InlineElementUtils.DelimSpan
+                    var span = new InlineSpan
                     {
                         Begin = nextElemIndex,
                         End = newIndex,
-                        DeliminatorType = InlineElementUtils.ToDelimType(newInline.Type),
+                        SpanType = InlineElementUtils.ToDelimType(newInline.Type),
                         DelimElem = newInline,
                     };
                     highPriorityDelims.Add(span);
