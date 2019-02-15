@@ -43,7 +43,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         public override BlockElementType Type => BlockElementType.Unknown;
 
-        internal UnknownElement()
+        internal UnknownElement(ParserConfig config) : base(config)
         {
             content = new List<string>();
             actualType = BlockElementType.Unknown;
@@ -267,7 +267,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             switch (actualType)
             {
                 case BlockElementType.Heading:
-                    return new SetextHeading(this, headerLevel);
+                    return new SetextHeading(this, headerLevel, parserConfig);
 
                 case BlockElementType.LinkReferenceDefinition:
                 {
@@ -279,11 +279,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
                     return new LinkReferenceDefinition(match.Groups["label"].Value,
                         ExtractDestination(match.Groups["destination"].Value),
-                        match.Groups["title"].Success ? ExtractTitle(match.Groups["title"].Value) : null, this);
+                        match.Groups["title"].Success ? ExtractTitle(match.Groups["title"].Value) : null, this,
+                        parserConfig);
                 }
 
                 case BlockElementType.Paragraph:
-                    return new Paragraph(this);
+                    return new Paragraph(this, parserConfig);
 
                 case BlockElementType.Unknown:
                 {
@@ -299,12 +300,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
                                 return new LinkReferenceDefinition(match.Groups["label"].Value,
                                     ExtractDestination(match.Groups["destination"].Value),
                                     match.Groups["title"].Success ? ExtractTitle(match.Groups["title"].Value) : null,
-                                    this);
+                                    this, parserConfig);
                             }
                         }
                     }
 
-                    return new Paragraph(this);
+                    return new Paragraph(this, parserConfig);
                 }
                 default:
                     throw new InvalidBlockFormatException(BlockElementType.Unknown);

@@ -12,20 +12,23 @@ namespace Sharpdown
 
         private BlockElement openElement;
 
+        private readonly ParserConfig parserConfig;
+
         public BlockElement this[int i] => Elements[i];
 
-        internal MarkdownDocument()
+        internal MarkdownDocument(ParserConfig config)
         {
             Elements = new List<BlockElement>();
             LinkDefinition = new Dictionary<string, LinkReferenceDefinition>(
                 StringComparer.InvariantCultureIgnoreCase);
+            parserConfig = config;
         }
 
         internal void AddLine(string line)
         {
             if (openElement == null)
             {
-                openElement = BlockElementUtil.CreateBlockFromLine(line, 0);
+                openElement = BlockElementUtil.CreateBlockFromLine(line, 0, parserConfig);
             }
 
             AddLineResult result = openElement.AddLine(line, false, 0);

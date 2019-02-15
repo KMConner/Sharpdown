@@ -22,6 +22,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         protected readonly List<string> warnings;
 
+        protected readonly ParserConfig parserConfig;
+
         /// <summary>
         /// Add a line to this block.
         /// </summary>
@@ -34,9 +36,11 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Initializes a new instance of <see cref="BlockElement"/>.
         /// </summary>
-        protected BlockElement()
+        /// <param name="config">Configuration of parser.</param>
+        protected BlockElement(ParserConfig config)
         {
             warnings = new List<string>();
+            parserConfig = config;
         }
 
         /// <summary>

@@ -20,7 +20,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Initializes a new instance of <see cref="LeafElement"/>.
         /// </summary>
-        internal LeafElement()
+        /// <param name="config">Configuration of the parser.</param>
+        internal LeafElement(ParserConfig config) : base(config)
         {
             inlines = new List<InlineElement.InlineElement>();
         }

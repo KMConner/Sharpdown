@@ -61,6 +61,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
         public char Deliminator => (children.FirstOrDefault() as ListItem)?.Deliminator ?? '?';
 
         /// <summary>
+        /// Initializes a new instance of <see cref="ListBlock"/>.
+        /// </summary>
+        /// <param name="config">Configuration of the parser.</param>
+        public ListBlock(ParserConfig config) : base(config)
+        {
+        }
+
+        /// <summary>
         /// Returns whether the specified line can be a start line of <see cref="ListBlock"/>.
         /// </summary>
         /// <remarks>
@@ -167,7 +175,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                        ordered.Groups["spaces"].Index)
                     : 2;
 
-                return new ListItem
+                return new ListItem(parserConfig)
                 {
                     Index = index,
                     Deliminator = ordered.Groups["delim"].Value[0],
@@ -183,7 +191,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
             if (line.Length == 1 || line.Substring(1).TrimStartAscii().Length == 0)
             {
-                return new ListItem
+                return new ListItem(parserConfig)
                 {
                     Deliminator = line[0],
                     contentIndent = 2,
@@ -202,7 +210,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 conIn = 2;
             }
 
-            return new ListItem
+            return new ListItem(parserConfig)
             {
                 Deliminator = line[0],
                 MarkIndent = 0,
@@ -318,7 +326,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
             var indentRemoved = RemoveIndent(line, listItem.contentIndent, currentIndent);
             var newBlock = BlockElementUtil.CreateBlockFromLine(indentRemoved,
-                currentIndent + Math.Min(listItem.contentIndent, lineIndent));
+                currentIndent + Math.Min(listItem.contentIndent, lineIndent), parserConfig);
             if (newBlock.Type != BlockElementType.Unknown)
             {
                 return AddLineResult.NeedClose;

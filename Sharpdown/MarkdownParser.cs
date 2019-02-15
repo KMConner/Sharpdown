@@ -20,7 +20,7 @@ namespace Sharpdown
 
         public MarkdownDocument Parse(IEnumerable<string> lines)
         {
-            var ret = new MarkdownDocument();
+            var ret = new MarkdownDocument(Config);
             foreach (var line in lines)
             {
                 ret.AddLine(line);

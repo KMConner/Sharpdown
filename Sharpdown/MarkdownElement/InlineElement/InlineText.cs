@@ -14,7 +14,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <summary>
         /// HTML entity character listing.
         /// </summary>
-        [SuppressMessage("ReSharper", "StringLiteralTypo")] private static readonly Dictionary<string, string> entityCharacter =
+        [SuppressMessage("ReSharper", "StringLiteralTypo")]
+        private static readonly Dictionary<string, string> entityCharacter =
             new Dictionary<string, string>
             {
                 {"AElig", "\u00C6"},

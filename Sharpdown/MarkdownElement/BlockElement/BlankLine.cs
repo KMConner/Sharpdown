@@ -13,6 +13,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
         public override BlockElementType Type => BlockElementType.BlankLine;
 
         /// <summary>
+        /// Initializes a new instance of <see cref="BlankLine"/>.
+        /// </summary>
+        /// <param name="config">Configuration of the parser.</param>
+        internal BlankLine(ParserConfig config) : base(config)
+        {
+        }
+
+        /// <summary>
         /// Returns whether the specified line can be a start line of <see cref="BlankLine"/>.
         /// </summary>
         /// <param name="line">Single line string.</param>

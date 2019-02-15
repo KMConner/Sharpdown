@@ -41,7 +41,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Initializes a new instance of <see cref="ContainerElement"/>.
         /// </summary>
-        internal ContainerElement()
+        /// <param name="config">Configuration of the parser.</param>
+        internal ContainerElement(ParserConfig config) : base(config)
         {
             children = new List<BlockElement>();
         }
@@ -165,7 +166,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 {
                     if (openElement == null)
                     {
-                        openElement = BlockElementUtil.CreateBlockFromLine(markRemoved, currentIndent,
+                        openElement = BlockElementUtil.CreateBlockFromLine(markRemoved, currentIndent, parserConfig,
                             Type == BlockElementType.List);
                         children.Add(openElement);
                     }
@@ -183,7 +184,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
             line = markRemoved ?? line;
 
-            var newElem = BlockElementUtil.CreateBlockFromLine(line, currentIndent, Type == BlockElementType.List);
+            var newElem =
+                BlockElementUtil.CreateBlockFromLine(line, currentIndent, parserConfig, Type == BlockElementType.List);
             if ((newElem.Type != BlockElementType.Unknown && newElem.Type != BlockElementType.BlankLine &&
                  newElem.Type != BlockElementType.CodeBlock)
                 || !CanLazyContinue())

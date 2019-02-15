@@ -9,12 +9,12 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Bullet (unordered) list.
         /// </summary>
         Bullet,
-        
+
         /// <summary>
         /// Ordered list.
         /// </summary>
         Ordered,
-        
+
         /// <summary>
         /// Unknown list type.
         /// </summary>

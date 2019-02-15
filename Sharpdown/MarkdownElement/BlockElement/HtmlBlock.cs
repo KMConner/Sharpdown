@@ -75,7 +75,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         public string Code => string.Join("\r\n", contents);
 
-        internal HtmlBlock()
+        internal HtmlBlock(ParserConfig config) : base(config)
         {
             contents = new List<string>();
             isClosed = false;

@@ -88,7 +88,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Initializes a new instance of <see cref="FencedCodeBlock"/>.
         /// </summary>
-        internal FencedCodeBlock()
+        /// <param name="config">Configuration of the parser.</param>
+        internal FencedCodeBlock(ParserConfig config) : base(config)
         {
             contents = new List<string>();
             indentNum = -1;
