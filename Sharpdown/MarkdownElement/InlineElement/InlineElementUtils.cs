@@ -154,8 +154,9 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// Returns <see cref="InlineElement"/> 
         /// </summary>
         /// <param name="text"></param>
+        /// <param name="config">Configuration of the parser.</param>
         /// <returns></returns>
-        private static IEnumerable<InlineElement> ParseLineBreak(string text)
+        private static IEnumerable<InlineElement> ParseLineBreak(string text, ParserConfig config)
         {
             string[] lines = text.Replace("\r\n", "\n").Replace("\r", "\n").Split(new[] {'\n'});
             for (int i = 0; i < lines.Length; i++)
@@ -169,23 +170,23 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     {
                         if (isHardBreak && lines[i].EndsWith("\\", StringComparison.Ordinal))
                         {
-                            yield return InlineText.CreateFromText(lines[i].Substring(0, lines[i].Length - 1));
+                            yield return InlineText.CreateFromText(lines[i].Substring(0, lines[i].Length - 1), config);
                         }
                         else
                         {
-                            yield return InlineText.CreateFromText(lines[i].TrimEnd(new[] {' '}));
+                            yield return InlineText.CreateFromText(lines[i].TrimEnd(new[] {' '}), config);
                         }
                     }
 
                     yield return isHardBreak
-                        ? (InlineElement)new HardLineBreak()
-                        : new SoftLineBreak();
+                        ? (InlineElement)new HardLineBreak(config)
+                        : new SoftLineBreak(config);
                 }
                 else
                 {
                     if (lines[i] != string.Empty)
                     {
-                        yield return InlineText.CreateFromText(lines[i]);
+                        yield return InlineText.CreateFromText(lines[i], config);
                     }
                 }
             }
@@ -337,8 +338,9 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// </summary>
         /// <param name="text">The string object.</param>
         /// <param name="delim">The <see cref="DelimSpan"/> tree.</param>
+        /// <param name="config">Configuration of the parser.</param>
         /// <returns>The inline elements which is equivalent to <paramref name="delim"/>.</returns>
-        private static InlineElement[] ToInlines(string text, DelimSpan delim)
+        private static InlineElement[] ToInlines(string text, DelimSpan delim, ParserConfig config)
         {
             int lastEnd = delim.ParseBegin;
             List<InlineElement> newChildren = new List<InlineElement>();
@@ -347,28 +349,30 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 DelimSpan delimSpan = item.Value;
                 if (lastEnd < delimSpan.Begin)
                 {
-                    newChildren.AddRange(ParseLineBreak(text.Substring(lastEnd, delimSpan.Begin - lastEnd)));
+                    newChildren.AddRange(ParseLineBreak(text.Substring(lastEnd, delimSpan.Begin - lastEnd), config));
                 }
 
-                newChildren.AddRange(ToInlines(text, delimSpan));
+                newChildren.AddRange(ToInlines(text, delimSpan, config));
                 lastEnd = delimSpan.End;
             }
 
             if (lastEnd < delim.ParseEnd)
             {
-                newChildren.AddRange(ParseLineBreak(text.Substring(lastEnd, delim.ParseEnd - lastEnd)));
+                newChildren.AddRange(ParseLineBreak(text.Substring(lastEnd, delim.ParseEnd - lastEnd), config));
             }
 
             switch (delim.DeliminatorType)
             {
                 case DelimSpan.DelimType.Link:
-                    return new InlineElement[] {new Link(newChildren.ToArray(), delim.Destination, delim.Title)};
+                    return new InlineElement[]
+                        {new Link(newChildren.ToArray(), delim.Destination, delim.Title, config)};
                 case DelimSpan.DelimType.Image:
-                    return new InlineElement[] {new Image(newChildren.ToArray(), delim.Destination, delim.Title)};
+                    return new InlineElement[]
+                        {new Image(newChildren.ToArray(), delim.Destination, delim.Title, config)};
                 case DelimSpan.DelimType.Emphasis:
-                    return new InlineElement[] {new Emphasis(newChildren.ToArray(), false)};
+                    return new InlineElement[] {new Emphasis(newChildren.ToArray(), false, config)};
                 case DelimSpan.DelimType.StrongEmphasis:
-                    return new InlineElement[] {new Emphasis(newChildren.ToArray(), true)};
+                    return new InlineElement[] {new Emphasis(newChildren.ToArray(), true, config)};
                 case DelimSpan.DelimType.Root:
                     return newChildren.ToArray();
                 default:
@@ -542,9 +546,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <param name="text">The string object to @arse.</param>
         /// <param name="linkReferences">Link reference definitions.</param>
         /// <param name="higherDelims">Delim Spans which represents higher priority.</param>
+        /// <param name="config">Configuration of the parser.</param>
         /// <returns>The parse result.</returns>
         private static IEnumerable<InlineElement> ParseLinkEmphasis(string text,
-            Dictionary<string, LinkReferenceDefinition> linkReferences, List<DelimSpan> higherDelims)
+            Dictionary<string, LinkReferenceDefinition> linkReferences, List<DelimSpan> higherDelims,
+            ParserConfig config)
         {
             bool IsDelim(int index)
             {
@@ -794,7 +800,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
             var tree = GetInlineTree(delimSpans, text.Length);
 
-            return ToInlines(text, tree);
+            return ToInlines(text, tree, config);
         }
 
         /// <summary>
@@ -803,8 +809,9 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <param name="text">The string which contains the code span.</param>
         /// <param name="index">The index of the first character of the span.</param>
         /// <param name="currentIndex">Updates this value to the index of the next character of the span end.</param>
+        /// <param name="config">Configuration of the parser.</param>
         /// <returns>The code span which starts with the specified index.</returns>
-        private static CodeSpan GetCodeSpan(string text, int index, ref int currentIndex)
+        private static CodeSpan GetCodeSpan(string text, int index, ref int currentIndex, ParserConfig config)
         {
             int openLength = CountSameChars(text, index);
             int closeIndex = index + openLength;
@@ -819,7 +826,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     {
                         currentIndex = closeIndex + closeLength;
                         return new CodeSpan(
-                            text.Substring(index + openLength, closeIndex - index - openLength));
+                            text.Substring(index + openLength, closeIndex - index - openLength), config);
                     }
                     else
                     {
@@ -837,8 +844,10 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <param name="text">String object which contains auto links or raw html.</param>
         /// <param name="index">The index where the element starts.</param>
         /// <param name="currentIndex">Updates this value to the index of the next character of the span end.</param>
+        /// <param name="config">Configuration of the parser.</param>
         /// <returns>The auto links or raw html if one is found, otherwise <c>null</c>.</returns>
-        private static InlineElement GetInlineHtmlOrLink(string text, int index, ref int currentIndex)
+        private static InlineElement GetInlineHtmlOrLink(string text, int index, ref int currentIndex,
+            ParserConfig config)
         {
             // Auto link (URL)
             Match urlMatch = UrlRegex.Match(text, index);
@@ -847,7 +856,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 && urlMatch.Value.All(c => !char.IsControl(c)))
             {
                 currentIndex += urlMatch.Length;
-                return new Link(urlMatch.Groups["url"].Value);
+                return new Link(urlMatch.Groups["url"].Value, config);
             }
 
             // Auto link (E-Mail)
@@ -856,7 +865,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             {
                 currentIndex += emailMatch.Length;
                 var target = emailMatch.Groups["addr"].Value;
-                return new Link(target, true);
+                return new Link(target, config, true);
             }
 
             // Inline html
@@ -864,7 +873,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             if (htmlTagMatch.Success && htmlTagMatch.Index == index)
             {
                 currentIndex += htmlTagMatch.Length;
-                return new InlineHtml(htmlTagMatch.Value);
+                return new InlineHtml(htmlTagMatch.Value, config);
             }
 
             return null;
@@ -890,9 +899,10 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// </summary>
         /// <param name="text">The text to parse.</param>
         /// <param name="linkReferences">Reference definitions in this document.</param>
+        /// <param name="config">Configuration of the parser.</param>
         /// <returns>Inline elements in <paramref name="text"/>.</returns>
         public static IEnumerable<InlineElement> ParseInlineElements(string text,
-            Dictionary<string, LinkReferenceDefinition> linkReferences)
+            Dictionary<string, LinkReferenceDefinition> linkReferences, ParserConfig config)
         {
             var highPriorityDelims = new List<DelimSpan>();
             int currentIndex = 0;
@@ -909,14 +919,14 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 {
                     nextElemIndex = nextBacktick;
                     newIndex = nextElemIndex;
-                    newInline = GetCodeSpan(text, nextBacktick, ref newIndex);
+                    newInline = GetCodeSpan(text, nextBacktick, ref newIndex, config);
                 }
                 // Find <
                 else if (nextLessThan >= 0 && (nextBacktick < 0 || nextLessThan < nextBacktick))
                 {
                     nextElemIndex = nextLessThan;
                     newIndex = nextElemIndex;
-                    newInline = GetInlineHtmlOrLink(text, nextLessThan, ref newIndex);
+                    newInline = GetInlineHtmlOrLink(text, nextLessThan, ref newIndex, config);
                 }
                 else // Find neither ` nor <
                 {
@@ -946,7 +956,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 }
             }
 
-            return ParseLinkEmphasis(text, linkReferences, highPriorityDelims);
+            return ParseLinkEmphasis(text, linkReferences, highPriorityDelims, config);
         }
 
         private static DelimSpan.DelimType ToDelimType(InlineElementType elemType)

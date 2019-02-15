@@ -70,7 +70,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
         {
-            inlines.AddRange(InlineElementUtils.ParseInlineElements(string.Join("\r\n", contents), linkDefinitions));
+            inlines.AddRange(InlineElementUtils.ParseInlineElements(string.Join("\r\n", contents), linkDefinitions, parserConfig));
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         public string Destination { get; }
         public string Title { get; }
 
-        public Link(InlineElement[] linkText, string destination, string title)
+        public Link(InlineElement[] linkText, string destination, string title, ParserConfig config) : base(config)
         {
             Children = linkText;
             Destination =
@@ -17,9 +17,9 @@ namespace Sharpdown.MarkdownElement.InlineElement
             Title = title == null ? null : InlineText.HandleEscapeAndHtmlEntity(RemoveQuotes(title));
         }
 
-        internal Link(string destination, bool mailto = false)
+        internal Link(string destination, ParserConfig config, bool mailto = false) : base(config)
         {
-            Children = new InlineElement[] {InlineText.CreateFromText(destination, false)};
+            Children = new InlineElement[] {InlineText.CreateFromText(destination, config, false)};
             Destination = (mailto ? "mailto:" : string.Empty) + InlineElementUtils.UrlEncode(destination);
         }
 

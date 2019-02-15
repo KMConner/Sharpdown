@@ -6,7 +6,7 @@
 
         public string Content { get; }
 
-        public InlineHtml(string html)
+        public InlineHtml(string html, ParserConfig config) : base(config)
         {
             Content = html;
         }

@@ -15,7 +15,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
         {
-            inlines.Add(new LiteralText(Code));
+            inlines.Add(new LiteralText(Code, parserConfig));
         }
     }
 }
