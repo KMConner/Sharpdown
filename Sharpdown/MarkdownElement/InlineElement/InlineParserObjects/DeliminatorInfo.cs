@@ -37,5 +37,17 @@ namespace Sharpdown.MarkdownElement.InlineElement.InlineParserObjects
         /// The index of the first character of the current deliminator.
         /// </summary>
         public int Index { get; set; }
+
+        public static DeliminatorInfo Create(DeliminatorType type, int index, int length)
+        {
+            return new DeliminatorInfo
+            {
+                Index = index,
+                Active = true,
+                CanOpen = true,
+                CanClose = true,
+                Type = type,
+            };
+        }
     }
 }

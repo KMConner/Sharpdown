@@ -35,96 +35,6 @@ namespace Sharpdown.MarkdownElement.InlineElement
         };
 
         /// <summary>
-        /// Returns whether the specified deliminator is left flanking.
-        /// See https://spec.commonmark.org/0.28/#left-flanking-delimiter-run for more information.
-        /// </summary>
-        /// <param name="text">The string object which contains <paramref name="info"/>.</param>
-        /// <param name="info">
-        /// The <see cref="DeliminatorInfo"/> to determine whether left flanking or not.
-        /// </param>
-        /// <returns>Whether the specified deliminator is left flanking.</returns>
-        private static bool IsLeftFlanking(string text, DeliminatorInfo info)
-        {
-            var prevChar = info.Index == 0 ? ' ' : text[info.Index - 1];
-            var nextChar = info.Index + info.DeliminatorLength >= text.Length
-                ? ' '
-                : text[info.Index + info.DeliminatorLength];
-            if (char.IsWhiteSpace(nextChar))
-            {
-                return false;
-            }
-
-            if (!MarkdownElementBase.asciiPunctuationChars.Contains(nextChar))
-            {
-                return true;
-            }
-
-            return char.IsWhiteSpace(prevChar) || MarkdownElementBase.asciiPunctuationChars.Contains(prevChar);
-        }
-
-        /// <summary>
-        /// Returns whether the specified deliminator is right flanking.
-        /// See https://spec.commonmark.org/0.28/#right-flanking-delimiter-run for more information.
-        /// </summary>
-        /// <param name="text">The string object which contains <paramref name="info"/>.</param>
-        /// <param name="info">
-        /// The <see cref="DeliminatorInfo"/> to determine whether right flanking or not.
-        /// </param>
-        /// <returns>Whether the specified deliminator is right flanking.</returns>
-        private static bool IsRightFlanking(string text, DeliminatorInfo info)
-        {
-            var prevChar = info.Index == 0 ? ' ' : text[info.Index - 1];
-            var nextChar = info.Index + info.DeliminatorLength >= text.Length
-                ? ' '
-                : text[info.Index + info.DeliminatorLength];
-            if (char.IsWhiteSpace(prevChar))
-            {
-                return false;
-            }
-
-            if (!MarkdownElementBase.asciiPunctuationChars.Contains(prevChar))
-            {
-                return true;
-            }
-
-            return char.IsWhiteSpace(nextChar) || MarkdownElementBase.asciiPunctuationChars.Contains(nextChar);
-        }
-
-        /// <summary>
-        /// Returns whether the specified <see cref="DeliminatorInfo"/> is followed by a punctuation character.
-        /// </summary>
-        /// <param name="text">The string which contains <paramref name="info"/>.</param>
-        /// <param name="info">The <see cref="DeliminatorInfo"/> object.</param>
-        /// <returns>
-        /// <c>true</c> when the specified <see cref="DeliminatorInfo"/> is followed by a punctuation character,
-        /// otherwise <c>false</c>.
-        /// </returns>
-        private static bool IsFollowedByPunctuation(string text, DeliminatorInfo info)
-        {
-            if (text.Length <= info.Index + info.DeliminatorLength)
-            {
-                return false;
-            }
-
-            return MarkdownElementBase.asciiPunctuationChars
-                .Contains(text[info.Index + info.DeliminatorLength]);
-        }
-
-        /// <summary>
-        /// Returns whether the specified <see cref="DeliminatorInfo"/> is preceded by a punctuation character.
-        /// </summary>
-        /// <param name="text">The string which contains <paramref name="info"/>.</param>
-        /// <param name="info">The <see cref="DeliminatorInfo"/> object.</param>
-        /// <returns>
-        /// <c>true</c> when the specified <see cref="DeliminatorInfo"/> is preceded by a punctuation character,
-        /// otherwise <c>false</c>.
-        /// </returns>
-        private static bool IsPrecededByPunctuation(string text, DeliminatorInfo info)
-        {
-            return info.Index != 0 && MarkdownElementBase.asciiPunctuationChars.Contains(text[info.Index - 1]);
-        }
-
-        /// <summary>
         /// Returns <see cref="InlineElement"/> 
         /// </summary>
         /// <param name="text"></param>
@@ -199,7 +109,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <param name="delim">The <see cref="InlineSpan"/> tree.</param>
         /// <param name="config">Configuration of the parser.</param>
         /// <returns>The inline elements which is equivalent to <paramref name="delim"/>.</returns>
-        private static InlineElement[] ToInlines(string text, InlineSpan delim, ParserConfig config)
+        internal static InlineElement[] ToInlines(string text, InlineSpan delim, ParserConfig config)
         {
             int lastEnd = delim.ParseBegin;
             List<InlineElement> newChildren = new List<InlineElement>();
@@ -245,7 +155,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <param name="spans">The array of <see cref="InlineSpan"/>.</param>
         /// <param name="rootLength">The length of the whole text.</param>
         /// <returns>The tree of <see cref="InlineSpan"/> which is equivalent to <paramref name="spans"/>.</returns>
-        private static InlineSpan GetInlineTree(SortedList<int, InlineSpan> spans, int rootLength)
+        internal static InlineSpan GetInlineTree(SortedList<int, InlineSpan> spans, int rootLength)
         {
             var root = new InlineSpan
             {
@@ -276,7 +186,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <param name="deliminators">The list of <see cref="DeliminatorInfo"/>.</param>
         /// <param name="delimSpans">The list of <see cref="InlineSpan"/>.</param>
         /// <param name="stackBottom">The stack bottom.</param>
-        private static void ParseEmphasis(LinkedList<DeliminatorInfo> deliminators,
+        internal static void ParseEmphasis(LinkedList<DeliminatorInfo> deliminators,
             SortedList<int, InlineSpan> delimSpans, DeliminatorInfo stackBottom)
         {
             if (deliminators.Count == 0)
@@ -375,7 +285,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             }
         }
 
-        private static bool AreBracketsBalanced(string text)
+        internal static bool AreBracketsBalanced(string text)
         {
             int depth = 0;
             for (int i = 0; i < text.Length; i++)
@@ -397,269 +307,6 @@ namespace Sharpdown.MarkdownElement.InlineElement
             }
 
             return depth == 0;
-        }
-
-        /// <summary>
-        /// Parses inline elements to Links, Images Emphasis and Line breaks.
-        /// </summary>
-        /// <param name="text">The string object to @arse.</param>
-        /// <param name="linkReferences">Link reference definitions.</param>
-        /// <param name="higherDelims">Delim Spans which represents higher priority.</param>
-        /// <param name="config">Configuration of the parser.</param>
-        /// <returns>The parse result.</returns>
-        internal static IEnumerable<InlineElement> ParseLinkEmphasis(string text,
-            Dictionary<string, LinkReferenceDefinition> linkReferences, List<InlineSpan> higherDelims,
-            ParserConfig config)
-        {
-            bool IsDelim(int index)
-            {
-                return !higherDelims.Any(d => d.Begin <= index && d.End > index);
-            }
-
-            var deliminators = new LinkedList<DeliminatorInfo>();
-            var delimSpans = new SortedList<int, InlineSpan>();
-
-            for (int i = 0; i < text.Length; i++)
-            {
-                if (text[i] == '*' && !IsEscaped(text, i) && IsDelim(i))
-                {
-                    int length = CountSameChars(text, i);
-                    var delimInfo = new DeliminatorInfo
-                    {
-                        Type = DeliminatorType.Star,
-                        DeliminatorLength = length,
-                        CanOpen = true,
-                        CanClose = true,
-                        Index = i
-                    };
-                    delimInfo.CanOpen = IsLeftFlanking(text, delimInfo);
-                    delimInfo.CanClose = IsRightFlanking(text, delimInfo);
-
-                    deliminators.AddLast(delimInfo);
-                    i += length - 1;
-                }
-                else if (text[i] == '_' && !IsEscaped(text, i) && IsDelim(i))
-                {
-                    int length = CountSameChars(text, i);
-                    var delimInfo = new DeliminatorInfo
-                    {
-                        Type = DeliminatorType.UnderBar,
-                        DeliminatorLength = length,
-                        CanOpen = true,
-                        CanClose = true,
-                        Index = i
-                    };
-                    delimInfo.CanOpen = IsLeftFlanking(text, delimInfo)
-                                        && (!IsRightFlanking(text, delimInfo)
-                                            || IsPrecededByPunctuation(text, delimInfo));
-
-                    delimInfo.CanClose = IsRightFlanking(text, delimInfo)
-                                         && (!IsLeftFlanking(text, delimInfo)
-                                             || IsFollowedByPunctuation(text, delimInfo));
-                    deliminators.AddLast(delimInfo);
-
-                    i += length - 1;
-                }
-                else if (text[i] == '[' && !IsEscaped(text, i) && IsDelim(i))
-                {
-                    deliminators.AddLast(new DeliminatorInfo
-                    {
-                        Type = DeliminatorType.OpenLink,
-                        DeliminatorLength = 1,
-                        CanOpen = true,
-                        CanClose = false,
-                        Index = i
-                    });
-                }
-                else if (text.Length > i + 1 && text[i] == '!' && text[i + 1] == '[' && !IsEscaped(text, i) &&
-                         IsDelim(i))
-                {
-                    deliminators.AddLast(new DeliminatorInfo
-                    {
-                        Type = DeliminatorType.OpenImage,
-                        DeliminatorLength = 2,
-                        CanOpen = true,
-                        CanClose = false,
-                        Index = i
-                    });
-                    i++;
-                }
-                else if (i > 0 && text[i] == ']' && !IsEscaped(text, i) && IsDelim(i))
-                {
-                    DeliminatorInfo openInfo = deliminators
-                        .LastOrDefault(info => info.Type == DeliminatorType.OpenImage
-                                               || info.Type == DeliminatorType.OpenLink);
-                    if (openInfo == null)
-                    {
-                        continue;
-                    }
-
-                    if (!openInfo.Active)
-                    {
-                        deliminators.Remove(openInfo);
-                    }
-                    else
-                    {
-                        int linkLabel = GetStartIndexOfLinkLabel(text, 0, i + 1, higherDelims);
-                        int linkBody = GetLinkBodyEndIndex(text, i + 1, out var dest, out var title);
-                        int linkLabel2 = GetEndIndexOfLinkLabel(text, i + 1, higherDelims);
-
-                        // Inline Link/Image
-                        if (text[Math.Min(i + 1, text.Length - 1)] == '('
-                            && AreBracketsBalanced(text.Substring(openInfo.Index, i - openInfo.Index + 1))
-                            && linkLabel >= 0 && linkBody >= 0)
-                        {
-                            if (openInfo.Type == DeliminatorType.OpenLink)
-                            {
-                                foreach (var item in deliminators.TakeWhile(c => c != openInfo))
-                                {
-                                    if (item.Type == DeliminatorType.OpenLink)
-                                    {
-                                        item.Active = false;
-                                    }
-                                }
-                            }
-
-                            delimSpans.Add(openInfo.Index, new InlineSpan
-                            {
-                                Begin = openInfo.Index,
-                                End = linkBody,
-                                SpanType = openInfo.Type == DeliminatorType.OpenLink
-                                    ? InlineSpanType.Link
-                                    : InlineSpanType.Image,
-                                ParseBegin = openInfo.Index
-                                             + (openInfo.Type == DeliminatorType.OpenLink ? 1 : 2),
-                                ParseEnd = i,
-                                Title = title,
-                                Destination = dest ?? string.Empty,
-                            });
-                            ParseEmphasis(deliminators, delimSpans, openInfo);
-                            deliminators.Remove(openInfo);
-                            i = linkBody - 1;
-                            deliminators.Remove(openInfo);
-                        }
-                        // Collapsed Reference Link
-                        else if (i < text.Length - 1
-                                 && text[Math.Min(i + 1, text.Length - 1)] == '['
-                                 && text[Math.Min(i + 2, text.Length - 1)] == ']'
-                                 && TryGetReference(linkReferences, text.Substring(
-                                     openInfo.Index + openInfo.DeliminatorLength,
-                                     i - openInfo.Index - openInfo.DeliminatorLength), out var definition))
-                        {
-                            if (openInfo.Type == DeliminatorType.OpenLink)
-                            {
-                                foreach (var item in deliminators.TakeWhile(c => c != openInfo))
-                                {
-                                    if (item.Type == DeliminatorType.OpenLink)
-                                    {
-                                        item.Active = false;
-                                    }
-                                }
-                            }
-
-                            delimSpans.Add(openInfo.Index, new InlineSpan
-                            {
-                                Begin = openInfo.Index,
-                                End = i + 3,
-                                SpanType = openInfo.Type == DeliminatorType.OpenLink
-                                    ? InlineSpanType.Link
-                                    : InlineSpanType.Image,
-                                ParseBegin = openInfo.Index
-                                             + (openInfo.Type == DeliminatorType.OpenLink ? 1 : 2),
-                                ParseEnd = i,
-                                Destination = definition.Destination,
-                                Title = definition.Title,
-                            });
-                            ParseEmphasis(deliminators, delimSpans, openInfo);
-                            i += 2;
-                            deliminators.Remove(openInfo);
-                        }
-                        // Full Reference Link
-                        else if (text[Math.Min(i + 1, text.Length - 1)] == '[' && linkLabel2 >= 0
-                                                                               && TryGetReference(linkReferences,
-                                                                                   text.Substring(i + 2,
-                                                                                       linkLabel2 - i - 3),
-                                                                                   out definition))
-                        {
-                            if (openInfo.Type == DeliminatorType.OpenLink)
-                            {
-                                foreach (var item in deliminators.TakeWhile(c => c != openInfo))
-                                {
-                                    if (item.Type == DeliminatorType.OpenLink)
-                                    {
-                                        item.Active = false;
-                                    }
-                                }
-                            }
-
-                            delimSpans.Add(openInfo.Index, new InlineSpan
-                            {
-                                Begin = openInfo.Index,
-                                End = linkLabel2,
-                                SpanType = openInfo.Type == DeliminatorType.OpenLink
-                                    ? InlineSpanType.Link
-                                    : InlineSpanType.Image,
-                                ParseBegin = openInfo.Index
-                                             + (openInfo.Type == DeliminatorType.OpenLink ? 1 : 2),
-                                ParseEnd = i,
-                                Destination = definition.Destination,
-                                Title = definition.Title,
-                            });
-                            ParseEmphasis(deliminators, delimSpans, openInfo);
-                            i = linkLabel2 - 1;
-                            deliminators.Remove(openInfo);
-                        }
-                        // shortcut link
-                        else if (TryGetReference(linkReferences,
-                                     text.Substring(openInfo.Index + openInfo.DeliminatorLength,
-                                         i - openInfo.Index - openInfo.DeliminatorLength),
-                                     out definition) && GetEndIndexOfLinkLabel(text, i + 1, higherDelims) < 0)
-                        {
-                            if (openInfo.Type == DeliminatorType.OpenLink)
-                            {
-                                foreach (var item in deliminators.TakeWhile(c => c != openInfo))
-                                {
-                                    if (item.Type == DeliminatorType.OpenLink)
-                                    {
-                                        item.Active = false;
-                                    }
-                                }
-                            }
-
-                            delimSpans.Add(openInfo.Index, new InlineSpan
-                            {
-                                Begin = openInfo.Index,
-                                End = i + 1,
-                                SpanType = openInfo.Type == DeliminatorType.OpenLink
-                                    ? InlineSpanType.Link
-                                    : InlineSpanType.Image,
-                                ParseBegin = openInfo.Index
-                                             + (openInfo.Type == DeliminatorType.OpenLink ? 1 : 2),
-                                ParseEnd = i,
-                                Destination = definition.Destination,
-                                Title = definition.Title,
-                            });
-                            ParseEmphasis(deliminators, delimSpans, openInfo);
-                            deliminators.Remove(openInfo);
-                        }
-                        else
-                        {
-                            deliminators.Remove(openInfo);
-                        }
-                    }
-                }
-            }
-
-            ParseEmphasis(deliminators, delimSpans, null);
-
-            foreach (var item in higherDelims)
-            {
-                delimSpans.Add(item.Begin, item);
-            }
-
-            var tree = GetInlineTree(delimSpans, text.Length);
-
-            return ToInlines(text, tree, config);
         }
 
         internal static int GetNextUnescaped(string str, char ch, int index)
@@ -692,7 +339,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             }
         }
 
-        private static bool IsEscaped(string text, int index)
+        internal static bool IsEscaped(string text, int index)
         {
             int count = 0;
             for (int i = index - 1; i >= 0; i--)
@@ -787,7 +434,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <param name="end">End of the link label.</param>
         /// <param name="higherDelims">Higher delims.</param>
         /// <returns>The start index of link label.</returns>
-        private static int GetStartIndexOfLinkLabel(string wholeText, int begin, int end, List<InlineSpan> higherDelims)
+        internal static int GetStartIndexOfLinkLabel(string wholeText, int begin, int end, List<InlineSpan> higherDelims)
         {
             bool IsDelim(int index)
             {
@@ -842,7 +489,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             return -1;
         }
 
-        private static int GetEndIndexOfLinkLabel(string wholeText, int begin, List<InlineSpan> higherDelims)
+        internal static int GetEndIndexOfLinkLabel(string wholeText, int begin, List<InlineSpan> higherDelims)
         {
             bool IsDelim(int index)
             {
@@ -907,7 +554,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <param name="destination">Destination is set unless return value is -1.</param>
         /// <param name="title">Title is set unless return value is -1.</param>
         /// <returns>The index at the end of the link body.</returns>
-        private static int GetLinkBodyEndIndex(string wholeText, int begin, out string destination, out string title)
+        internal static int GetLinkBodyEndIndex(string wholeText, int begin, out string destination, out string title)
         {
             destination = string.Empty;
             title = null;
@@ -1047,7 +694,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             return current + 1;
         }
 
-        private static bool TryGetReference(Dictionary<string, LinkReferenceDefinition> references,
+        internal static bool TryGetReference(Dictionary<string, LinkReferenceDefinition> references,
             string refName, out LinkReferenceDefinition referenceDefinition)
         {
             var name = LinkReferenceDefinition.GetSimpleName(refName);
