@@ -17,9 +17,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         protected string content;
 
+        protected Heading(ParserConfig config) : base(config)
+        {
+        }
+
         internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
         {
-            inlines.AddRange(InlineElementUtils.ParseInlineElements(content, linkDefinitions));
+            inlines.AddRange(InlineElementUtils.ParseInlineElements(content, linkDefinitions, parserConfig));
         }
     }
 }

@@ -30,6 +30,14 @@ namespace Sharpdown.MarkdownElement.BlockElement
         public override BlockElementType Type => BlockElementType.ThematicBreak;
 
         /// <summary>
+        /// Initializes a new instance of <see cref="ThematicBreak"/>.
+        /// </summary>
+        /// <param name="config">Configuration of the parser.</param>
+        internal ThematicBreak(ParserConfig config) : base(config)
+        {
+        }
+
+        /// <summary>
         /// Returns whether the specified line can be a start line of <see cref="FencedCodeBlock"/>.
         /// </summary>
         /// <remarks>

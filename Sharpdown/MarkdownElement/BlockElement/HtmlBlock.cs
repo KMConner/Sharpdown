@@ -75,7 +75,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         public string Code => string.Join("\r\n", contents);
 
-        internal HtmlBlock()
+        internal HtmlBlock(ParserConfig config) : base(config)
         {
             contents = new List<string>();
             isClosed = false;
@@ -540,7 +540,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
         {
-            inlines.Add(new LiteralText(Code));
+            inlines.Add(new LiteralText(Code, parserConfig));
         }
     }
 }

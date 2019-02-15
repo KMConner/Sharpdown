@@ -23,7 +23,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Initializes a new instance of <see cref="BlockQuote"/>.
         /// </summary>
-        internal BlockQuote()
+        /// <param name="config">Configuration of the parser.</param>
+        internal BlockQuote(ParserConfig config) : base(config)
         {
         }
 

@@ -39,7 +39,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Initializes a new instance of <see cref="IndentedCodeBlock"/>.
         /// </summary>
-        internal IndentedCodeBlock()
+        /// <param name="config">Configuration of the parser.</param>
+        internal IndentedCodeBlock(ParserConfig config) : base(config)
         {
             contents = new List<string>();
         }

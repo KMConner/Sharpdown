@@ -19,7 +19,8 @@
         /// Creates a new instance of <see cref="CodeSpan"/> with the specified code.
         /// </summary>
         /// <param name="code"></param>
-        internal CodeSpan(string code)
+        /// <param name="config">Configuration of the parser.</param>
+        internal CodeSpan(string code, ParserConfig config) : base(config)
         {
             Code = CollapseWhiteSpaces(code);
         }

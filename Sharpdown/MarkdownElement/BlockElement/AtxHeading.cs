@@ -26,6 +26,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
         private static readonly Regex headerRegex = new Regex(
             @"^[ ]{0,3}(?<level>\#{1,6})(?:[ \t]+(?<content>.*?))??(?:[ ]+\#*[ \t]*)??$", RegexOptions.Compiled);
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="AtxHeading"/>.
+        /// </summary>
+        /// <param name="config">Configuration of the parser.</param>
+        internal AtxHeading(ParserConfig config) : base(config)
+        {
+        }
 
         /// <summary>
         /// Returns whether the specified line can be a start line of <see cref="AtxHeading"/>.

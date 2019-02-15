@@ -33,9 +33,9 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <param name="text">The description.</param>
         /// <param name="src">The source of this image.</param>
         /// <param name="title">The title of this image.</param>
-        public Image(InlineElement[] text, string src, string title)
+        /// <param name="config">Configuration of the parser.</param>
+        public Image(InlineElement[] text, string src, string title, ParserConfig config) : base(config)
         {
-            // TODO: Contain Alt as inline array (not flatten to a text.)
             Alt = TextFromInlines(text);
             Children = text;
             Source = src;

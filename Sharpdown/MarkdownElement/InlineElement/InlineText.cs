@@ -14,7 +14,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <summary>
         /// HTML entity character listing.
         /// </summary>
-        [SuppressMessage("ReSharper", "StringLiteralTypo")] private static readonly Dictionary<string, string> entityCharacter =
+        [SuppressMessage("ReSharper", "StringLiteralTypo")]
+        private static readonly Dictionary<string, string> entityCharacter =
             new Dictionary<string, string>
             {
                 {"AElig", "\u00C6"},
@@ -2153,7 +2154,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <summary>
         /// Initializes new instance of <see cref="InlineText"/>.
         /// </summary>
-        private InlineText()
+        /// <param name="config">Configuration of the parser.</param>
+        private InlineText(ParserConfig config) : base(config)
         {
         }
 
@@ -2162,6 +2164,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// </summary>
         /// <param name="text"></param>
         /// <param name="backslashEscapeEnabled">Whether backslash escape ios enabled.</param>
+        /// <param name="config">Configuration of the parser.</param>
         /// <returns>
         /// A new <see cref="InlineText"/> element contains the equivalent text to <paramref name="text"/>
         /// after processing backslash escapes and html style character references.
@@ -2169,7 +2172,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <exception cref="ArgumentException">
         /// Thrown when <paramref name="text"/> contains new line character.
         /// </exception>
-        internal static InlineText CreateFromText(string text, bool backslashEscapeEnabled = true)
+        internal static InlineText CreateFromText(string text, ParserConfig config, bool backslashEscapeEnabled = true)
         {
             if (text.IndexOf('\r') != -1 || text.IndexOf('\n') != -1)
             {
@@ -2178,7 +2181,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
             string escaped = HandleEscapeAndHtmlEntity(text, backslashEscapeEnabled);
 
-            return new InlineText
+            return new InlineText(config)
             {
                 Content = escaped,
             };

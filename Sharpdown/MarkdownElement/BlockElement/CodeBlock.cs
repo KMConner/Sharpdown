@@ -9,13 +9,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
         public abstract string Code { get; }
 
-        internal CodeBlock()
+        internal CodeBlock(ParserConfig config) : base(config)
         {
         }
 
         internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
         {
-            inlines.Add(new LiteralText(Code));
+            inlines.Add(new LiteralText(Code, parserConfig));
         }
     }
 }

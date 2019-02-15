@@ -8,7 +8,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
         public override InlineElementType Type => InlineElementType.LiteralText;
 
-        public LiteralText(string text)
+        public LiteralText(string text, ParserConfig config) : base(config)
         {
             Content = text ?? throw new ArgumentNullException(nameof(text));
         }

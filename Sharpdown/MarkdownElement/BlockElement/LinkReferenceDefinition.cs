@@ -38,7 +38,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <param name="destination"></param>
         /// <param name="title"></param>
         /// <param name="elem"></param>
-        internal LinkReferenceDefinition(string label, string destination, string title, UnknownElement elem)
+        /// <param name="config">Configuration of the parser.</param>
+        internal LinkReferenceDefinition(string label, string destination, string title, UnknownElement elem,
+            ParserConfig config) : base(config)
         {
             Label = GetSimpleName(label?.Trim(whiteSpaceChars) ?? throw new ArgumentNullException(nameof(title)));
             Destination = InlineElementUtils.UrlEncode(InlineText.HandleEscapeAndHtmlEntity(
