@@ -37,7 +37,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         {
             // TODO: Contain Alt as inline array (not flatten to a text.)
             Alt = TextFromInlines(text);
-            Children = new InlineElement[] {InlineText.CreateFromText(Alt)};
+            Children = text;
             Source = src;
             Title = title;
         }
