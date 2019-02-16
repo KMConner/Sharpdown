@@ -693,12 +693,5 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
             return current + 1;
         }
-
-        internal static bool TryGetReference(Dictionary<string, LinkReferenceDefinition> references,
-            string refName, out LinkReferenceDefinition referenceDefinition)
-        {
-            var name = LinkReferenceDefinition.GetSimpleName(refName);
-            return references.TryGetValue(name, out referenceDefinition);
-        }
     }
 }
