@@ -13,6 +13,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
     /// </summary>
     internal class InlineParser
     {
+        #region Regex
+
         /// <summary>
         /// Regular expression which matches urls in auto links.
         /// </summary>
@@ -38,6 +40,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
             + @"|<!\[CDATA\[(?s:.*?)\]\]>"
             + @"|<!--(?!>)(?!-\>)(?s:.(.(?<!--))*)(?<!-)-->",
             RegexOptions.Compiled);
+
+        #endregion
 
         private readonly ParserConfig parserConfig;
         private readonly ReadOnlyDictionary<string, LinkReferenceDefinition> linkReferenceDefinitions;
@@ -348,6 +352,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 deliminators.Find(firstClose.Value) == null ? firstClose.Next?.Value : firstClose.Value);
         }
 
+        #region Extract auto links, inline html and code span
 
         /// <summary>
         /// Returns a code span which starts the specified index.
@@ -420,12 +425,23 @@ namespace Sharpdown.MarkdownElement.InlineElement
             return null;
         }
 
+        #endregion
+
+        #region Used in ParseLinkEmphasis
+
+        /// <summary>
+        /// Tries to get Link definition from <see cref="linkReferenceDefinitions"/>.
+        /// </summary>
+        /// <param name="refName">The label of the link definition.</param>
+        /// <param name="referenceDefinition">
+        /// If this method returns <c>true</c>, a <see cref="LinkReferenceDefinition"/> object will set.
+        /// </param>
+        /// <returns>Whether proper link definition is found.</returns>
         private bool TryGetReference(string refName, out LinkReferenceDefinition referenceDefinition)
         {
             var name = LinkReferenceDefinition.GetSimpleName(refName);
             return linkReferenceDefinitions.TryGetValue(name, out referenceDefinition);
         }
-
 
         /// <summary>
         /// Returns whether the specified deliminator is left flanking.
@@ -518,21 +534,26 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 .Contains(text[info.Index + info.DeliminatorLength]);
         }
 
-        private static int GetNextUnescaped(string str, char ch, int index)
+        private static bool BeginWith(string str, int index, string other)
         {
-            int ret = index;
-            while (true)
+            if (str.Length < index + other.Length)
             {
-                ret = str.IndexOf(ch, ret);
-                if (ret <= 0 || !IsEscaped(str, ret))
-                {
-                    return ret;
-                }
-
-                ret++;
+                return false;
             }
-        }
 
+            for (int i = 0; i < other.Length; i++)
+            {
+                if (str[index + i] != other[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        
+        #region Parsing Links
+        
         /// <summary>
         /// Gets the start index of link label.
         /// </summary>
@@ -796,6 +817,27 @@ namespace Sharpdown.MarkdownElement.InlineElement
             return current + 1;
         }
 
+        #endregion
+        
+        #endregion
+
+        #region Commonly used for text processing
+        
+        private static int GetNextUnescaped(string str, char ch, int index)
+        {
+            int ret = index;
+            while (true)
+            {
+                ret = str.IndexOf(ch, ret);
+                if (ret <= 0 || !IsEscaped(str, ret))
+                {
+                    return ret;
+                }
+
+                ret++;
+            }
+        }
+
         /// <summary>
         /// Counts how many times the same characters are repeated.
         /// </summary>
@@ -839,23 +881,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
             return index % 2 != 0;
         }
-
-        private static bool BeginWith(string str, int index, string other)
-        {
-            if (str.Length < index + other.Length)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < other.Length; i++)
-            {
-                if (str[index + i] != other[i])
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
+        
+        #endregion
     }
 }
