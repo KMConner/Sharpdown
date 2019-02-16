@@ -119,21 +119,22 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// Parses inline elements to Links, Images Emphasis and Line breaks.
         /// </summary>
         /// <param name="text">The string object to @arse.</param>
-        /// <param name="higherDelims">Delim Spans which represents higher priority.</param>
+        /// <param name="higherSpans">Delim Spans which represents higher priority.</param>
         /// <returns>The parse result.</returns>
-        private IEnumerable<InlineElement> ParseLinkEmphasis(string text, List<InlineSpan> higherDelims)
+        private IEnumerable<InlineElement> ParseLinkEmphasis(string text, List<InlineSpan> higherSpans)
         {
-            bool IsDelim(int index)
-            {
-                return !higherDelims.Any(d => d.Begin <= index && d.End > index);
-            }
-
             var deliminators = new LinkedList<DeliminatorInfo>();
             var inlineSpans = new SortedList<int, InlineSpan>();
 
             for (int i = 0; i < text.Length; i++)
             {
-                if (text[i] == '*' && !InlineElementUtils.IsEscaped(text, i) && IsDelim(i))
+                // If the character is escaped or contained in higherSpans
+                if (InlineElementUtils.IsEscaped(text, i) || higherSpans.Any(d => d.Begin <= i && d.End > i))
+                {
+                    continue;
+                }
+
+                if (text[i] == '*')
                 {
                     int length = InlineElementUtils.CountSameChars(text, i);
                     var delimInfo = DeliminatorInfo.Create(DeliminatorType.Star, i, length);
@@ -143,32 +144,28 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     deliminators.AddLast(delimInfo);
                     i += length - 1;
                 }
-                else if (text[i] == '_' && !InlineElementUtils.IsEscaped(text, i) && IsDelim(i))
+                else if (text[i] == '_')
                 {
                     int length = InlineElementUtils.CountSameChars(text, i);
                     var delimInfo = DeliminatorInfo.Create(DeliminatorType.UnderBar, i, length);
-                    delimInfo.CanOpen = IsLeftFlanking(text, delimInfo)
-                                        && (!IsRightFlanking(text, delimInfo) ||
-                                            IsPrecededByPunctuation(text, delimInfo));
-                    delimInfo.CanClose = IsRightFlanking(text, delimInfo)
-                                         && (!IsLeftFlanking(text, delimInfo)
-                                             || IsFollowedByPunctuation(text, delimInfo));
-                    deliminators.AddLast(delimInfo);
+                    bool leftFranking = IsLeftFlanking(text, delimInfo);
+                    bool rightFlanking = IsRightFlanking(text, delimInfo);
 
+                    delimInfo.CanOpen = leftFranking && (!rightFlanking || IsPrecededByPunctuation(text, delimInfo));
+                    delimInfo.CanClose = rightFlanking && (!leftFranking || IsFollowedByPunctuation(text, delimInfo));
+                    deliminators.AddLast(delimInfo);
                     i += length - 1;
                 }
-                else if (text[i] == '[' && !InlineElementUtils.IsEscaped(text, i) && IsDelim(i))
+                else if (text[i] == '[')
                 {
                     deliminators.AddLast(DeliminatorInfo.Create(DeliminatorType.OpenLink, i, 1));
                 }
-                else if (BeginWith(text, i, "![") &&
-                         !InlineElementUtils.IsEscaped(text, i) &&
-                         IsDelim(i))
+                else if (BeginWith(text, i, "!["))
                 {
                     deliminators.AddLast(DeliminatorInfo.Create(DeliminatorType.OpenImage, i, 2));
                     i++;
                 }
-                else if (i > 0 && text[i] == ']' && !InlineElementUtils.IsEscaped(text, i) && IsDelim(i))
+                else if (i > 0 && text[i] == ']')
                 {
                     DeliminatorInfo openInfo = deliminators
                         .LastOrDefault(info => info.Type == DeliminatorType.OpenImage
@@ -184,155 +181,65 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         continue;
                     }
 
-                    int linkLabel = InlineElementUtils.GetStartIndexOfLinkLabel(text, 0, i + 1, higherDelims);
+                    int linkLabel = InlineElementUtils.GetStartIndexOfLinkLabel(text, 0, i + 1, higherSpans);
                     int linkBody = InlineElementUtils.GetLinkBodyEndIndex(text, i + 1, out var dest, out var title);
-                    int linkLabel2 = InlineElementUtils.GetEndIndexOfLinkLabel(text, i + 1, higherDelims);
+                    int linkLabel2 = InlineElementUtils.GetEndIndexOfLinkLabel(text, i + 1, higherSpans);
 
                     // Inline Link/Image
-                    if (text[Math.Min(i + 1, text.Length - 1)] == '('
-                        && InlineElementUtils.AreBracketsBalanced(text.Substring(openInfo.Index,
-                            i - openInfo.Index + 1))
-                        && linkLabel >= 0 && linkBody >= 0)
+                    if (text[Math.Min(i + 1, text.Length - 1)] == '(' && linkLabel >= 0 && linkBody >= 0)
                     {
-                        if (openInfo.Type == DeliminatorType.OpenLink)
-                        {
-                            foreach (var item in deliminators.TakeWhile(c => c != openInfo))
-                            {
-                                if (item.Type == DeliminatorType.OpenLink)
-                                {
-                                    item.Active = false;
-                                }
-                            }
-                        }
-
-                        inlineSpans.Add(openInfo.Index, new InlineSpan
-                        {
-                            Begin = openInfo.Index,
-                            End = linkBody,
-                            SpanType = openInfo.Type == DeliminatorType.OpenLink
-                                ? InlineSpanType.Link
-                                : InlineSpanType.Image,
-                            ParseBegin = openInfo.Index
-                                         + (openInfo.Type == DeliminatorType.OpenLink ? 1 : 2),
-                            ParseEnd = i,
-                            Title = title,
-                            Destination = dest ?? string.Empty,
-                        });
-                        InlineElementUtils.ParseEmphasis(deliminators, inlineSpans, openInfo);
-                        deliminators.Remove(openInfo);
+                        inlineSpans.Add(openInfo.Index,
+                            InlineSpan.FromDeliminatorInfo(openInfo, linkBody, i, dest ?? string.Empty, title));
                         i = linkBody - 1;
-                        deliminators.Remove(openInfo);
                     }
                     // Collapsed Reference Link
                     else if (BeginWith(text, i + 1, "[]")
                              && TryGetReference(text.Substring(openInfo.Index + openInfo.DeliminatorLength,
                                  i - openInfo.Index - openInfo.DeliminatorLength), out var definition))
                     {
-                        if (openInfo.Type == DeliminatorType.OpenLink)
-                        {
-                            foreach (var item in deliminators.TakeWhile(c => c != openInfo))
-                            {
-                                if (item.Type == DeliminatorType.OpenLink)
-                                {
-                                    item.Active = false;
-                                }
-                            }
-                        }
-
-                        inlineSpans.Add(openInfo.Index, new InlineSpan
-                        {
-                            Begin = openInfo.Index,
-                            End = i + 3,
-                            SpanType = openInfo.Type == DeliminatorType.OpenLink
-                                ? InlineSpanType.Link
-                                : InlineSpanType.Image,
-                            ParseBegin = openInfo.Index
-                                         + (openInfo.Type == DeliminatorType.OpenLink ? 1 : 2),
-                            ParseEnd = i,
-                            Destination = definition.Destination,
-                            Title = definition.Title,
-                        });
-                        InlineElementUtils.ParseEmphasis(deliminators, inlineSpans, openInfo);
+                        inlineSpans.Add(openInfo.Index, InlineSpan.FromDeliminatorInfo(openInfo, i + 3, i, definition));
                         i += 2;
-                        deliminators.Remove(openInfo);
                     }
                     // Full Reference Link
-                    else if (text[Math.Min(i + 1, text.Length - 1)] == '[' && linkLabel2 >= 0
-                                                                           && TryGetReference(
-                                                                               text.Substring(i + 2,
-                                                                                   linkLabel2 - i - 3),
-                                                                               out definition))
+                    else if (linkLabel2 >= 0
+                             && TryGetReference(text.Substring(i + 2, linkLabel2 - i - 3), out definition))
                     {
-                        if (openInfo.Type == DeliminatorType.OpenLink)
-                        {
-                            foreach (var item in deliminators.TakeWhile(c => c != openInfo))
-                            {
-                                if (item.Type == DeliminatorType.OpenLink)
-                                {
-                                    item.Active = false;
-                                }
-                            }
-                        }
-
-                        inlineSpans.Add(openInfo.Index, new InlineSpan
-                        {
-                            Begin = openInfo.Index,
-                            End = linkLabel2,
-                            SpanType = openInfo.Type == DeliminatorType.OpenLink
-                                ? InlineSpanType.Link
-                                : InlineSpanType.Image,
-                            ParseBegin = openInfo.Index
-                                         + (openInfo.Type == DeliminatorType.OpenLink ? 1 : 2),
-                            ParseEnd = i,
-                            Destination = definition.Destination,
-                            Title = definition.Title,
-                        });
-                        InlineElementUtils.ParseEmphasis(deliminators, inlineSpans, openInfo);
+                        inlineSpans.Add(openInfo.Index,
+                            InlineSpan.FromDeliminatorInfo(openInfo, linkLabel2, i, definition));
                         i = linkLabel2 - 1;
-                        deliminators.Remove(openInfo);
                     }
                     // shortcut link
                     else if (TryGetReference(text.Substring(openInfo.Index + openInfo.DeliminatorLength,
                                  i - openInfo.Index - openInfo.DeliminatorLength), out definition) &&
-                             InlineElementUtils.GetEndIndexOfLinkLabel(text, i + 1, higherDelims) < 0)
+                             InlineElementUtils.GetEndIndexOfLinkLabel(text, i + 1, higherSpans) < 0)
                     {
-                        if (openInfo.Type == DeliminatorType.OpenLink)
-                        {
-                            foreach (var item in deliminators.TakeWhile(c => c != openInfo))
-                            {
-                                if (item.Type == DeliminatorType.OpenLink)
-                                {
-                                    item.Active = false;
-                                }
-                            }
-                        }
-
-                        inlineSpans.Add(openInfo.Index, new InlineSpan
-                        {
-                            Begin = openInfo.Index,
-                            End = i + 1,
-                            SpanType = openInfo.Type == DeliminatorType.OpenLink
-                                ? InlineSpanType.Link
-                                : InlineSpanType.Image,
-                            ParseBegin = openInfo.Index
-                                         + (openInfo.Type == DeliminatorType.OpenLink ? 1 : 2),
-                            ParseEnd = i,
-                            Destination = definition.Destination,
-                            Title = definition.Title,
-                        });
-                        InlineElementUtils.ParseEmphasis(deliminators, inlineSpans, openInfo);
-                        deliminators.Remove(openInfo);
+                        inlineSpans.Add(openInfo.Index, InlineSpan.FromDeliminatorInfo(openInfo, i + 1, i, definition));
                     }
                     else
                     {
                         deliminators.Remove(openInfo);
+                        continue;
                     }
+
+                    if (openInfo.Type == DeliminatorType.OpenLink)
+                    {
+                        foreach (var item in deliminators.TakeWhile(c => c != openInfo))
+                        {
+                            if (item.Type == DeliminatorType.OpenLink)
+                            {
+                                item.Active = false;
+                            }
+                        }
+                    }
+
+                    InlineElementUtils.ParseEmphasis(deliminators, inlineSpans, openInfo);
+                    deliminators.Remove(openInfo);
                 }
             }
 
             InlineElementUtils.ParseEmphasis(deliminators, inlineSpans, null);
 
-            foreach (var item in higherDelims)
+            foreach (var item in higherSpans)
             {
                 inlineSpans.Add(item.Begin, item);
             }

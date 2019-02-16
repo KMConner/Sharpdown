@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Sharpdown.MarkdownElement.BlockElement;
 
 namespace Sharpdown.MarkdownElement.InlineElement.InlineParserObjects
 {
@@ -82,6 +84,44 @@ namespace Sharpdown.MarkdownElement.InlineElement.InlineParserObjects
         public InlineSpan()
         {
             Children = new SortedList<int, InlineSpan>();
+        }
+
+        public static InlineSpan FromDeliminatorInfo(DeliminatorInfo info, int spanEnd, int parseEnd,
+            LinkReferenceDefinition definition = null)
+        {
+            return FromDeliminatorInfo(info, spanEnd, parseEnd, definition?.Destination, definition?.Title);
+        }
+
+        public static InlineSpan FromDeliminatorInfo(DeliminatorInfo info, int spanEnd, int parseEnd,
+            string destination, string title)
+        {
+            InlineSpanType type;
+            switch (info.Type)
+            {
+                case DeliminatorType.OpenLink:
+                    type = InlineSpanType.Link;
+                    break;
+                case DeliminatorType.OpenImage:
+                    type = InlineSpanType.Image;
+                    break;
+//                case DeliminatorType.Star:
+//                    break;
+//                case DeliminatorType.UnderBar:
+//                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return new InlineSpan
+            {
+                SpanType = type,
+                Begin = info.Index,
+                End = spanEnd,
+                ParseBegin = info.Index + info.DeliminatorLength,
+                ParseEnd = parseEnd,
+                Destination = destination,
+                Title = title,
+            };
         }
     }
 }
