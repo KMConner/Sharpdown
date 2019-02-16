@@ -99,7 +99,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     {
                         Begin = nextElemIndex,
                         End = newIndex,
-                        SpanType = InlineElementUtils.ToDelimType(newInline.Type),
+                        SpanType = ToDelimType(newInline.Type),
                         DelimElem = newInline,
                     };
                     highPriorityDelims.Add(span);
@@ -248,9 +248,9 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 inlineSpans.Add(item.Begin, item);
             }
 
-            var tree = InlineElementUtils.GetInlineTree(inlineSpans, text.Length);
+            var tree = GetInlineTree(inlineSpans, text.Length);
 
-            return InlineElementUtils.ToInlines(text, tree, parserConfig);
+            return ToInlines(text, tree);
         }
 
         /// <summary>
@@ -350,6 +350,127 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
             ParseEmphasis(deliminators, delimSpans,
                 deliminators.Find(firstClose.Value) == null ? firstClose.Next?.Value : firstClose.Value);
+        }
+
+        /// <summary>
+        /// Creates a tree of <see cref="InlineSpan"/> from its array.
+        /// </summary>
+        /// <param name="spans">The array of <see cref="InlineSpan"/>.</param>
+        /// <param name="rootLength">The length of the whole text.</param>
+        /// <returns>The tree of <see cref="InlineSpan"/> which is equivalent to <paramref name="spans"/>.</returns>
+        private static InlineSpan GetInlineTree(SortedList<int, InlineSpan> spans, int rootLength)
+        {
+            var root = new InlineSpan
+            {
+                Begin = 0,
+                End = rootLength,
+                SpanType = InlineSpanType.Root,
+            };
+            InlineSpan currentSpan = root;
+            foreach (var item in spans)
+            {
+                var delimSpan = item.Value;
+                while (currentSpan.End < delimSpan.End)
+                {
+                    currentSpan = currentSpan.Parent ?? throw new Exception();
+                }
+
+                currentSpan.Children.Add(delimSpan.Begin, delimSpan);
+                delimSpan.Parent = currentSpan;
+                currentSpan = delimSpan;
+            }
+
+            return root;
+        }
+
+        /// <summary>
+        /// Converts the specified string and <see cref="InlineSpan"/> tree to inline elements.
+        /// </summary>
+        /// <param name="text">The string object.</param>
+        /// <param name="delim">The <see cref="InlineSpan"/> tree.</param>
+        /// <returns>The inline elements which is equivalent to <paramref name="delim"/>.</returns>
+        private InlineElement[] ToInlines(string text, InlineSpan delim)
+        {
+            int lastEnd = delim.ParseBegin;
+            List<InlineElement> newChildren = new List<InlineElement>();
+            foreach (var item in delim.Children.Where(d => d.Value.End <= delim.ParseEnd))
+            {
+                InlineSpan delimSpan = item.Value;
+                if (lastEnd < delimSpan.Begin)
+                {
+                    newChildren.AddRange(
+                        ParseLineBreak(text.Substring(lastEnd, delimSpan.Begin - lastEnd)));
+                }
+
+                newChildren.AddRange(ToInlines(text, delimSpan));
+                lastEnd = delimSpan.End;
+            }
+
+            if (lastEnd < delim.ParseEnd)
+            {
+                newChildren.AddRange(
+                    ParseLineBreak(text.Substring(lastEnd, delim.ParseEnd - lastEnd)));
+            }
+
+            switch (delim.SpanType)
+            {
+                case InlineSpanType.Link:
+                    return new InlineElement[]
+                        {new Link(newChildren.ToArray(), delim.Destination, delim.Title, parserConfig)};
+                case InlineSpanType.Image:
+                    return new InlineElement[]
+                        {new Image(newChildren.ToArray(), delim.Destination, delim.Title, parserConfig)};
+                case InlineSpanType.Emphasis:
+                    return new InlineElement[] {new Emphasis(newChildren.ToArray(), false, parserConfig)};
+                case InlineSpanType.StrongEmphasis:
+                    return new InlineElement[] {new Emphasis(newChildren.ToArray(), true, parserConfig)};
+                case InlineSpanType.Root:
+                    return newChildren.ToArray();
+                default:
+                    return new[] {delim.DelimElem};
+            }
+        }
+
+        /// <summary>
+        /// Returns <see cref="InlineElement"/> 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        private IEnumerable<InlineElement> ParseLineBreak(string text)
+        {
+            string[] lines = text.Replace("\r\n", "\n").Replace("\r", "\n").Split(new[] {'\n'});
+            for (int i = 0; i < lines.Length; i++)
+            {
+                bool isHardBreak = lines[i].EndsWith("  ", StringComparison.Ordinal)
+                                   || (lines[i].EndsWith("\\", StringComparison.Ordinal) &&
+                                       !IsEscaped(lines[i], lines.Length - 1));
+                if (i < lines.Length - 1)
+                {
+                    if (lines[i] != string.Empty)
+                    {
+                        if (isHardBreak && lines[i].EndsWith("\\", StringComparison.Ordinal))
+                        {
+                            yield return InlineText.CreateFromText(lines[i].Substring(0, lines[i].Length - 1),
+                                parserConfig);
+                        }
+                        else
+                        {
+                            yield return InlineText.CreateFromText(lines[i].TrimEnd(new[] {' '}), parserConfig);
+                        }
+                    }
+
+                    yield return isHardBreak
+                        ? (InlineElement)new HardLineBreak(parserConfig)
+                        : new SoftLineBreak(parserConfig);
+                }
+                else
+                {
+                    if (lines[i] != string.Empty)
+                    {
+                        yield return InlineText.CreateFromText(lines[i], parserConfig);
+                    }
+                }
+            }
         }
 
         #region Extract auto links, inline html and code span
@@ -551,9 +672,9 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
             return true;
         }
-        
+
         #region Parsing Links
-        
+
         /// <summary>
         /// Gets the start index of link label.
         /// </summary>
@@ -818,11 +939,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
         }
 
         #endregion
-        
+
         #endregion
 
         #region Commonly used for text processing
-        
+
         private static int GetNextUnescaped(string str, char ch, int index)
         {
             int ret = index;
@@ -864,7 +985,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             return str.Length - index;
         }
 
-        internal static bool IsEscaped(string text, int index)
+        private static bool IsEscaped(string text, int index)
         {
             int count = 0;
             for (int i = index - 1; i >= 0; i--)
@@ -881,7 +1002,22 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
             return index % 2 != 0;
         }
-        
+
         #endregion
+
+        private static InlineSpanType ToDelimType(InlineElementType elemType)
+        {
+            switch (elemType)
+            {
+                case InlineElementType.CodeSpan:
+                    return InlineSpanType.CodeSpan;
+                case InlineElementType.Link:
+                    return InlineSpanType.AutoLink;
+                case InlineElementType.InlineHtml:
+                    return InlineSpanType.InlineHtml;
+                default:
+                    throw new ArgumentException();
+            }
+        }
     }
 }
