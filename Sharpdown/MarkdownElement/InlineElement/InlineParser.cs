@@ -57,8 +57,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
         {
             var highPriorityDelims = new List<InlineSpan>();
             int currentIndex = 0;
-            int nextBacktick = InlineElementUtils.GetNextUnescaped(text, '`', 0);
-            int nextLessThan = InlineElementUtils.GetNextUnescaped(text, '<', 0);
+            int nextBacktick = GetNextUnescaped(text, '`', 0);
+            int nextLessThan = GetNextUnescaped(text, '<', 0);
 
             // Extract code spans, raw html and auto links.
             while (currentIndex < text.Length)
@@ -101,14 +101,14 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     highPriorityDelims.Add(span);
 
                     currentIndex = newIndex;
-                    nextBacktick = InlineElementUtils.GetNextUnescaped(text, '`', currentIndex);
-                    nextLessThan = InlineElementUtils.GetNextUnescaped(text, '<', currentIndex);
+                    nextBacktick = GetNextUnescaped(text, '`', currentIndex);
+                    nextLessThan = GetNextUnescaped(text, '<', currentIndex);
                 }
                 else
                 {
-                    nextElemIndex += InlineElementUtils.CountSameChars(text, nextElemIndex);
-                    nextBacktick = InlineElementUtils.GetNextUnescaped(text, '`', nextElemIndex);
-                    nextLessThan = InlineElementUtils.GetNextUnescaped(text, '<', nextElemIndex);
+                    nextElemIndex += CountSameChars(text, nextElemIndex);
+                    nextBacktick = GetNextUnescaped(text, '`', nextElemIndex);
+                    nextLessThan = GetNextUnescaped(text, '<', nextElemIndex);
                 }
             }
 
@@ -136,7 +136,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
                 if (text[i] == '*')
                 {
-                    int length = InlineElementUtils.CountSameChars(text, i);
+                    int length = CountSameChars(text, i);
                     var delimInfo = DeliminatorInfo.Create(DeliminatorType.Star, i, length);
                     delimInfo.CanOpen = IsLeftFlanking(text, delimInfo);
                     delimInfo.CanClose = IsRightFlanking(text, delimInfo);
@@ -146,7 +146,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 }
                 else if (text[i] == '_')
                 {
-                    int length = InlineElementUtils.CountSameChars(text, i);
+                    int length = CountSameChars(text, i);
                     var delimInfo = DeliminatorInfo.Create(DeliminatorType.UnderBar, i, length);
                     bool leftFranking = IsLeftFlanking(text, delimInfo);
                     bool rightFlanking = IsRightFlanking(text, delimInfo);
@@ -232,12 +232,12 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         }
                     }
 
-                    InlineElementUtils.ParseEmphasis(deliminators, inlineSpans, openInfo);
+                    ParseEmphasis(deliminators, inlineSpans, openInfo);
                     deliminators.Remove(openInfo);
                 }
             }
 
-            InlineElementUtils.ParseEmphasis(deliminators, inlineSpans, null);
+            ParseEmphasis(deliminators, inlineSpans, null);
 
             foreach (var item in higherSpans)
             {
@@ -250,6 +250,106 @@ namespace Sharpdown.MarkdownElement.InlineElement
         }
 
         /// <summary>
+        /// Parses the structure and add the <see cref="InlineSpan"/> to <paramref name="delimSpans"/>.
+        /// </summary>
+        /// <param name="deliminators">The list of <see cref="DeliminatorInfo"/>.</param>
+        /// <param name="delimSpans">The list of <see cref="InlineSpan"/>.</param>
+        /// <param name="stackBottom">The stack bottom.</param>
+        private static void ParseEmphasis(LinkedList<DeliminatorInfo> deliminators,
+            SortedList<int, InlineSpan> delimSpans, DeliminatorInfo stackBottom)
+        {
+            if (deliminators.Count == 0)
+            {
+                return;
+            }
+
+            LinkedListNode<DeliminatorInfo> firstClose = null;
+            LinkedListNode<DeliminatorInfo> infoNode =
+                stackBottom == null ? deliminators.First : deliminators.Find(stackBottom);
+            while (infoNode != null)
+            {
+                if (infoNode.Value.CanClose)
+                {
+                    firstClose = infoNode;
+                    break;
+                }
+
+                infoNode = infoNode.Next;
+            }
+
+            if (firstClose == null)
+            {
+                return;
+            }
+
+            LinkedListNode<DeliminatorInfo> startDelimNode = null;
+            infoNode = firstClose;
+            while ((infoNode = infoNode.Previous) != null && infoNode.Value != stackBottom)
+            {
+                if (infoNode.Value.CanOpen
+                    && infoNode.Value.Type == firstClose.Value.Type
+                    && ((infoNode.Value.DeliminatorLength + firstClose.Value.DeliminatorLength) % 3 != 0
+                        || !firstClose.Value.CanOpen))
+                {
+                    startDelimNode = infoNode;
+                    break;
+                }
+            }
+
+            if (startDelimNode == null)
+            {
+                if (!firstClose.Value.CanOpen)
+                {
+                    deliminators.Remove(firstClose);
+                }
+
+                firstClose = firstClose.Next;
+                if (firstClose == null)
+                {
+                    return;
+                }
+
+                ParseEmphasis(deliminators, delimSpans, firstClose.Value);
+                return;
+            }
+
+            DeliminatorInfo openInfo = startDelimNode.Value;
+            DeliminatorInfo closeInfo = firstClose.Value;
+            int delimLength = openInfo.DeliminatorLength > 1 && closeInfo.DeliminatorLength > 1 ? 2 : 1;
+            var delimSpan = new InlineSpan
+            {
+                Begin = openInfo.Index + openInfo.DeliminatorLength - delimLength,
+                End = closeInfo.Index + delimLength,
+                SpanType =
+                    delimLength > 1 ? InlineSpanType.StrongEmphasis : InlineSpanType.Emphasis,
+            };
+            delimSpan.ParseBegin = delimSpan.Begin + delimLength;
+            delimSpan.ParseEnd = delimSpan.End - delimLength;
+            delimSpans.Add(delimSpan.Begin, delimSpan);
+            while ((infoNode = infoNode.Next) != null && infoNode != firstClose)
+            {
+                deliminators.Remove(infoNode);
+            }
+
+            openInfo.DeliminatorLength -= delimLength;
+            if (openInfo.DeliminatorLength <= 0)
+            {
+                deliminators.Remove(openInfo);
+            }
+
+            closeInfo.DeliminatorLength -= delimLength;
+            closeInfo.Index += delimLength;
+            if (closeInfo.DeliminatorLength <= 0)
+            {
+                deliminators.Remove(closeInfo);
+            }
+
+            ParseEmphasis(deliminators, delimSpans,
+                deliminators.Find(firstClose.Value) == null ? firstClose.Next?.Value : firstClose.Value);
+        }
+
+
+        /// <summary>
         /// Returns a code span which starts the specified index.
         /// </summary>
         /// <param name="text">The string which contains the code span.</param>
@@ -258,7 +358,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <returns>The code span which starts with the specified index.</returns>
         private CodeSpan GetCodeSpan(string text, int index, ref int currentIndex)
         {
-            int openLength = InlineElementUtils.CountSameChars(text, index);
+            int openLength = CountSameChars(text, index);
             int closeIndex = index + openLength;
 
             do
@@ -266,7 +366,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 closeIndex = text.IndexOf(new string('`', openLength), closeIndex, StringComparison.Ordinal);
                 if (closeIndex >= 0)
                 {
-                    int closeLength = InlineElementUtils.CountSameChars(text, closeIndex);
+                    int closeLength = CountSameChars(text, closeIndex);
                     if (closeLength == openLength)
                     {
                         currentIndex = closeIndex + closeLength;
@@ -416,6 +516,21 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
             return MarkdownElementBase.asciiPunctuationChars
                 .Contains(text[info.Index + info.DeliminatorLength]);
+        }
+
+        private static int GetNextUnescaped(string str, char ch, int index)
+        {
+            int ret = index;
+            while (true)
+            {
+                ret = str.IndexOf(ch, ret);
+                if (ret <= 0 || !IsEscaped(str, ret))
+                {
+                    return ret;
+                }
+
+                ret++;
+            }
         }
 
         /// <summary>
@@ -650,13 +765,13 @@ namespace Sharpdown.MarkdownElement.InlineElement
             switch (wholeText[current])
             {
                 case '"':
-                    current = InlineElementUtils.GetNextUnescaped(wholeText, '"', current + 1);
+                    current = GetNextUnescaped(wholeText, '"', current + 1);
                     break;
                 case '\'':
-                    current = InlineElementUtils.GetNextUnescaped(wholeText, '\'', current + 1);
+                    current = GetNextUnescaped(wholeText, '\'', current + 1);
                     break;
                 case '(':
-                    current = InlineElementUtils.GetNextUnescaped(wholeText, ')', current + 1);
+                    current = GetNextUnescaped(wholeText, ')', current + 1);
                     break;
                 default:
                     return -1;
@@ -681,6 +796,32 @@ namespace Sharpdown.MarkdownElement.InlineElement
             return current + 1;
         }
 
+        /// <summary>
+        /// Counts how many times the same characters are repeated.
+        /// </summary>
+        /// <param name="str">The string object.</param>
+        /// <param name="index">The character index in <paramref name="str"/>.</param>
+        /// <returns>
+        /// How many times the same characters are repeated. (1 or more.)
+        /// </returns>
+        private static int CountSameChars(string str, int index)
+        {
+            if (index < 0)
+            {
+                throw new ArgumentException("index must be 0 or more.");
+            }
+
+            for (int i = index; i < str.Length; i++)
+            {
+                if (str[i] != str[index])
+                {
+                    return i - index;
+                }
+            }
+
+            return str.Length - index;
+        }
+
         internal static bool IsEscaped(string text, int index)
         {
             int count = 0;
@@ -698,7 +839,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
             return index % 2 != 0;
         }
-        
+
         private static bool BeginWith(string str, int index, string other)
         {
             if (str.Length < index + other.Length)
