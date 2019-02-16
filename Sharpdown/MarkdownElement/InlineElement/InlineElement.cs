@@ -5,7 +5,7 @@
         public abstract InlineElementType Type { get; }
 
         protected readonly ParserConfig parserConfig;
-        
+
         internal InlineElement(ParserConfig config)
         {
             parserConfig = config;
