@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Sharpdown.MarkdownElement.BlockElement;
 using Sharpdown.MarkdownElement.InlineElement.InlineParserObjects;
 
 namespace Sharpdown.MarkdownElement.InlineElement
@@ -47,7 +46,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             {
                 bool isHardBreak = lines[i].EndsWith("  ", StringComparison.Ordinal)
                                    || (lines[i].EndsWith("\\", StringComparison.Ordinal) &&
-                                       !IsEscaped(lines[i], lines.Length - 1));
+                                       !InlineParser.IsEscaped(lines[i], lines.Length - 1));
                 if (i < lines.Length - 1)
                 {
                     if (lines[i] != string.Empty)
@@ -285,37 +284,13 @@ namespace Sharpdown.MarkdownElement.InlineElement
             }
         }
 
-        internal static bool AreBracketsBalanced(string text)
-        {
-            int depth = 0;
-            for (int i = 0; i < text.Length; i++)
-            {
-                if (text[i] == '[' && !IsEscaped(text, i))
-                {
-                    depth++;
-                }
-
-                if (text[i] == ']' && !IsEscaped(text, i))
-                {
-                    depth--;
-                }
-
-                if (depth < 0)
-                {
-                    return false;
-                }
-            }
-
-            return depth == 0;
-        }
-
         internal static int GetNextUnescaped(string str, char ch, int index)
         {
             int ret = index;
             while (true)
             {
                 ret = str.IndexOf(ch, ret);
-                if (ret <= 0 || !IsEscaped(str, ret))
+                if (ret <= 0 || !InlineParser.IsEscaped(str, ret))
                 {
                     return ret;
                 }
@@ -337,24 +312,6 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 default:
                     throw new ArgumentException();
             }
-        }
-
-        internal static bool IsEscaped(string text, int index)
-        {
-            int count = 0;
-            for (int i = index - 1; i >= 0; i--)
-            {
-                if (text[i] == '\\')
-                {
-                    count++;
-                }
-                else
-                {
-                    return count % 2 != 0;
-                }
-            }
-
-            return index % 2 != 0;
         }
 
         private static bool IsPercentEncoded(string text, int index)

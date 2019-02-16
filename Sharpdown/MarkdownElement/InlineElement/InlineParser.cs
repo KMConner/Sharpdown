@@ -129,7 +129,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             for (int i = 0; i < text.Length; i++)
             {
                 // If the character is escaped or contained in higherSpans
-                if (InlineElementUtils.IsEscaped(text, i) || higherSpans.Any(d => d.Begin <= i && d.End > i))
+                if (IsEscaped(text, i) || higherSpans.Any(d => d.Begin <= i && d.End > i))
                 {
                     continue;
                 }
@@ -248,7 +248,6 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
             return InlineElementUtils.ToInlines(text, tree, parserConfig);
         }
-
 
         /// <summary>
         /// Returns a code span which starts the specified index.
@@ -497,7 +496,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
             int depth = 0;
             for (int i = begin; i < wholeText.Length; i++)
             {
-                if (InlineElementUtils.IsEscaped(wholeText, i))
+                if (IsEscaped(wholeText, i))
                 {
                     continue;
                 }
@@ -582,12 +581,12 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         return -1;
                     }
 
-                    if (ch == '<' && !InlineElementUtils.IsEscaped(wholeText, current))
+                    if (ch == '<' && !IsEscaped(wholeText, current))
                     {
                         return -1;
                     }
 
-                    if (ch == '>' && !InlineElementUtils.IsEscaped(wholeText, current))
+                    if (ch == '>' && !IsEscaped(wholeText, current))
                     {
                         destination = wholeText.Substring(destinationStart + 1, current - destinationStart - 1);
                         break;
@@ -611,12 +610,12 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         break;
                     }
 
-                    if (ch == '(' && !InlineElementUtils.IsEscaped(wholeText, current))
+                    if (ch == '(' && !IsEscaped(wholeText, current))
                     {
                         parenDepth++;
                     }
 
-                    if (ch == ')' && !InlineElementUtils.IsEscaped(wholeText, current))
+                    if (ch == ')' && !IsEscaped(wholeText, current))
                     {
                         parenDepth--;
                         if (parenDepth < 0)
@@ -682,6 +681,24 @@ namespace Sharpdown.MarkdownElement.InlineElement
             return current + 1;
         }
 
+        internal static bool IsEscaped(string text, int index)
+        {
+            int count = 0;
+            for (int i = index - 1; i >= 0; i--)
+            {
+                if (text[i] == '\\')
+                {
+                    count++;
+                }
+                else
+                {
+                    return count % 2 != 0;
+                }
+            }
+
+            return index % 2 != 0;
+        }
+        
         private static bool BeginWith(string str, int index, string other)
         {
             if (str.Length < index + other.Length)
