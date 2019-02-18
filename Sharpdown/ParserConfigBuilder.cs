@@ -10,6 +10,15 @@ namespace Sharpdown
         /// </summary>
         public static ParserConfigBuilder CommonMark => new ParserConfigBuilder();
 
+        public static ParserConfigBuilder GithubFlavored => new ParserConfigBuilder()
+        {
+            IsAutoLinkExtensionEnabled = true,
+            IsDisallowedRawHtmlExtensionEnabled = true,
+            IsStrikethroughExtensionEnabled = true,
+            IsTableExtensionEnabled = true,
+            IsTaskListExtensionEnabled = true,
+        };
+
         public bool IsTableExtensionEnabled { get; set; }
 
         public bool IsTaskListExtensionEnabled { get; set; }
