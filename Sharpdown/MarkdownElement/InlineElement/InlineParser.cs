@@ -59,6 +59,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <returns>Inline elements in <paramref name="text"/>.</returns>
         public IEnumerable<InlineElement> ParseInlineElements(string text)
         {
+            text = text.Trim();
             var highPriorityDelims = new List<InlineSpan>();
             int currentIndex = 0;
             int nextBacktick = GetNextUnescaped(text, '`', 0);
