@@ -317,6 +317,18 @@ namespace TestProject.MarkdownElementTest.GFMTest
         [TestMethod]
         public void TestCase_116()
         {
+            var doc = parser.Parse("~~~ aa ``` ~~~\nfoo\n~~~");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
+            Assert.AreEqual("foo", (doc.Elements[0] as CodeBlock).Code);
+            Assert.AreEqual("aa ``` ~~~", (doc.Elements[0] as CodeBlock).InfoString);
+        }
+
+
+        [TestMethod]
+        public void TestCase_117()
+        {
             var doc = parser.Parse("```\n```aaa\n```");
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
