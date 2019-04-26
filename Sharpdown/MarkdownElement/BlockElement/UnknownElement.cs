@@ -18,7 +18,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// A regular expression which matches link reference definition.
         /// </summary>
         private static readonly Regex linkDefinitionRegex = new Regex(
-            @"^\[(?<label>(?:[^\]\[]|\\\]|\\\[){1,999})\]\:[ \t]*(?:\r|\r\n|\n)??[ \t]*(?<destination>\<(?:[^ \t\r\n\<\>]|\\\<|\\\>)+\>|[^ \t\r\n]+)([ \t]*(?: |\t|\r|\r\n|\n)[ \t]*(?<title>\""(?:[^\""]|\\\"")*\""|\'(?:[^\']|\\\')*\'|\((?:[^\)]|\\\))*\)))??[ \t]*$",
+            @"^\[(?<label>(?:[^\]\[]|\\\]|\\\[){1,999})\]\:[ \t]*(?:\r|\r\n|\n)??[ \t]*(?<destination>\<(?:[^ \t\r\n\<\>]|\\\<|\\\>)*\>|[^ \t\r\n\<][^ \t\r\n]*)([ \t]*(?: |\t|\r|\r\n|\n)[ \t]*(?<title>\""(?:[^\""]|\\\"")*\""|\'(?:[^\']|\\\')*\'|\((?:[^\)]|\\\))*\)))??[ \t]*$",
             RegexOptions.Compiled);
 
         /// <summary>
