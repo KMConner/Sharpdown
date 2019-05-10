@@ -422,13 +422,13 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     return new InlineElement[]
                         {new Image(newChildren.ToArray(), delim.Destination, delim.Title, parserConfig)};
                 case InlineSpanType.Emphasis:
-                    return new InlineElement[] {new Emphasis(newChildren.ToArray(), false, parserConfig)};
+                    return new InlineElement[] { new Emphasis(newChildren.ToArray(), false, parserConfig) };
                 case InlineSpanType.StrongEmphasis:
-                    return new InlineElement[] {new Emphasis(newChildren.ToArray(), true, parserConfig)};
+                    return new InlineElement[] { new Emphasis(newChildren.ToArray(), true, parserConfig) };
                 case InlineSpanType.Root:
                     return newChildren.ToArray();
                 default:
-                    return new[] {delim.DelimElem};
+                    return new[] { delim.DelimElem };
             }
         }
 
@@ -439,7 +439,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <returns></returns>
         private IEnumerable<InlineElement> ParseLineBreak(string text)
         {
-            string[] lines = text.Replace("\r\n", "\n").Replace("\r", "\n").Split(new[] {'\n'});
+            string[] lines = text.Replace("\r\n", "\n").Replace("\r", "\n").Split(new[] { '\n' });
             for (int i = 0; i < lines.Length; i++)
             {
                 bool isHardBreak = lines[i].EndsWith("  ", StringComparison.Ordinal)
@@ -456,7 +456,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         }
                         else
                         {
-                            yield return InlineText.CreateFromText(lines[i].TrimEnd(new[] {' '}), parserConfig);
+                            yield return InlineText.CreateFromText(lines[i].TrimEnd(new[] { ' ' }), parserConfig);
                         }
                     }
 
@@ -895,6 +895,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 {
                     break;
                 }
+            }
+
+            if (current >= wholeText.Length)
+            {
+                return -1;
             }
 
             // Without title
