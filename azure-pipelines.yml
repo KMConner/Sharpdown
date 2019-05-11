@@ -67,3 +67,30 @@ jobs:
     inputs:
       command: 'test'
       arguments: 'TestProject'
+
+- job: Linux
+  pool:
+    vmImage: 'ubuntu-16.04'
+
+  variables:
+    solution: '**/*.sln'
+    buildPlatform: 'Any CPU'
+    buildConfiguration: 'Release'
+
+  steps:
+  - task: NuGetToolInstaller@0
+
+  - task: DotNetCoreInstaller@0
+    inputs:
+      packageType: sdk
+      version: '2.1.300'
+
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'build'
+      arguments: '-c Release'
+
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'test'
+      arguments: 'TestProject'
