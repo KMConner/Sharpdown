@@ -6,35 +6,37 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'windows-2019'
+jobs:
+- job: Windows
+  pool:
+    vmImage: 'windows-2019'
 
-variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  variables:
+    solution: '**/*.sln'
+    buildPlatform: 'Any CPU'
+    buildConfiguration: 'Release'
 
-steps:
-- task: NuGetToolInstaller@0
+  steps:
+  - task: NuGetToolInstaller@0
 
-- task: DotNetCoreInstaller@0
-  inputs:
-    packageType: sdk
-    version: '2.1.300'
+  - task: DotNetCoreInstaller@0
+    inputs:
+      packageType: sdk
+      version: '2.1.300'
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
+  - task: NuGetCommand@2
+    inputs:
+      restoreSolution: '$(solution)'
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  - task: VSBuild@1
+    inputs:
+      solution: '$(solution)'
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-    vsTestVersion: "16.0"
-    testAssemblyVer2: '**/bin/$(buildConfiguration)/**/TestProject.dll'
+  - task: VSTest@2
+    inputs:
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
+      vsTestVersion: "16.0"
+      testAssemblyVer2: '**/bin/$(buildConfiguration)/**/TestProject.dll'
