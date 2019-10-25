@@ -10509,7 +10509,7 @@ namespace TestProject.MarkdownElementTest
         #region Soft line breaks
 
         [TestMethod]
-        public void TestCase_620()
+        public void TestCase_645()
         {
             const string code = "foo\nbaz";
             var doc = new MarkdownParser().Parse(code);
@@ -10525,7 +10525,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_621()
+        public void TestCase_646()
         {
             const string code = "foo \n baz";
             var doc = new MarkdownParser().Parse(code);
