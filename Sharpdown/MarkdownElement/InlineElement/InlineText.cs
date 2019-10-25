@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -2222,6 +2222,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         }
 
                         if (entity.StartsWith("#x", StringComparison.OrdinalIgnoreCase) &&
+                            entity.Length <= 6 &&
                             uint.TryParse(entity.Substring(2), NumberStyles.HexNumber, null, out uint num))
                         {
                             builder.Append(GetSecureChar(num));
