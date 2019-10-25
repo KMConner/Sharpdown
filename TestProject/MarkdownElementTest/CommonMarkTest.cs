@@ -9245,7 +9245,7 @@ namespace TestProject.MarkdownElementTest
         #region Images
 
         [TestMethod]
-        public void TestCase_543()
+        public void TestCase_568()
         {
             const string code = "![foo](/url \"title\")";
             var doc = new MarkdownParser().Parse(code);
@@ -9264,7 +9264,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_544()
+        public void TestCase_569()
         {
             const string code = "![foo *bar*]\n\n[foo *bar*]: train.jpg \"train & tracks\"";
             var doc = new MarkdownParser().Parse(code);
@@ -9285,7 +9285,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_545()
+        public void TestCase_570()
         {
             const string code = "![foo ![bar](/url)](/url2)";
             var doc = new MarkdownParser().Parse(code);
@@ -9306,7 +9306,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_546()
+        public void TestCase_571()
         {
             const string code = "![foo [bar](/url)](/url2)";
             var doc = new MarkdownParser().Parse(code);
@@ -9327,7 +9327,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_547()
+        public void TestCase_572()
         {
             const string code = "![foo *bar*][]\n\n[foo *bar*]: train.jpg \"train & tracks\"";
             var doc = new MarkdownParser().Parse(code);
@@ -9348,7 +9348,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_548()
+        public void TestCase_573()
         {
             const string code = "![foo *bar*][foobar]\n\n[FOOBAR]: train.jpg \"train & tracks\"";
             var doc = new MarkdownParser().Parse(code);
@@ -9369,7 +9369,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_549()
+        public void TestCase_574()
         {
             const string code = "![foo](train.jpg)";
             var doc = new MarkdownParser().Parse(code);
@@ -9388,7 +9388,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_550()
+        public void TestCase_575()
         {
             const string code = "My ![foo bar](/path/to/train.jpg  \"title\"   )";
             var doc = new MarkdownParser().Parse(code);
@@ -9409,7 +9409,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_551()
+        public void TestCase_576()
         {
             const string code = "![foo](<url>)";
             var doc = new MarkdownParser().Parse(code);
@@ -9428,7 +9428,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_552()
+        public void TestCase_577()
         {
             const string code = "![](/url)";
             var doc = new MarkdownParser().Parse(code);
@@ -9444,7 +9444,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_553()
+        public void TestCase_578()
         {
             const string code = "![foo][bar]\n\n[bar]: /url";
             var doc = new MarkdownParser().Parse(code);
@@ -9463,7 +9463,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_554()
+        public void TestCase_579()
         {
             const string code = "![foo][bar]\n\n[BAR]: /url";
             var doc = new MarkdownParser().Parse(code);
@@ -9482,7 +9482,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_555()
+        public void TestCase_580()
         {
             const string code = "![foo][]\n\n[foo]: /url \"title\"\n";
             var doc = new MarkdownParser().Parse(code);
@@ -9501,7 +9501,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_556()
+        public void TestCase_581()
         {
             const string code = "![*foo* bar][]\n\n[*foo* bar]: /url \"title\"";
             var doc = new MarkdownParser().Parse(code);
@@ -9522,7 +9522,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_557()
+        public void TestCase_582()
         {
             const string code = "![Foo][]\n\n[foo]: /url \"title\"";
             var doc = new MarkdownParser().Parse(code);
@@ -9541,7 +9541,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_558()
+        public void TestCase_583()
         {
             const string code = "![foo] \n[]\n\n[foo]: /url \"title\"";
             var doc = new MarkdownParser().Parse(code);
@@ -9564,7 +9564,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_559()
+        public void TestCase_584()
         {
             const string code = "![foo]\n\n[foo]: /url \"title\"";
             var doc = new MarkdownParser().Parse(code);
@@ -9583,7 +9583,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_560()
+        public void TestCase_585()
         {
             const string code = "![*foo* bar]\n\n[*foo* bar]: /url \"title\"";
             var doc = new MarkdownParser().Parse(code);
@@ -9604,7 +9604,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_561()
+        public void TestCase_586()
         {
             const string code = "![[foo]]\n\n[[foo]]: /url \"title\"";
             var doc = new MarkdownParser().Parse(code);
@@ -9620,7 +9620,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_562()
+        public void TestCase_587()
         {
             const string code = "![Foo]\n\n[foo]: /url \"title\"";
             var doc = new MarkdownParser().Parse(code);
@@ -9639,7 +9639,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_563()
+        public void TestCase_588()
         {
             const string code = "!\\[foo]\n\n[foo]: /url \"title\"";
             var doc = new MarkdownParser().Parse(code);
@@ -9652,7 +9652,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_564()
+        public void TestCase_589()
         {
             const string code = "\\![foo]\n\n[foo]: /url \"title\"";
             var doc = new MarkdownParser().Parse(code);
