@@ -5107,7 +5107,7 @@ namespace TestProject.MarkdownElementTest
         #endregion
 
         [TestMethod]
-        public void TestCase_288()
+        public void TestCase_297()
         {
             const string code = "`hi`lo`";
             var doc = new MarkdownParser().Parse(code);
@@ -5124,7 +5124,7 @@ namespace TestProject.MarkdownElementTest
         #region Backslash Escape
 
         [TestMethod]
-        public void TestCase_289()
+        public void TestCase_298()
         {
             const string code =
                 "\\!\\\"\\#\\$\\%\\&\\'\\(\\)\\*\\+\\,\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\[\\\\\\]\\^\\_\\`\\{\\|\\}\\~";
@@ -5138,7 +5138,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_290()
+        public void TestCase_299()
         {
             const string code = "\\\t\\A\\a\\ \\3\\φ\\«";
             var doc = new MarkdownParser().Parse(code);
@@ -5151,10 +5151,10 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_291()
+        public void TestCase_300()
         {
-            const string code = "\\*not emphasized*\n\\<br/> not a tag\n\\[not a link](/foo)\n\\`not code`\n1\\." +
-                                " not a list\n\\* not a list\n\\# not a heading\n\\[foo]: /url \"not a reference\"";
+            const string code = "\\*not emphasized*\n\\<br/> not a tag\n\\[not a link](/foo)\n\\`not code`\n1\\. not a list\n\\* not a list\n\\" +
+                "# not a heading\n\\[foo]: /url \"not a reference\"\n\\&ouml; not a character entity";
             var doc = new MarkdownParser().Parse(code);
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
@@ -5175,12 +5175,14 @@ namespace TestProject.MarkdownElementTest
                 new InlineStructure(InlineElementType.SoftLineBreak),
                 new InlineStructure(InlineElementType.InlineText, "# not a heading"),
                 new InlineStructure(InlineElementType.SoftLineBreak),
-                new InlineStructure(InlineElementType.InlineText, "[foo]: /url \"not a reference\""));
+                new InlineStructure(InlineElementType.InlineText, "[foo]: /url \"not a reference\""),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "&ouml; not a character entity"));
             inline.AssertEqual(doc.Elements[0].GetInlines());
         }
 
         [TestMethod]
-        public void TestCase_292()
+        public void TestCase_301()
         {
             const string code = "\\\\*emphasis*";
             var doc = new MarkdownParser().Parse(code);
@@ -5196,7 +5198,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_293()
+        public void TestCase_302()
         {
             const string code = "foo\\\nbar\n";
             var doc = new MarkdownParser().Parse(code);
@@ -5212,7 +5214,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_294()
+        public void TestCase_303()
         {
             const string code = "`` \\[\\` ``";
             var doc = new MarkdownParser().Parse(code);
@@ -5225,7 +5227,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_295()
+        public void TestCase_304()
         {
             const string code = "    \\[\\]";
             var doc = new MarkdownParser().Parse(code);
@@ -5236,7 +5238,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_296()
+        public void TestCase_305()
         {
             const string code = "~~~\n\\[\\]\n~~~";
             var doc = new MarkdownParser().Parse(code);
@@ -5247,7 +5249,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_297()
+        public void TestCase_306()
         {
             const string code = "<http://example.com?find=\\*>";
             var doc = new MarkdownParser().Parse(code);
@@ -5264,7 +5266,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_298()
+        public void TestCase_307()
         {
             const string code = "<a href=\"/bar\\/)\">";
             var doc = new MarkdownParser().Parse(code);
@@ -5275,7 +5277,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_299()
+        public void TestCase_308()
         {
             const string code = "[foo](/bar\\* \"ti\\*tle\")";
             var doc = new MarkdownParser().Parse(code);
@@ -5291,7 +5293,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_300()
+        public void TestCase_309()
         {
             const string code = "[foo]\n\n[foo]: /bar\\* \"ti\\*tle\"";
             var doc = new MarkdownParser().Parse(code);
@@ -5307,7 +5309,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_301()
+        public void TestCase_310()
         {
             const string code = "``` foo\\+bar\nfoo\n```";
             var doc = new MarkdownParser().Parse(code);

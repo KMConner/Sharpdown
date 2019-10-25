@@ -2222,7 +2222,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         }
 
                         if (entity.StartsWith("#x", StringComparison.OrdinalIgnoreCase) &&
-                            entity.Length <= 6 &&
+                            entity.Length <= 8 &&
                             uint.TryParse(entity.Substring(2), NumberStyles.HexNumber, null, out uint num))
                         {
                             builder.Append(GetSecureChar(num));
@@ -2231,6 +2231,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         }
 
                         if (entity.StartsWith("#", StringComparison.Ordinal) &&
+                            entity.Length<=8 &&
                             uint.TryParse(entity.Substring(1), out uint num2))
                         {
                             builder.Append(GetSecureChar(num2));
