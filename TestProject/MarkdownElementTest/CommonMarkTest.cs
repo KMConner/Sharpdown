@@ -9676,7 +9676,7 @@ namespace TestProject.MarkdownElementTest
         #region AutoLinks
 
         [TestMethod]
-        public void TestCase_565()
+        public void TestCase_590()
         {
             const string code = "<http://foo.bar.baz>";
             var doc = new MarkdownParser().Parse(code);
@@ -9694,7 +9694,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_566()
+        public void TestCase_591()
         {
             const string code = "<http://foo.bar.baz/test?q=hello&id=22&boolean>";
             var doc = new MarkdownParser().Parse(code);
@@ -9712,7 +9712,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_567()
+        public void TestCase_592()
         {
             const string code = "<irc://foo.bar:2233/baz>";
             var doc = new MarkdownParser().Parse(code);
@@ -9730,7 +9730,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_568()
+        public void TestCase_593()
         {
             const string code = "<MAILTO:FOO@BAR.BAZ>";
             var doc = new MarkdownParser().Parse(code);
@@ -9748,7 +9748,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_569()
+        public void TestCase_594()
         {
             const string code = "<a+b+c:d>";
             var doc = new MarkdownParser().Parse(code);
@@ -9766,7 +9766,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_570()
+        public void TestCase_595()
         {
             const string code = "<made-up-scheme://foo,bar>";
             var doc = new MarkdownParser().Parse(code);
@@ -9784,7 +9784,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_571()
+        public void TestCase_596()
         {
             const string code = "<http://../>";
             var doc = new MarkdownParser().Parse(code);
@@ -9802,7 +9802,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_572()
+        public void TestCase_597()
         {
             const string code = "<localhost:5001/foo>";
             var doc = new MarkdownParser().Parse(code);
@@ -9820,7 +9820,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_573()
+        public void TestCase_598()
         {
             const string code = "<http://foo.bar/baz bim>";
             var doc = new MarkdownParser().Parse(code);
@@ -9833,7 +9833,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_574()
+        public void TestCase_599()
         {
             const string code = "<http://example.com/\\[\\>";
             var doc = new MarkdownParser().Parse(code);
@@ -9851,7 +9851,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_575()
+        public void TestCase_600()
         {
             const string code = "<foo@bar.example.com>";
             var doc = new MarkdownParser().Parse(code);
@@ -9869,7 +9869,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_576()
+        public void TestCase_601()
         {
             const string code = "<foo+special@Bar.baz-bar0.com>";
             var doc = new MarkdownParser().Parse(code);
@@ -9887,7 +9887,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_577()
+        public void TestCase_602()
         {
             const string code = "<foo\\+@bar.example.com>";
             var doc = new MarkdownParser().Parse(code);
@@ -9900,7 +9900,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_578()
+        public void TestCase_603()
         {
             const string code = "<>";
             var doc = new MarkdownParser().Parse(code);
@@ -9913,7 +9913,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_579()
+        public void TestCase_604()
         {
             const string code = "< http://foo.bar >";
             var doc = new MarkdownParser().Parse(code);
@@ -9926,7 +9926,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_580()
+        public void TestCase_605()
         {
             const string code = "<m:abc>";
             var doc = new MarkdownParser().Parse(code);
@@ -9939,7 +9939,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_581()
+        public void TestCase_606()
         {
             const string code = "<foo.bar.baz>";
             var doc = new MarkdownParser().Parse(code);
@@ -9952,7 +9952,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_582()
+        public void TestCase_607()
         {
             const string code = "http://example.com";
             var doc = new MarkdownParser().Parse(code);
@@ -9965,7 +9965,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_583()
+        public void TestCase_608()
         {
             const string code = "foo@bar.example.com";
             var doc = new MarkdownParser().Parse(code);
@@ -9982,7 +9982,7 @@ namespace TestProject.MarkdownElementTest
         #region Raw HTML
 
         [TestMethod]
-        public void TestCase_610()
+        public void TestCase_609()
         {
             const string code = "<a><bab><c2c>";
             var doc = new MarkdownParser().Parse(code);
@@ -9998,7 +9998,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_611()
+        public void TestCase_610()
         {
             const string code = "<a/><b2/>";
             var doc = new MarkdownParser().Parse(code);
@@ -10013,7 +10013,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_612()
+        public void TestCase_611()
         {
             const string code = "<a  /><b2\ndata=\"foo\" >";
             var doc = new MarkdownParser().Parse(code);
@@ -10028,7 +10028,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_613()
+        public void TestCase_612()
         {
             const string code = "<a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 />";
             var doc = new MarkdownParser().Parse(code);
@@ -10042,7 +10042,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_614()
+        public void TestCase_613()
         {
             const string code = "Foo <responsive-image src=\"foo.jpg\" />";
             var doc = new MarkdownParser().Parse(code);
@@ -10057,7 +10057,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_615()
+        public void TestCase_614()
         {
             const string code = "<33> <__>";
             var doc = new MarkdownParser().Parse(code);
@@ -10070,7 +10070,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_616()
+        public void TestCase_615()
         {
             const string code = "<a h*#ref=\"hi\">";
             var doc = new MarkdownParser().Parse(code);
@@ -10083,7 +10083,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_591()
+        public void TestCase_616()
         {
             const string code = "<a href=\"hi'> <a href=hi'>";
             var doc = new MarkdownParser().Parse(code);
