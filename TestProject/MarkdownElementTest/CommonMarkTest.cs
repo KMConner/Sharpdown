@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sharpdown;
 using Sharpdown.MarkdownElement.BlockElement;
@@ -10545,7 +10545,7 @@ namespace TestProject.MarkdownElementTest
         #region Texual content
 
         [TestMethod]
-        public void TestCase_622()
+        public void TestCase_647()
         {
             const string code = "hello $.;'there";
             var doc = new MarkdownParser().Parse(code);
@@ -10558,7 +10558,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_623()
+        public void TestCase_648()
         {
             const string code = "Foo χρῆν";
             var doc = new MarkdownParser().Parse(code);
@@ -10571,7 +10571,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_624()
+        public void TestCase_649()
         {
             const string code = "Multiple     spaces";
             var doc = new MarkdownParser().Parse(code);
