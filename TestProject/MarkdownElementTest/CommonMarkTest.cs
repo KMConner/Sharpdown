@@ -5494,7 +5494,7 @@ namespace TestProject.MarkdownElementTest
         #region Code spans
 
         [TestMethod]
-        public void TestCase_314()
+        public void TestCase_328()
         {
             const string code = "`foo`";
             var doc = new MarkdownParser().Parse(code);
@@ -5507,7 +5507,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_315()
+        public void TestCase_329()
         {
             const string code = "`` foo ` bar ``";
             var doc = new MarkdownParser().Parse(code);
@@ -5520,7 +5520,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_316()
+        public void TestCase_330()
         {
             const string code = "` `` `";
             var doc = new MarkdownParser().Parse(code);
@@ -5533,7 +5533,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_317()
+        public void TestCase_331()
         {
             const string code = "``\nfoo\n``";
             var doc = new MarkdownParser().Parse(code);
@@ -5546,7 +5546,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_318()
+        public void TestCase_332()
         {
             const string code = "` a`";
             var doc = new MarkdownParser().Parse(code);
@@ -5559,7 +5559,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_319()
+        public void TestCase_333()
         {
             const string code = "`a\xA0\xA0b`";
             var doc = new MarkdownParser().Parse(code);
@@ -5572,20 +5572,62 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_320()
+        public void TestCase_334()
         {
-            const string code = "`foo `` bar`";
+            const string code = "` `\n`  `";
             var doc = new MarkdownParser().Parse(code);
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
 
-            var inline = new InlineStructure(InlineElementType.CodeSpan, "foo `` bar");
+            var inline = new InlineStructure(
+                new InlineStructure(InlineElementType.CodeSpan, " "),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.CodeSpan, "  "));
             inline.AssertEqual(doc.Elements[0].GetInlines());
         }
 
         [TestMethod]
-        public void TestCase_321()
+        public void TestCase_335()
+        {
+            const string code = "``\nfoo\nbar  \nbaz\n``";
+            var doc = new MarkdownParser().Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.CodeSpan, "foo bar   baz");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_336()
+        {
+            const string code = "``\nfoo \n``";
+            var doc = new MarkdownParser().Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.CodeSpan, "foo ");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_337()
+        {
+            const string code = "`foo   bar \nbaz`";
+            var doc = new MarkdownParser().Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.CodeSpan, "foo   bar  baz");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_338()
         {
             const string code = "`foo\\`bar`\n";
             var doc = new MarkdownParser().Parse(code);
@@ -5600,7 +5642,34 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_322()
+        public void TestCase_339()
+        {
+            const string code = "``foo`bar``";
+            var doc = new MarkdownParser().Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.CodeSpan, "foo`bar");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+
+        [TestMethod]
+        public void TestCase_340()
+        {
+            const string code = "` foo `` bar `";
+            var doc = new MarkdownParser().Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.CodeSpan, "foo `` bar");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_341()
         {
             const string code = "*foo`*`";
             var doc = new MarkdownParser().Parse(code);
@@ -5615,7 +5684,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_323()
+        public void TestCase_342()
         {
             const string code = "[not a `link](/foo`)\n";
             var doc = new MarkdownParser().Parse(code);
@@ -5631,7 +5700,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_324()
+        public void TestCase_343()
         {
             const string code = "`<a href=\"`\">`";
             var doc = new MarkdownParser().Parse(code);
@@ -5646,7 +5715,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_325()
+        public void TestCase_344()
         {
             const string code = "<a href=\"`\">`";
             var doc = new MarkdownParser().Parse(code);
@@ -5661,7 +5730,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_326()
+        public void TestCase_345()
         {
             const string code = "`<http://foo.bar.`baz>`";
             var doc = new MarkdownParser().Parse(code);
@@ -5676,7 +5745,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_327()
+        public void TestCase_346()
         {
             const string code = "<http://foo.bar.`baz>`";
             var doc = new MarkdownParser().Parse(code);
@@ -5692,7 +5761,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_328()
+        public void TestCase_347()
         {
             const string code = "```foo``";
             var doc = new MarkdownParser().Parse(code);
@@ -5705,7 +5774,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_329()
+        public void TestCase_348()
         {
             const string code = "`foo";
             var doc = new MarkdownParser().Parse(code);
@@ -5718,7 +5787,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_330()
+        public void TestCase_349()
         {
             const string code = "`foo``bar``";
             var doc = new MarkdownParser().Parse(code);
