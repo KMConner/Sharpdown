@@ -9982,7 +9982,7 @@ namespace TestProject.MarkdownElementTest
         #region Raw HTML
 
         [TestMethod]
-        public void TestCase_584()
+        public void TestCase_610()
         {
             const string code = "<a><bab><c2c>";
             var doc = new MarkdownParser().Parse(code);
@@ -9998,7 +9998,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_585()
+        public void TestCase_611()
         {
             const string code = "<a/><b2/>";
             var doc = new MarkdownParser().Parse(code);
@@ -10013,7 +10013,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_586()
+        public void TestCase_612()
         {
             const string code = "<a  /><b2\ndata=\"foo\" >";
             var doc = new MarkdownParser().Parse(code);
@@ -10028,7 +10028,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_587()
+        public void TestCase_613()
         {
             const string code = "<a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 />";
             var doc = new MarkdownParser().Parse(code);
@@ -10042,7 +10042,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_588()
+        public void TestCase_614()
         {
             const string code = "Foo <responsive-image src=\"foo.jpg\" />";
             var doc = new MarkdownParser().Parse(code);
@@ -10057,7 +10057,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_589()
+        public void TestCase_615()
         {
             const string code = "<33> <__>";
             var doc = new MarkdownParser().Parse(code);
@@ -10070,7 +10070,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_590()
+        public void TestCase_616()
         {
             const string code = "<a h*#ref=\"hi\">";
             var doc = new MarkdownParser().Parse(code);
@@ -10096,9 +10096,9 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_592()
+        public void TestCase_617()
         {
-            const string code = "< a><\nfoo><bar/ >";
+            const string code = "< a><\nfoo><bar/ >\n<foo bar=baz\nbim!bop />";
             var doc = new MarkdownParser().Parse(code);
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
@@ -10107,12 +10107,16 @@ namespace TestProject.MarkdownElementTest
             var inline = new InlineStructure(
                 new InlineStructure(InlineElementType.InlineText, "< a><"),
                 new InlineStructure(InlineElementType.SoftLineBreak),
-                new InlineStructure(InlineElementType.InlineText, "foo><bar/ >"));
+                new InlineStructure(InlineElementType.InlineText, "foo><bar/ >"),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "<foo bar=baz"),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "bim!bop />"));
             inline.AssertEqual(doc.Elements[0].GetInlines());
         }
 
         [TestMethod]
-        public void TestCase_593()
+        public void TestCase_618()
         {
             const string code = "<a href='bar'title=title>";
             var doc = new MarkdownParser().Parse(code);
@@ -10125,7 +10129,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_594()
+        public void TestCase_619()
         {
             const string code = "</a></foo >";
             var doc = new MarkdownParser().Parse(code);
@@ -10140,7 +10144,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_595()
+        public void TestCase_620()
         {
             const string code = "</a href=\"foo\">";
             var doc = new MarkdownParser().Parse(code);
@@ -10153,7 +10157,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_596()
+        public void TestCase_621()
         {
             const string code = "foo <!-- this is a\ncomment - with hyphen -->";
             var doc = new MarkdownParser().Parse(code);
@@ -10168,7 +10172,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_597()
+        public void TestCase_622()
         {
             const string code = "foo <!-- not a comment -- two hyphens -->";
             var doc = new MarkdownParser().Parse(code);
@@ -10181,7 +10185,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_598()
+        public void TestCase_623()
         {
             const string code = "foo <!--> foo -->\n\nfoo <!-- foo--->";
             var doc = new MarkdownParser().Parse(code);
@@ -10197,7 +10201,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_599()
+        public void TestCase_624()
         {
             const string code = "foo <?php echo $a; ?>";
             var doc = new MarkdownParser().Parse(code);
@@ -10212,7 +10216,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_600()
+        public void TestCase_625()
         {
             const string code = "foo <!ELEMENT br EMPTY>";
             var doc = new MarkdownParser().Parse(code);
@@ -10227,7 +10231,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_601()
+        public void TestCase_626()
         {
             const string code = "foo <![CDATA[>&<]]>";
             var doc = new MarkdownParser().Parse(code);
@@ -10242,7 +10246,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_602()
+        public void TestCase_627()
         {
             const string code = "foo <a href=\"&ouml;\">";
             var doc = new MarkdownParser().Parse(code);
@@ -10257,7 +10261,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_603()
+        public void TestCase_628()
         {
             const string code = "foo <a href=\"\\*\">";
             var doc = new MarkdownParser().Parse(code);
@@ -10272,7 +10276,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_604()
+        public void TestCase_629()
         {
             const string code = "<a href=\"\\\"\">";
             var doc = new MarkdownParser().Parse(code);
