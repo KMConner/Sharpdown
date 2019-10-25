@@ -293,7 +293,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 if (infoNode.Value.CanOpen
                     && infoNode.Value.Type == firstClose.Value.Type
                     && ((infoNode.Value.DeliminatorLength + firstClose.Value.DeliminatorLength) % 3 != 0
-                        || !firstClose.Value.CanOpen))
+                        || infoNode.Value.DeliminatorLength % 3 == 0
+                        || (!firstClose.Value.CanOpen && !infoNode.Value.CanClose)))
                 {
                     startDelimNode = infoNode;
                     break;

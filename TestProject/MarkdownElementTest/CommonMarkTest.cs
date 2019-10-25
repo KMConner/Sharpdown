@@ -5737,7 +5737,7 @@ namespace TestProject.MarkdownElementTest
         #region Emphasis and strong emphasis 
 
         [TestMethod]
-        public void TestCase_331()
+        public void TestCase_350()
         {
             const string code = "*foo bar*";
             var doc = new MarkdownParser().Parse(code);
@@ -5751,7 +5751,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_332()
+        public void TestCase_351()
         {
             const string code = "a * foo bar*";
             var doc = new MarkdownParser().Parse(code);
@@ -5764,7 +5764,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_333()
+        public void TestCase_352()
         {
             const string code = "a*\"foo\"*";
             var doc = new MarkdownParser().Parse(code);
@@ -5778,7 +5778,7 @@ namespace TestProject.MarkdownElementTest
 
 
         [TestMethod]
-        public void TestCase_334()
+        public void TestCase_353()
         {
             const string code = "*\xA0a\xA0*";
             var doc = new MarkdownParser().Parse(code);
@@ -5791,7 +5791,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_335()
+        public void TestCase_354()
         {
             const string code = "foo*bar*";
             var doc = new MarkdownParser().Parse(code);
@@ -5807,7 +5807,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_336()
+        public void TestCase_355()
         {
             const string code = "5*6*78";
             var doc = new MarkdownParser().Parse(code);
@@ -5824,7 +5824,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_337()
+        public void TestCase_356()
         {
             const string code = "_foo bar_";
             var doc = new MarkdownParser().Parse(code);
@@ -5838,7 +5838,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_338()
+        public void TestCase_357()
         {
             const string code = "_ foo bar_";
             var doc = new MarkdownParser().Parse(code);
@@ -5851,7 +5851,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_339()
+        public void TestCase_358()
         {
             const string code = "a_\"foo\"_";
             var doc = new MarkdownParser().Parse(code);
@@ -5864,7 +5864,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_340()
+        public void TestCase_359()
         {
             const string code = "foo_bar_";
             var doc = new MarkdownParser().Parse(code);
@@ -5877,7 +5877,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_341()
+        public void TestCase_360()
         {
             const string code = "5_6_78";
             var doc = new MarkdownParser().Parse(code);
@@ -5890,7 +5890,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_342()
+        public void TestCase_361()
         {
             const string code = "пристаням_стремятся_";
             var doc = new MarkdownParser().Parse(code);
@@ -5903,7 +5903,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_343()
+        public void TestCase_362()
         {
             const string code = "aa_\"bb\"_cc";
             var doc = new MarkdownParser().Parse(code);
@@ -5916,7 +5916,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_344()
+        public void TestCase_363()
         {
             const string code = "foo-_(bar)_";
             var doc = new MarkdownParser().Parse(code);
@@ -5932,7 +5932,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_345()
+        public void TestCase_364()
         {
             const string code = "_foo*";
             var doc = new MarkdownParser().Parse(code);
@@ -5945,7 +5945,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_346()
+        public void TestCase_365()
         {
             const string code = "*foo bar *";
             var doc = new MarkdownParser().Parse(code);
@@ -5958,7 +5958,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_347()
+        public void TestCase_366()
         {
             const string code = "*foo bar\n*";
             var doc = new MarkdownParser().Parse(code);
@@ -5974,7 +5974,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_348()
+        public void TestCase_367()
         {
             const string code = "*(*foo)";
             var doc = new MarkdownParser().Parse(code);
@@ -5987,7 +5987,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_349()
+        public void TestCase_368()
         {
             const string code = "*(*foo*)*";
             var doc = new MarkdownParser().Parse(code);
@@ -6004,7 +6004,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_350()
+        public void TestCase_369()
         {
             const string code = "*foo*bar";
             var doc = new MarkdownParser().Parse(code);
@@ -6020,7 +6020,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_351()
+        public void TestCase_370()
         {
             const string code = "_foo bar _";
             var doc = new MarkdownParser().Parse(code);
@@ -6033,7 +6033,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_352()
+        public void TestCase_371()
         {
             const string code = "_(_foo)";
             var doc = new MarkdownParser().Parse(code);
@@ -6046,7 +6046,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_353()
+        public void TestCase_372()
         {
             const string code = "_(_foo_)_";
             var doc = new MarkdownParser().Parse(code);
@@ -6063,7 +6063,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_354()
+        public void TestCase_373()
         {
             const string code = "_foo_bar";
             var doc = new MarkdownParser().Parse(code);
@@ -6076,7 +6076,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_355()
+        public void TestCase_374()
         {
             const string code = "_пристаням_стремятся";
             var doc = new MarkdownParser().Parse(code);
@@ -6089,7 +6089,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_356()
+        public void TestCase_375()
         {
             const string code = "_foo_bar_baz_";
             var doc = new MarkdownParser().Parse(code);
@@ -6103,7 +6103,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_357()
+        public void TestCase_376()
         {
             const string code = "_(bar)_.";
             var doc = new MarkdownParser().Parse(code);
@@ -6119,7 +6119,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_358()
+        public void TestCase_377()
         {
             const string code = "**foo bar**";
             var doc = new MarkdownParser().Parse(code);
@@ -6133,7 +6133,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_359()
+        public void TestCase_378()
         {
             const string code = "** foo bar**";
             var doc = new MarkdownParser().Parse(code);
@@ -6146,7 +6146,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_360()
+        public void TestCase_379()
         {
             const string code = "a**\"foo\"**";
             var doc = new MarkdownParser().Parse(code);
@@ -6159,7 +6159,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_361()
+        public void TestCase_380()
         {
             const string code = "foo**bar**";
             var doc = new MarkdownParser().Parse(code);
@@ -6175,7 +6175,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_362()
+        public void TestCase_381()
         {
             const string code = "**foo bar**";
             var doc = new MarkdownParser().Parse(code);
@@ -6189,7 +6189,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_363()
+        public void TestCase_382()
         {
             const string code = "__ foo bar__";
             var doc = new MarkdownParser().Parse(code);
@@ -6202,7 +6202,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_364()
+        public void TestCase_383()
         {
             const string code = "__\nfoo bar__";
             var doc = new MarkdownParser().Parse(code);
@@ -6218,7 +6218,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_365()
+        public void TestCase_384()
         {
             const string code = "a__\"foo\"__";
             var doc = new MarkdownParser().Parse(code);
@@ -6231,7 +6231,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_366()
+        public void TestCase_385()
         {
             const string code = "foo__bar__";
             var doc = new MarkdownParser().Parse(code);
@@ -6244,7 +6244,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_367()
+        public void TestCase_386()
         {
             const string code = "5__6__78";
             var doc = new MarkdownParser().Parse(code);
@@ -6257,7 +6257,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_368()
+        public void TestCase_387()
         {
             const string code = "пристаням__стремятся__";
             var doc = new MarkdownParser().Parse(code);
@@ -6270,7 +6270,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_369()
+        public void TestCase_388()
         {
             const string code = "__foo, __bar__, baz__";
             var doc = new MarkdownParser().Parse(code);
@@ -6287,7 +6287,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_370()
+        public void TestCase_389()
         {
             const string code = "foo-__(bar)__";
             var doc = new MarkdownParser().Parse(code);
@@ -6303,7 +6303,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_371()
+        public void TestCase_390()
         {
             const string code = "**foo bar **";
             var doc = new MarkdownParser().Parse(code);
@@ -6316,7 +6316,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_372()
+        public void TestCase_391()
         {
             const string code = "**(**foo)";
             var doc = new MarkdownParser().Parse(code);
@@ -6329,7 +6329,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_373()
+        public void TestCase_392()
         {
             const string code = "*(**foo**)*";
             var doc = new MarkdownParser().Parse(code);
@@ -6346,7 +6346,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_374()
+        public void TestCase_393()
         {
             const string code = "**Gomphocarpus (*Gomphocarpus physocarpus*, syn.\n*Asclepias physocarpa*)**";
             var doc = new MarkdownParser().Parse(code);
@@ -6367,7 +6367,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_375()
+        public void TestCase_394()
         {
             const string code = "**foo \"*bar*\" foo**";
             var doc = new MarkdownParser().Parse(code);
@@ -6384,7 +6384,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_376()
+        public void TestCase_395()
         {
             const string code = "**foo**bar";
             var doc = new MarkdownParser().Parse(code);
@@ -6400,7 +6400,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_377()
+        public void TestCase_396()
         {
             const string code = "__foo bar __";
             var doc = new MarkdownParser().Parse(code);
@@ -6413,7 +6413,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_378()
+        public void TestCase_397()
         {
             const string code = "__(__foo)";
             var doc = new MarkdownParser().Parse(code);
@@ -6426,7 +6426,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_379()
+        public void TestCase_398()
         {
             const string code = "_(__foo__)_";
             var doc = new MarkdownParser().Parse(code);
@@ -6443,7 +6443,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_380()
+        public void TestCase_399()
         {
             const string code = "__foo__bar";
             var doc = new MarkdownParser().Parse(code);
@@ -6456,7 +6456,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_381()
+        public void TestCase_400()
         {
             const string code = "__пристаням__стремятся";
             var doc = new MarkdownParser().Parse(code);
@@ -6469,7 +6469,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_382()
+        public void TestCase_401()
         {
             const string code = "__foo__bar__baz__";
             var doc = new MarkdownParser().Parse(code);
@@ -6483,7 +6483,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_383()
+        public void TestCase_402()
         {
             const string code = "__(bar)__.";
             var doc = new MarkdownParser().Parse(code);
@@ -6499,7 +6499,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_384()
+        public void TestCase_403()
         {
             const string code = "*foo [bar](/url)*";
             var doc = new MarkdownParser().Parse(code);
@@ -6515,7 +6515,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_385()
+        public void TestCase_404()
         {
             const string code = "*foo\nbar*";
             var doc = new MarkdownParser().Parse(code);
@@ -6531,7 +6531,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_386()
+        public void TestCase_405()
         {
             const string code = "_foo __bar__ baz_";
             var doc = new MarkdownParser().Parse(code);
@@ -6548,7 +6548,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_387()
+        public void TestCase_406()
         {
             const string code = "_foo _bar_ baz_";
             var doc = new MarkdownParser().Parse(code);
@@ -6565,7 +6565,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_388()
+        public void TestCase_407()
         {
             const string code = "__foo_ bar_";
             var doc = new MarkdownParser().Parse(code);
@@ -6581,7 +6581,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_389()
+        public void TestCase_408()
         {
             const string code = "*foo *bar**";
             var doc = new MarkdownParser().Parse(code);
@@ -6597,7 +6597,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_390()
+        public void TestCase_409()
         {
             const string code = "*foo **bar** baz*";
             var doc = new MarkdownParser().Parse(code);
@@ -6614,7 +6614,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_391()
+        public void TestCase_410()
         {
             const string code = "*foo**bar**baz*";
             var doc = new MarkdownParser().Parse(code);
@@ -6631,7 +6631,22 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_392()
+        public void TestCase_411()
+        {
+            const string code = "*foo**bar*";
+            var doc = new MarkdownParser().Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Emphasis,
+                    new InlineStructure(InlineElementType.InlineText, "foo**bar"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+
+        [TestMethod]
+        public void TestCase_412()
         {
             const string code = "***foo** bar*";
             var doc = new MarkdownParser().Parse(code);
@@ -6647,7 +6662,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_393()
+        public void TestCase_413()
         {
             const string code = "*foo **bar***";
             var doc = new MarkdownParser().Parse(code);
@@ -6663,7 +6678,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_394()
+        public void TestCase_414()
         {
             const string code = "*foo**bar***";
             var doc = new MarkdownParser().Parse(code);
@@ -6678,8 +6693,46 @@ namespace TestProject.MarkdownElementTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
         }
 
+
         [TestMethod]
-        public void TestCase_395()
+        public void TestCase_415()
+        {
+            const string code = "foo***bar***baz";
+            var doc = new MarkdownParser().Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Emphasis,
+                new InlineStructure(InlineElementType.InlineText, "foo"),
+                    new InlineStructure(InlineElementType.Emphasis,
+                        new InlineStructure(InlineElementType.StrongEmphasis,
+                            new InlineStructure(InlineElementType.InlineText, "bar"))),
+                new InlineStructure(InlineElementType.InlineText, "baz"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_416()
+        {
+            const string code = "foo******bar*********baz";
+            var doc = new MarkdownParser().Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Emphasis,
+                new InlineStructure(InlineElementType.InlineText, "foo"),
+                new InlineStructure(InlineElementType.StrongEmphasis,
+                    new InlineStructure(InlineElementType.StrongEmphasis,
+                        new InlineStructure(InlineElementType.StrongEmphasis,
+                            new InlineStructure(InlineElementType.InlineText, "bar")))),
+                new InlineStructure(InlineElementType.InlineText, "***baz"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_417()
         {
             const string code = "*foo **bar *baz* bim** bop*";
             var doc = new MarkdownParser().Parse(code);
@@ -6699,7 +6752,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_396()
+        public void TestCase_418()
         {
             const string code = "*foo [*bar*](/url)*";
             var doc = new MarkdownParser().Parse(code);
@@ -6716,7 +6769,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_397()
+        public void TestCase_419()
         {
             const string code = "** is not an empty emphasis";
             var doc = new MarkdownParser().Parse(code);
@@ -6729,7 +6782,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_398()
+        public void TestCase_420()
         {
             const string code = "**** is not an empty strong emphasis";
             var doc = new MarkdownParser().Parse(code);
@@ -6742,7 +6795,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_399()
+        public void TestCase_421()
         {
             const string code = "**foo [bar](/url)**";
             var doc = new MarkdownParser().Parse(code);
@@ -6758,7 +6811,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_400()
+        public void TestCase_422()
         {
             const string code = "**foo\nbar**";
             var doc = new MarkdownParser().Parse(code);
@@ -6774,7 +6827,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_401()
+        public void TestCase_423()
         {
             const string code = "__foo _bar_ baz__";
             var doc = new MarkdownParser().Parse(code);
@@ -6791,7 +6844,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_402()
+        public void TestCase_424()
         {
             const string code = "__foo __bar__ baz__";
             var doc = new MarkdownParser().Parse(code);
@@ -6808,7 +6861,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_403()
+        public void TestCase_425()
         {
             const string code = "____foo__ bar__";
             var doc = new MarkdownParser().Parse(code);
@@ -6824,7 +6877,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_404()
+        public void TestCase_426()
         {
             const string code = "**foo **bar****";
             var doc = new MarkdownParser().Parse(code);
@@ -6840,7 +6893,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_405()
+        public void TestCase_427()
         {
             const string code = "**foo *bar* baz**";
             var doc = new MarkdownParser().Parse(code);
@@ -6857,7 +6910,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_406()
+        public void TestCase_428()
         {
             const string code = "**foo*bar*baz**";
             var doc = new MarkdownParser().Parse(code);
@@ -6874,7 +6927,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_407()
+        public void TestCase_429()
         {
             const string code = "***foo* bar**";
             var doc = new MarkdownParser().Parse(code);
@@ -6890,7 +6943,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_408()
+        public void TestCase_430()
         {
             const string code = "**foo *bar***";
             var doc = new MarkdownParser().Parse(code);
@@ -6906,7 +6959,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_409()
+        public void TestCase_431()
         {
             const string code = "**foo *bar **baz**\nbim* bop**";
             var doc = new MarkdownParser().Parse(code);
@@ -6927,7 +6980,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_410()
+        public void TestCase_432()
         {
             const string code = "**foo [*bar*](/url)**";
             var doc = new MarkdownParser().Parse(code);
@@ -6944,7 +6997,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_411()
+        public void TestCase_433()
         {
             const string code = "__ is not an empty emphasis";
             var doc = new MarkdownParser().Parse(code);
@@ -6957,7 +7010,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_412()
+        public void TestCase_434()
         {
             const string code = "____ is not an empty strong emphasis";
             var doc = new MarkdownParser().Parse(code);
@@ -6970,7 +7023,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_413()
+        public void TestCase_435()
         {
             const string code = "foo ***";
             var doc = new MarkdownParser().Parse(code);
@@ -6983,7 +7036,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_414()
+        public void TestCase_436()
         {
             const string code = "foo *\\**";
             var doc = new MarkdownParser().Parse(code);
@@ -6999,7 +7052,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_415()
+        public void TestCase_437()
         {
             const string code = "foo *_*";
             var doc = new MarkdownParser().Parse(code);
@@ -7015,7 +7068,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_416()
+        public void TestCase_438()
         {
             const string code = "foo *****";
             var doc = new MarkdownParser().Parse(code);
@@ -7028,7 +7081,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_417()
+        public void TestCase_439()
         {
             const string code = "foo **\\***";
             var doc = new MarkdownParser().Parse(code);
@@ -7044,7 +7097,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_418()
+        public void TestCase_440()
         {
             const string code = "foo **_**";
             var doc = new MarkdownParser().Parse(code);
@@ -7060,7 +7113,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_419()
+        public void TestCase_441()
         {
             const string code = "**foo*";
             var doc = new MarkdownParser().Parse(code);
@@ -7076,7 +7129,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_420()
+        public void TestCase_442()
         {
             const string code = "*foo**";
             var doc = new MarkdownParser().Parse(code);
@@ -7092,7 +7145,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_421()
+        public void TestCase_443()
         {
             const string code = "***foo**";
             var doc = new MarkdownParser().Parse(code);
@@ -7108,7 +7161,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_422()
+        public void TestCase_444()
         {
             const string code = "****foo*";
             var doc = new MarkdownParser().Parse(code);
@@ -7124,7 +7177,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_423()
+        public void TestCase_445()
         {
             const string code = "**foo***";
             var doc = new MarkdownParser().Parse(code);
@@ -7140,7 +7193,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_424()
+        public void TestCase_446()
         {
             const string code = "*foo****";
             var doc = new MarkdownParser().Parse(code);
@@ -7156,7 +7209,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_425()
+        public void TestCase_447()
         {
             const string code = "foo ___";
             var doc = new MarkdownParser().Parse(code);
@@ -7169,7 +7222,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_426()
+        public void TestCase_448()
         {
             const string code = "foo _\\__";
             var doc = new MarkdownParser().Parse(code);
@@ -7185,7 +7238,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_427()
+        public void TestCase_449()
         {
             const string code = "foo _*_";
             var doc = new MarkdownParser().Parse(code);
@@ -7201,7 +7254,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_428()
+        public void TestCase_450()
         {
             const string code = "foo _____";
             var doc = new MarkdownParser().Parse(code);
@@ -7214,7 +7267,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_429()
+        public void TestCase_451()
         {
             const string code = "foo __\\___";
             var doc = new MarkdownParser().Parse(code);
@@ -7230,7 +7283,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_430()
+        public void TestCase_452()
         {
             const string code = "foo __*__";
             var doc = new MarkdownParser().Parse(code);
@@ -7246,7 +7299,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_431()
+        public void TestCase_453()
         {
             const string code = "__foo_";
             var doc = new MarkdownParser().Parse(code);
@@ -7262,7 +7315,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_432()
+        public void TestCase_454()
         {
             const string code = "_foo__";
             var doc = new MarkdownParser().Parse(code);
@@ -7278,7 +7331,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_433()
+        public void TestCase_455()
         {
             const string code = "___foo__";
             var doc = new MarkdownParser().Parse(code);
@@ -7294,7 +7347,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_434()
+        public void TestCase_456()
         {
             const string code = "____foo_";
             var doc = new MarkdownParser().Parse(code);
@@ -7310,7 +7363,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_435()
+        public void TestCase_457()
         {
             const string code = "__foo___";
             var doc = new MarkdownParser().Parse(code);
@@ -7326,7 +7379,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_436()
+        public void TestCase_458()
         {
             const string code = "_foo____";
             var doc = new MarkdownParser().Parse(code);
@@ -7342,7 +7395,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_437()
+        public void TestCase_459()
         {
             const string code = "**foo**";
             var doc = new MarkdownParser().Parse(code);
@@ -7356,7 +7409,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_438()
+        public void TestCase_460()
         {
             const string code = "*_foo_*";
             var doc = new MarkdownParser().Parse(code);
@@ -7371,7 +7424,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_439()
+        public void TestCase_461()
         {
             const string code = "__foo__";
             var doc = new MarkdownParser().Parse(code);
@@ -7385,7 +7438,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_440()
+        public void TestCase_462()
         {
             const string code = "_*foo*_";
             var doc = new MarkdownParser().Parse(code);
@@ -7400,7 +7453,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_441()
+        public void TestCase_463()
         {
             const string code = "****foo****";
             var doc = new MarkdownParser().Parse(code);
@@ -7415,7 +7468,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_442()
+        public void TestCase_464()
         {
             const string code = "____foo____";
             var doc = new MarkdownParser().Parse(code);
@@ -7430,7 +7483,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_443()
+        public void TestCase_465()
         {
             const string code = "******foo******";
             var doc = new MarkdownParser().Parse(code);
@@ -7446,7 +7499,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_444()
+        public void TestCase_466()
         {
             const string code = "***foo***";
             var doc = new MarkdownParser().Parse(code);
@@ -7461,7 +7514,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_445()
+        public void TestCase_467()
         {
             const string code = "_____foo_____";
             var doc = new MarkdownParser().Parse(code);
@@ -7477,7 +7530,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_446()
+        public void TestCase_468()
         {
             const string code = "*foo _bar* baz_";
             var doc = new MarkdownParser().Parse(code);
@@ -7493,7 +7546,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_447()
+        public void TestCase_469()
         {
             const string code = "*foo __bar *baz bim__ bam*";
             var doc = new MarkdownParser().Parse(code);
@@ -7510,7 +7563,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_448()
+        public void TestCase_470()
         {
             const string code = "**foo **bar baz**";
             var doc = new MarkdownParser().Parse(code);
@@ -7526,7 +7579,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_449()
+        public void TestCase_471()
         {
             const string code = "*foo *bar baz*";
             var doc = new MarkdownParser().Parse(code);
@@ -7542,7 +7595,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_450()
+        public void TestCase_472()
         {
             const string code = "*[bar*](/url)";
             var doc = new MarkdownParser().Parse(code);
@@ -7558,7 +7611,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_451()
+        public void TestCase_473()
         {
             const string code = "_foo [bar_](/url)";
             var doc = new MarkdownParser().Parse(code);
@@ -7574,7 +7627,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_452()
+        public void TestCase_474()
         {
             const string code = "*<img src=\"foo\" title=\"*\"/>";
             var doc = new MarkdownParser().Parse(code);
@@ -7589,7 +7642,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_453()
+        public void TestCase_475()
         {
             const string code = "**<a href=\"**\">";
             var doc = new MarkdownParser().Parse(code);
@@ -7604,7 +7657,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_454()
+        public void TestCase_476()
         {
             const string code = "__<a href=\"__\">";
             var doc = new MarkdownParser().Parse(code);
@@ -7619,7 +7672,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_455()
+        public void TestCase_477()
         {
             const string code = "*a `*`*";
             var doc = new MarkdownParser().Parse(code);
@@ -7634,7 +7687,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_456()
+        public void TestCase_478()
         {
             const string code = "_a `_`_";
             var doc = new MarkdownParser().Parse(code);
@@ -7649,7 +7702,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_457()
+        public void TestCase_479()
         {
             const string code = "**a<http://foo.bar/?q=**>";
             var doc = new MarkdownParser().Parse(code);
@@ -7665,7 +7718,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_458()
+        public void TestCase_480()
         {
             const string code = "__a<http://foo.bar/?q=__>";
             var doc = new MarkdownParser().Parse(code);
@@ -7858,7 +7911,7 @@ namespace TestProject.MarkdownElementTest
                 new InlineStructure(InlineElementType.SoftLineBreak),
                 new InlineStructure(InlineElementType.InlineText, "[a](<b)c>"),
                 new InlineStructure(InlineElementType.SoftLineBreak),
-                new InlineStructure(InlineElementType.InlineText,"[a]("),
+                new InlineStructure(InlineElementType.InlineText, "[a]("),
                 new InlineStructure(InlineElementType.InlineHtml, "<b>"),
                 new InlineStructure(InlineElementType.InlineText, "c)"));
             inline.AssertEqual(doc.Elements[0].GetInlines());
