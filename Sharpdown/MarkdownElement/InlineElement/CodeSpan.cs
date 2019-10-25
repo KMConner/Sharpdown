@@ -1,4 +1,6 @@
-﻿namespace Sharpdown.MarkdownElement.InlineElement
+using System.Linq;
+
+namespace Sharpdown.MarkdownElement.InlineElement
 {
     /// <summary>
     /// Represents code spans in markdown documents.
@@ -27,16 +29,14 @@
 
         private static string CollapseWhiteSpaces(string text)
         {
-            var ret = text.Trim(new[] {'\r', '\n', ' '})
-                .Replace('\t', ' ')
+            var ret = text
+                .Replace("\r\n", " ")
                 .Replace('\r', ' ')
-                .Replace('\n', ' ')
-                .Replace("  ", " ");
-            while (ret.IndexOf("  ", System.StringComparison.Ordinal) >= 0)
+                .Replace('\n', ' ');
+            if (ret.Length > 0 && ret[0] == ' ' && ret[ret.Length - 1] == ' ' && ret.Any(c => c != ' '))
             {
-                ret = ret.Replace("  ", " ");
+                ret = ret.Substring(1, ret.Length - 2);
             }
-
             return ret;
         }
     }

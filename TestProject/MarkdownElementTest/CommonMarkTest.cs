@@ -1516,7 +1516,7 @@ namespace TestProject.MarkdownElementTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
             var inline = new InlineStructure(InlineElementType.InlineText,
-                new InlineStructure(InlineElementType.CodeSpan, ""),
+                new InlineStructure(InlineElementType.CodeSpan, " "),
                 new InlineStructure(InlineElementType.SoftLineBreak, ""),
                 new InlineStructure(InlineElementType.InlineText, "aaa"));
             inline.AssertEqual((doc.Elements[0] as Paragraph).Inlines);
@@ -5509,7 +5509,7 @@ namespace TestProject.MarkdownElementTest
         [TestMethod]
         public void TestCase_315()
         {
-            const string code = "`` foo ` bar  ``";
+            const string code = "`` foo ` bar ``";
             var doc = new MarkdownParser().Parse(code);
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
@@ -5548,13 +5548,13 @@ namespace TestProject.MarkdownElementTest
         [TestMethod]
         public void TestCase_318()
         {
-            const string code = "`foo   bar\n  baz`";
+            const string code = "` a`";
             var doc = new MarkdownParser().Parse(code);
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
 
-            var inline = new InlineStructure(InlineElementType.CodeSpan, "foo bar baz");
+            var inline = new InlineStructure(InlineElementType.CodeSpan, " a");
             inline.AssertEqual(doc.Elements[0].GetInlines());
         }
 
@@ -10289,7 +10289,7 @@ namespace TestProject.MarkdownElementTest
         #region Hard line breaks
 
         [TestMethod]
-        public void TestCase_605()
+        public void TestCase_630()
         {
             const string code = "foo  \nbaz";
             var doc = new MarkdownParser().Parse(code);
@@ -10305,7 +10305,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_606()
+        public void TestCase_631()
         {
             const string code = "foo\\\nbaz";
             var doc = new MarkdownParser().Parse(code);
@@ -10321,7 +10321,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_607()
+        public void TestCase_632()
         {
             const string code = "foo       \nbaz";
             var doc = new MarkdownParser().Parse(code);
@@ -10337,7 +10337,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_608()
+        public void TestCase_633()
         {
             const string code = "\n\nfoo  \n     bar\n\n";
             var doc = new MarkdownParser().Parse(code);
@@ -10353,7 +10353,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_609()
+        public void TestCase_634()
         {
             const string code = "foo\\\n     bar";
             var doc = new MarkdownParser().Parse(code);
@@ -10369,7 +10369,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_610()
+        public void TestCase_635()
         {
             const string code = "*foo  \nbar*";
             var doc = new MarkdownParser().Parse(code);
@@ -10385,7 +10385,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_611()
+        public void TestCase_636()
         {
             const string code = "*foo\\\nbar*\n";
             var doc = new MarkdownParser().Parse(code);
@@ -10401,20 +10401,20 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_612()
+        public void TestCase_637()
         {
-            const string code = "`code  \nspan`";
+            const string code = "`code \nspan`";
             var doc = new MarkdownParser().Parse(code);
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
 
-            var inline = new InlineStructure(InlineElementType.CodeSpan, "code span");
+            var inline = new InlineStructure(InlineElementType.CodeSpan, "code  span");
             inline.AssertEqual(doc.Elements[0].GetInlines());
         }
 
         [TestMethod]
-        public void TestCase_613()
+        public void TestCase_638()
         {
             const string code = "`code\\\nspan`";
             var doc = new MarkdownParser().Parse(code);
@@ -10427,7 +10427,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_614()
+        public void TestCase_639()
         {
             const string code = "<a href=\"foo  \nbar\">";
             var doc = new MarkdownParser().Parse(code);
@@ -10440,7 +10440,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_615()
+        public void TestCase_640()
         {
             const string code = "<a href=\"foo\\\nbar\">";
             var doc = new MarkdownParser().Parse(code);
@@ -10453,7 +10453,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_616()
+        public void TestCase_641()
         {
             const string code = "foo\\";
             var doc = new MarkdownParser().Parse(code);
@@ -10466,7 +10466,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_617()
+        public void TestCase_642()
         {
             const string code = "foo  ";
             var doc = new MarkdownParser().Parse(code);
@@ -10479,7 +10479,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_618()
+        public void TestCase_643()
         {
             const string code = "### foo\\";
             var doc = new MarkdownParser().Parse(code);
@@ -10492,7 +10492,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_619()
+        public void TestCase_644()
         {
             const string code = "### foo  ";
             var doc = new MarkdownParser().Parse(code);
