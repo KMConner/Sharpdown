@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -24,9 +24,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// <summary>
         /// Characters which can be used as bullet list markers.
         /// </summary>
-        internal static readonly char[] bullets = {'-', '*', '+'};
+        internal static readonly char[] bullets = { '-', '*', '+' };
 
-        internal static readonly char[] orderedDelims = {'.', ')'};
+        internal static readonly char[] orderedDelims = { '.', ')' };
 
         /// <summary>
         /// Regular expression which matches the first line of list item which starts with a
@@ -296,7 +296,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     currentIndent + listItem.contentIndent);
             }
 
-            if (CanStartBlock(lineTrimmed, currentIndent))
+            if (trimmedIndent < 4 && CanStartBlock(lineTrimmed, currentIndent))
             {
                 if (ThematicBreak.CanStartBlock(line, currentIndent))
                 {
@@ -327,7 +327,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             var indentRemoved = RemoveIndent(line, listItem.contentIndent, currentIndent);
             var newBlock = BlockElementUtil.CreateBlockFromLine(indentRemoved,
                 currentIndent + Math.Min(listItem.contentIndent, lineIndent), parserConfig);
-            if (newBlock.Type != BlockElementType.Unknown)
+            if (newBlock.Type == BlockElementType.ThematicBreak)
             {
                 return AddLineResult.NeedClose;
             }
