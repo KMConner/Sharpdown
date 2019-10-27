@@ -2806,7 +2806,7 @@ namespace TestProject.MarkdownElementTest
         #region Block quote
 
         [TestMethod]
-        public void TestCase_191()
+        public void TestCase_198()
         {
             const string html = "> # Foo\r\n> bar\r\n> baz";
             var doc = new MarkdownParser().Parse(html);
@@ -2826,7 +2826,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_192()
+        public void TestCase_199()
         {
             const string html = "># Foo\r\n>bar\r\n> baz";
             var doc = new MarkdownParser().Parse(html);
@@ -2846,7 +2846,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_193()
+        public void TestCase_200()
         {
             const string html = "   > # Foo\r\n   > bar\r\n > baz";
             var doc = new MarkdownParser().Parse(html);
@@ -2866,7 +2866,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_194()
+        public void TestCase_201()
         {
             const string html = "    > # Foo\r\n    > bar\r\n    > baz";
             var doc = new MarkdownParser().Parse(html);
@@ -2877,7 +2877,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_195()
+        public void TestCase_202()
         {
             const string html = "> # Foo\r\n> bar\r\nbaz";
             var doc = new MarkdownParser().Parse(html);
@@ -2897,7 +2897,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_196()
+        public void TestCase_203()
         {
             const string html = "> bar\r\nbaz\r\n> foo";
             var doc = new MarkdownParser().Parse(html);
@@ -2916,7 +2916,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_197()
+        public void TestCase_204()
         {
             const string html = "> foo\r\n---";
             var doc = new MarkdownParser().Parse(html);
@@ -2931,7 +2931,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_198()
+        public void TestCase_205()
         {
             const string html = "> - foo\r\n- bar";
             var doc = new MarkdownParser().Parse(html);
@@ -2953,7 +2953,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_199()
+        public void TestCase_206()
         {
             const string html = ">     foo\r\n    bar";
             var doc = new MarkdownParser().Parse(html);
@@ -2968,7 +2968,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_200()
+        public void TestCase_207()
         {
             const string html = "> ```\r\nfoo\r\n```";
             var doc = new MarkdownParser().Parse(html);
@@ -2988,7 +2988,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_201()
+        public void TestCase_208()
         {
             const string html = "> foo\r\n    - bar";
             var doc = new MarkdownParser().Parse(html);
@@ -3005,7 +3005,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_202()
+        public void TestCase_209()
         {
             const string html = ">";
             var doc = new MarkdownParser().Parse(html);
@@ -3016,7 +3016,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_203()
+        public void TestCase_210()
         {
             const string html = ">\r\n>  \r\n> ";
             var doc = new MarkdownParser().Parse(html);
@@ -3027,7 +3027,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_204()
+        public void TestCase_211()
         {
             const string html = ">\r\n> foo\r\n>  ";
             var doc = new MarkdownParser().Parse(html);
@@ -3041,7 +3041,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_205()
+        public void TestCase_212()
         {
             const string html = "> foo\r\n\r\n> bar";
             var doc = new MarkdownParser().Parse(html);
@@ -3058,7 +3058,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_206()
+        public void TestCase_213()
         {
             const string html = "> foo\r\n> bar";
             var doc = new MarkdownParser().Parse(html);
@@ -3075,7 +3075,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_207()
+        public void TestCase_214()
         {
             const string html = "> foo\r\n>\r\n> bar";
             var doc = new MarkdownParser().Parse(html);
@@ -3092,7 +3092,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_208()
+        public void TestCase_215()
         {
             const string html = "foo\r\n> bar";
             var doc = new MarkdownParser().Parse(html);
@@ -3109,7 +3109,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_209()
+        public void TestCase_216()
         {
             const string html = "> aaa\r\n***\r\n> bbb";
             var doc = new MarkdownParser().Parse(html);
@@ -3127,7 +3127,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_210()
+        public void TestCase_217()
         {
             const string html = "> bar\r\nbaz";
             var doc = new MarkdownParser().Parse(html);
@@ -3144,7 +3144,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_211()
+        public void TestCase_218()
         {
             const string html = "> bar\r\n\r\nbaz";
             var doc = new MarkdownParser().Parse(html);
@@ -3162,7 +3162,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_212()
+        public void TestCase_219()
         {
             const string html = "> bar\r\n>\r\nbaz";
             var doc = new MarkdownParser().Parse(html);
@@ -3180,7 +3180,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_213()
+        public void TestCase_220()
         {
             const string html = "> > > foo\r\nbar";
             var doc = new MarkdownParser().Parse(html);
@@ -3200,7 +3200,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_214()
+        public void TestCase_221()
         {
             const string html = ">>> foo\r\n> bar\r\n>>baz";
             var doc = new MarkdownParser().Parse(html);
@@ -3222,7 +3222,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_215()
+        public void TestCase_222()
         {
             const string html = ">     code\r\n\r\n>    not code";
             var doc = new MarkdownParser().Parse(html);
