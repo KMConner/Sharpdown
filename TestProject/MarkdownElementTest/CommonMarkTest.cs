@@ -1154,7 +1154,7 @@ namespace TestProject.MarkdownElementTest
         #region Indented code block
 
         [TestMethod]
-        public void TestCase_076()
+        public void TestCase_077()
         {
             var doc = new MarkdownParser().Parse("    a simple\n      indented code block");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1165,7 +1165,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_077()
+        public void TestCase_078()
         {
             var doc = new MarkdownParser().Parse("  - foo\n\n    bar");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1184,7 +1184,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_078()
+        public void TestCase_079()
         {
             var doc = new MarkdownParser().Parse("1.  foo\n\n    - bar");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1202,7 +1202,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_079()
+        public void TestCase_080()
         {
             var doc = new MarkdownParser().Parse("    <a/>\n    *hi*\n\n    - one");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1212,7 +1212,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_080()
+        public void TestCase_081()
         {
             var doc = new MarkdownParser().Parse("    chunk1\n\n    chunk2\n  \n \n \n    chunk3");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1222,9 +1222,8 @@ namespace TestProject.MarkdownElementTest
                 (doc.Elements[0] as CodeBlock).Code);
         }
 
-
         [TestMethod]
-        public void TestCase_081()
+        public void TestCase_082()
         {
             var doc = new MarkdownParser().Parse("    chunk1\n      \n      chunk2");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1234,7 +1233,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_082()
+        public void TestCase_083()
         {
             var doc = new MarkdownParser().Parse("Foo\n    bar");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1248,7 +1247,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_083()
+        public void TestCase_084()
         {
             var doc = new MarkdownParser().Parse("    Foo\nbar");
             Assert.AreEqual(2, doc.Elements.Count);
@@ -1261,7 +1260,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_084()
+        public void TestCase_085()
         {
             var doc = new MarkdownParser().Parse("# Heading\n    foo\nHeading\n------\n    foo\n----");
             Assert.AreEqual(5, doc.Elements.Count);
@@ -1280,7 +1279,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_085()
+        public void TestCase_086()
         {
             var doc = new MarkdownParser().Parse("        foo\n    bar");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1290,7 +1289,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_086()
+        public void TestCase_087()
         {
             var doc = new MarkdownParser().Parse("\n    \n    foo\n    ");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1300,7 +1299,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_087()
+        public void TestCase_088()
         {
             var doc = new MarkdownParser().Parse("    foo  ");
             Assert.AreEqual(1, doc.Elements.Count);
