@@ -137,7 +137,7 @@ namespace TestProject.MarkdownElementTest.GFMTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
 
-            var inline = new InlineStructure(InlineElementType.CodeSpan, "code span");
+            var inline = new InlineStructure(InlineElementType.CodeSpan, "code   span");
             inline.AssertEqual(doc.Elements[0].GetInlines());
         }
 

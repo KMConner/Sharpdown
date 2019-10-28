@@ -101,13 +101,17 @@ namespace TestProject.MarkdownElementTest.GFMTest
         public void TestCase_498()
         {
             const string code = "[link](</my uri>)";
-            var doc = parser.Parse(code);
+            var doc = new MarkdownParser().Parse(code);
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
 
-            var inline = new InlineStructure(InlineElementType.InlineText, code);
+            var inline = new InlineStructure(InlineElementType.Link,
+                new InlineStructure(InlineElementType.InlineText, "link"));
             inline.AssertEqual(doc.Elements[0].GetInlines());
+            var link = doc.Elements[0].GetInline(0) as Link;
+            Assert.AreEqual("/my%20uri", link.Destination);
+            Assert.AreEqual(null, link.Title);
         }
 
         [TestMethod]

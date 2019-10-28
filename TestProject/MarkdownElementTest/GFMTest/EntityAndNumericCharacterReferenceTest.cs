@@ -38,13 +38,13 @@ namespace TestProject.MarkdownElementTest.GFMTest
         [TestMethod]
         public void TestCase_322()
         {
-            const string code = "&#35; &#1234; &#992; &#98765432; &#0;";
-            var doc = parser.Parse(code);
+            const string code = "&#35; &#1234; &#992; &#0;";
+            var doc = new MarkdownParser().Parse(code);
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
 
-            var inline = new InlineStructure(InlineElementType.InlineText, "# Ӓ Ϡ \xFFFD \xFFFD");
+            var inline = new InlineStructure(InlineElementType.InlineText, "# Ӓ Ϡ \xFFFD");
             inline.AssertEqual(doc.Elements[0].GetInlines());
         }
 
@@ -61,7 +61,25 @@ namespace TestProject.MarkdownElementTest.GFMTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
         }
 
-        // TODO: Add case 324
+        [TestMethod]
+        public void TestCase_324()
+        {
+            const string code = "&nbsp &x; &#; &#x;\n&#987654321;\n&#abcdef0;\n&ThisIsNotDefined; &hi?;";
+            var doc = new MarkdownParser().Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(
+                new InlineStructure(InlineElementType.InlineText, "&nbsp &x; &#; &#x;"),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "&#987654321;"),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "&#abcdef0;"),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "&ThisIsNotDefined; &hi?;"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
 
         [TestMethod]
         public void TestCase_325()

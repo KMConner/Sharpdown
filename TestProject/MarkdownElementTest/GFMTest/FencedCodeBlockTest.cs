@@ -221,7 +221,7 @@ namespace TestProject.MarkdownElementTest.GFMTest
             Assert.AreEqual(0, doc.LinkDefinition.Count);
             Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
             var inline = new InlineStructure(InlineElementType.InlineText,
-                new InlineStructure(InlineElementType.CodeSpan, ""),
+                new InlineStructure(InlineElementType.CodeSpan, " "),
                 new InlineStructure(InlineElementType.SoftLineBreak, ""),
                 new InlineStructure(InlineElementType.InlineText, "aaa"));
             inline.AssertEqual((doc.Elements[0] as Paragraph).Inlines);

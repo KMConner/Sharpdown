@@ -290,27 +290,15 @@ namespace TestProject.MarkdownElementTest.GFMTest
             Assert.AreEqual("code", (doc.Elements[2] as CodeBlock).Code);
         }
 
-        // TODO: Update for v0.29
-
         [TestMethod]
         public void TestCase_290()
         {
-            const string code = "- a\n - b\n  - c\n   - d\n    - e\n   - f\n  - g\n - h\n- i";
-            var doc = parser.Parse(code);
+            const string code = "- a\n - b\n  - c\n   - d\n    - e";
+            var doc = new MarkdownParser().Parse(code);
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
 
             var blocks = new BlockElementStructure(BlockElementType.List,
-                new BlockElementStructure(BlockElementType.ListItem,
-                    new BlockElementStructure(BlockElementType.Paragraph)),
-                new BlockElementStructure(BlockElementType.ListItem,
-                    new BlockElementStructure(BlockElementType.Paragraph)),
-                new BlockElementStructure(BlockElementType.ListItem,
-                    new BlockElementStructure(BlockElementType.Paragraph)),
-                new BlockElementStructure(BlockElementType.ListItem,
-                    new BlockElementStructure(BlockElementType.Paragraph)),
-                new BlockElementStructure(BlockElementType.ListItem,
-                    new BlockElementStructure(BlockElementType.Paragraph)),
                 new BlockElementStructure(BlockElementType.ListItem,
                     new BlockElementStructure(BlockElementType.Paragraph)),
                 new BlockElementStructure(BlockElementType.ListItem,
@@ -325,37 +313,25 @@ namespace TestProject.MarkdownElementTest.GFMTest
             var paraB = doc.Elements[0].GetChild(1).GetChild(0);
             var paraC = doc.Elements[0].GetChild(2).GetChild(0);
             var paraD = doc.Elements[0].GetChild(3).GetChild(0);
-            var paraE = doc.Elements[0].GetChild(4).GetChild(0);
-            var paraF = doc.Elements[0].GetChild(5).GetChild(0);
-            var paraG = doc.Elements[0].GetChild(6).GetChild(0);
-            var paraH = doc.Elements[0].GetChild(7).GetChild(0);
-            var paraI = doc.Elements[0].GetChild(8).GetChild(0);
 
             var inlineA = new InlineStructure(InlineElementType.InlineText, "a");
             var inlineB = new InlineStructure(InlineElementType.InlineText, "b");
             var inlineC = new InlineStructure(InlineElementType.InlineText, "c");
-            var inlineD = new InlineStructure(InlineElementType.InlineText, "d");
-            var inlineE = new InlineStructure(InlineElementType.InlineText, "e");
-            var inlineF = new InlineStructure(InlineElementType.InlineText, "f");
-            var inlineG = new InlineStructure(InlineElementType.InlineText, "g");
-            var inlineH = new InlineStructure(InlineElementType.InlineText, "h");
-            var inlineI = new InlineStructure(InlineElementType.InlineText, "i");
+            var inlineD = new InlineStructure(
+                new InlineStructure(InlineElementType.InlineText, "d"),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "- e"));
 
             inlineA.AssertEqual(paraA.GetInlines());
             inlineB.AssertEqual(paraB.GetInlines());
             inlineC.AssertEqual(paraC.GetInlines());
             inlineD.AssertEqual(paraD.GetInlines());
-            inlineE.AssertEqual(paraE.GetInlines());
-            inlineF.AssertEqual(paraF.GetInlines());
-            inlineG.AssertEqual(paraG.GetInlines());
-            inlineH.AssertEqual(paraH.GetInlines());
-            inlineI.AssertEqual(paraI.GetInlines());
         }
 
         [TestMethod]
         public void TestCase_291()
         {
-            const string code = "1. a\n\n  2. b\n\n    3. c";
+            const string code = "1. a\n\n  2. b\n\n   3. c";
             var doc = parser.Parse(code);
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
@@ -382,7 +358,69 @@ namespace TestProject.MarkdownElementTest.GFMTest
             inlineC.AssertEqual(paraC.GetInlines());
         }
 
-        // TODO: Add test 292, 293
+        [TestMethod]
+        public void TestCase_292()
+        {
+            const string code = "- a\n - b\n  - c\n   - d\n    - e";
+            var doc = new MarkdownParser().Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+
+            var blocks = new BlockElementStructure(BlockElementType.List,
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.Paragraph)),
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.Paragraph)),
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.Paragraph)),
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.Paragraph)));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+
+            var paraA = doc.Elements[0].GetChild(0).GetChild(0);
+            var paraB = doc.Elements[0].GetChild(1).GetChild(0);
+            var paraC = doc.Elements[0].GetChild(2).GetChild(0);
+            var paraD = doc.Elements[0].GetChild(3).GetChild(0);
+
+            var inlineA = new InlineStructure(InlineElementType.InlineText, "a");
+            var inlineB = new InlineStructure(InlineElementType.InlineText, "b");
+            var inlineC = new InlineStructure(InlineElementType.InlineText, "c");
+            var inlineD = new InlineStructure(
+                new InlineStructure(InlineElementType.InlineText, "d"),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.InlineText, "- e"));
+
+            inlineA.AssertEqual(paraA.GetInlines());
+            inlineB.AssertEqual(paraB.GetInlines());
+            inlineC.AssertEqual(paraC.GetInlines());
+            inlineD.AssertEqual(paraD.GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_293()
+        {
+            const string code = "1. a\n\n  2. b\n\n    3. c\n";
+            var doc = new MarkdownParser().Parse(code);
+            Assert.AreEqual(2, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+
+            var blocks = new BlockElementStructure(BlockElementType.List,
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.Paragraph)),
+                new BlockElementStructure(BlockElementType.ListItem,
+                    new BlockElementStructure(BlockElementType.Paragraph)));
+            blocks.AssertTypeEqual(doc.Elements[0]);
+            Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[1].Type);
+
+            var paraA = doc.Elements[0].GetChild(0).GetChild(0);
+            var paraB = doc.Elements[0].GetChild(1).GetChild(0);
+
+            var inlineA = new InlineStructure(InlineElementType.InlineText, "a");
+            var inlineB = new InlineStructure(InlineElementType.InlineText, "b");
+
+            inlineA.AssertEqual(paraA.GetInlines());
+            inlineB.AssertEqual(paraB.GetInlines());
+        }
 
         [TestMethod]
         public void TestCase_294()

@@ -976,26 +976,42 @@ namespace TestProject.MarkdownElementTest.GFMTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
         }
 
-        // TODO: Uncomment after support 0.29
-        //[TestMethod]
-        //public void TestCase_425()
-        //{
-        //    const string code = "foo***bar***baz";
-        //    var doc = parser.Parse(code);
-        //    Assert.AreEqual(1, doc.Elements.Count);
-        //    Assert.AreEqual(0, doc.LinkDefinition.Count);
-        //    Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+        [TestMethod]
+        public void TestCase_425()
+        {
+            const string code = "foo***bar***baz";
+            var doc = parser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
 
-        //    var inline = new InlineStructure(
-        //        new InlineStructure(InlineElementType.InlineText, "foo"),
-        //        new InlineStructure(InlineElementType.Emphasis,
-        //            new InlineStructure(InlineElementType.StrongEmphasis,
-        //                new InlineStructure(InlineElementType.InlineText, "bar"))),
-        //        new InlineStructure(InlineElementType.InlineText, "baz"));
-        //    inline.AssertEqual(doc.Elements[0].GetInlines());
-        //}
+            var inline = new InlineStructure(
+                new InlineStructure(InlineElementType.InlineText, "foo"),
+                new InlineStructure(InlineElementType.Emphasis,
+                    new InlineStructure(InlineElementType.StrongEmphasis,
+                        new InlineStructure(InlineElementType.InlineText, "bar"))),
+                new InlineStructure(InlineElementType.InlineText, "baz"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
 
-        // TODO: Add test case 426
+        [TestMethod]
+        public void TestCase_426()
+        {
+            const string code = "foo******bar*********baz";
+            var doc = new MarkdownParser().Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.Emphasis,
+                new InlineStructure(InlineElementType.InlineText, "foo"),
+                new InlineStructure(InlineElementType.StrongEmphasis,
+                    new InlineStructure(InlineElementType.StrongEmphasis,
+                        new InlineStructure(InlineElementType.StrongEmphasis,
+                            new InlineStructure(InlineElementType.InlineText, "bar")))),
+                new InlineStructure(InlineElementType.InlineText, "***baz"));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
 
         [TestMethod]
         public void TestCase_427()

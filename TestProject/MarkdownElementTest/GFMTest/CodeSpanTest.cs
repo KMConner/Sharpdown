@@ -32,7 +32,7 @@ namespace TestProject.MarkdownElementTest.GFMTest
         [TestMethod]
         public void TestCase_339()
         {
-            const string code = "`` foo ` bar  ``";
+            const string code = "`` foo ` bar ``";
             var doc = parser.Parse(code);
             Assert.AreEqual(1, doc.Elements.Count);
             Assert.AreEqual(0, doc.LinkDefinition.Count);
@@ -55,47 +55,99 @@ namespace TestProject.MarkdownElementTest.GFMTest
             inline.AssertEqual(doc.Elements[0].GetInlines());
         }
 
-        // TODO: uncomment after support Common mark 0.29
-        //[TestMethod]
-        //public void TestCase_341()
-        //{
-        //    const string code = "`  ``  `";
-        //    var doc = parser.Parse(code);
-        //    Assert.AreEqual(1, doc.Elements.Count);
-        //    Assert.AreEqual(0, doc.LinkDefinition.Count);
-        //    Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+        [TestMethod]
+        public void TestCase_341()
+        {
+            const string code = "`  ``  `";
+            var doc = parser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
 
-        //    var inline = new InlineStructure(InlineElementType.CodeSpan, " `` ");
-        //    inline.AssertEqual(doc.Elements[0].GetInlines());
-        //}
+            var inline = new InlineStructure(InlineElementType.CodeSpan, " `` ");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
 
-        //[TestMethod]
-        //public void TestCase_342()
-        //{
-        //    const string code = "` a`";
-        //    var doc = parser.Parse(code);
-        //    Assert.AreEqual(1, doc.Elements.Count);
-        //    Assert.AreEqual(0, doc.LinkDefinition.Count);
-        //    Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+        [TestMethod]
+        public void TestCase_342()
+        {
+            const string code = "` a`";
+            var doc = parser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
 
-        //    var inline = new InlineStructure(InlineElementType.CodeSpan, " a");
-        //    inline.AssertEqual(doc.Elements[0].GetInlines());
-        //}
+            var inline = new InlineStructure(InlineElementType.CodeSpan, " a");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
 
-        //[TestMethod]
-        //public void TestCase_343()
-        //{
-        //    const string code = "` b `";
-        //    var doc = parser.Parse(code);
-        //    Assert.AreEqual(1, doc.Elements.Count);
-        //    Assert.AreEqual(0, doc.LinkDefinition.Count);
-        //    Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+        [TestMethod]
+        public void TestCase_343()
+        {
+            const string code = "`\u00A0b\u00A0`";
+            var doc = parser.Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
 
-        //    var inline = new InlineStructure(InlineElementType.CodeSpan, "` b `");
-        //    inline.AssertEqual(doc.Elements[0].GetInlines());
-        //}
+            var inline = new InlineStructure(InlineElementType.CodeSpan, "\u00A0b\u00A0");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
 
-        // TODO: Add test case 344, 345, 346, 347
+        [TestMethod]
+        public void TestCase_344()
+        {
+            const string code = "` `\n`  `";
+            var doc = new MarkdownParser().Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(
+                new InlineStructure(InlineElementType.CodeSpan, " "),
+                new InlineStructure(InlineElementType.SoftLineBreak),
+                new InlineStructure(InlineElementType.CodeSpan, "  "));
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_345()
+        {
+            const string code = "``\nfoo\nbar  \nbaz\n``";
+            var doc = new MarkdownParser().Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.CodeSpan, "foo bar   baz");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_346()
+        {
+            const string code = "``\nfoo \n``";
+            var doc = new MarkdownParser().Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.CodeSpan, "foo ");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
+
+        [TestMethod]
+        public void TestCase_347()
+        {
+            const string code = "`foo   bar \nbaz`";
+            var doc = new MarkdownParser().Parse(code);
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.Paragraph, doc.Elements[0].Type);
+
+            var inline = new InlineStructure(InlineElementType.CodeSpan, "foo   bar  baz");
+            inline.AssertEqual(doc.Elements[0].GetInlines());
+        }
 
         [TestMethod]
         public void TestCase_348()
