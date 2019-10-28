@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Sharpdown.MarkdownElement.InlineElement;
 using System.Text.RegularExpressions;
@@ -25,7 +25,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// Regular expression which matches the open fence of fenced code block.
         /// </summary>
         private static readonly Regex openFenceRegex = new Regex(
-            @"^(?<indent> {0,3})(?<fence>`{3,}|~{3,})[ \t]*(?<info>[^`]*?)[ \t]*$",
+            @"^(?<indent> {0,3})(?<fence>`{3,}|~{3,})[ \t]*(?<info>.*?)[ \t]*$",
             RegexOptions.Compiled);
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
             string infoString = trimmed.Substring(fence);
 
-            return !infoString.Contains(trimmed[0]);
+            return trimmed[0] == '~' || !infoString.Contains(trimmed[0]);
         }
 
         /// <summary>

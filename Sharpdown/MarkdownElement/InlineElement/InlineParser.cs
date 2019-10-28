@@ -293,7 +293,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 if (infoNode.Value.CanOpen
                     && infoNode.Value.Type == firstClose.Value.Type
                     && ((infoNode.Value.DeliminatorLength + firstClose.Value.DeliminatorLength) % 3 != 0
-                        || !firstClose.Value.CanOpen))
+                        || infoNode.Value.DeliminatorLength % 3 == 0
+                        || (!firstClose.Value.CanOpen && !infoNode.Value.CanClose)))
                 {
                     startDelimNode = infoNode;
                     break;
@@ -421,13 +422,13 @@ namespace Sharpdown.MarkdownElement.InlineElement
                     return new InlineElement[]
                         {new Image(newChildren.ToArray(), delim.Destination, delim.Title, parserConfig)};
                 case InlineSpanType.Emphasis:
-                    return new InlineElement[] {new Emphasis(newChildren.ToArray(), false, parserConfig)};
+                    return new InlineElement[] { new Emphasis(newChildren.ToArray(), false, parserConfig) };
                 case InlineSpanType.StrongEmphasis:
-                    return new InlineElement[] {new Emphasis(newChildren.ToArray(), true, parserConfig)};
+                    return new InlineElement[] { new Emphasis(newChildren.ToArray(), true, parserConfig) };
                 case InlineSpanType.Root:
                     return newChildren.ToArray();
                 default:
-                    return new[] {delim.DelimElem};
+                    return new[] { delim.DelimElem };
             }
         }
 
@@ -438,7 +439,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <returns></returns>
         private IEnumerable<InlineElement> ParseLineBreak(string text)
         {
-            string[] lines = text.Replace("\r\n", "\n").Replace("\r", "\n").Split(new[] {'\n'});
+            string[] lines = text.Replace("\r\n", "\n").Replace("\r", "\n").Split(new[] { '\n' });
             for (int i = 0; i < lines.Length; i++)
             {
                 bool isHardBreak = lines[i].EndsWith("  ", StringComparison.Ordinal)
@@ -455,7 +456,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         }
                         else
                         {
-                            yield return InlineText.CreateFromText(lines[i].TrimEnd(new[] {' '}), parserConfig);
+                            yield return InlineText.CreateFromText(lines[i].TrimEnd(new[] { ' ' }), parserConfig);
                         }
                     }
 
@@ -833,7 +834,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 for (; current < wholeText.Length; current++)
                 {
                     char ch = wholeText[current];
-                    if (MarkdownElementBase.whiteSpaceChars.Contains(ch))
+                    if (MarkdownElementBase.lineBreaks.Contains(ch))
                     {
                         return -1;
                     }
@@ -848,6 +849,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         destination = wholeText.Substring(destinationStart + 1, current - destinationStart - 1);
                         break;
                     }
+                }
+
+                if (current >= wholeText.Length)
+                {
+                    return -1;
                 }
             }
             else
@@ -882,6 +888,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             break;
                         }
                     }
+                }
+
+                if (parenDepth > 0)
+                {
+                    return -1;
                 }
             }
 
