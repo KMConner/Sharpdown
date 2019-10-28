@@ -1314,7 +1314,7 @@ namespace TestProject.MarkdownElementTest
         #region Fenced code block
 
         [TestMethod]
-        public void TestCase_088()
+        public void TestCase_089()
         {
             var doc = new MarkdownParser().Parse("```\n<\n >\n```");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1324,7 +1324,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_089()
+        public void TestCase_090()
         {
             var doc = new MarkdownParser().Parse("~~~\n<\n >\n~~~");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1334,7 +1334,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_090()
+        public void TestCase_091()
         {
             var doc = new MarkdownParser().Parse("``\nfoo\n``");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1345,7 +1345,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_091()
+        public void TestCase_092()
         {
             var doc = new MarkdownParser().Parse("```\naaa\n~~~\n```");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1355,7 +1355,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_092()
+        public void TestCase_093()
         {
             var doc = new MarkdownParser().Parse("~~~\naaa\n```\n~~~");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1365,7 +1365,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_093()
+        public void TestCase_094()
         {
             var doc = new MarkdownParser().Parse("````\naaa\n```\n``````");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1375,7 +1375,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_094()
+        public void TestCase_095()
         {
             var doc = new MarkdownParser().Parse("~~~~\naaa\n~~~\n~~~~~~");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1385,7 +1385,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_095()
+        public void TestCase_096()
         {
             var doc = new MarkdownParser().Parse("```");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1395,7 +1395,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_096()
+        public void TestCase_097()
         {
             var doc = new MarkdownParser().Parse("`````\n\n```\naaa");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1405,7 +1405,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_097()
+        public void TestCase_098()
         {
             var doc = new MarkdownParser().Parse("> ```\n> aaa\n\nbbb");
             Assert.AreEqual(2, doc.Elements.Count);
@@ -1420,7 +1420,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_098()
+        public void TestCase_099()
         {
             var doc = new MarkdownParser().Parse("```\n\n  \n```");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1430,7 +1430,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_099()
+        public void TestCase_100()
         {
             var doc = new MarkdownParser().Parse("```\n```");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1440,7 +1440,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_100()
+        public void TestCase_101()
         {
             var doc = new MarkdownParser().Parse(" ```\n aaa\naaa\n```");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1450,7 +1450,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_101()
+        public void TestCase_102()
         {
             var doc = new MarkdownParser().Parse("  ```\naaa\n  aaa\naaa\n  ```");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1460,7 +1460,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_102()
+        public void TestCase_103()
         {
             var doc = new MarkdownParser().Parse("   ```\n   aaa\n    aaa\n  aaa\n   ```");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1470,7 +1470,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_103()
+        public void TestCase_104()
         {
             var doc = new MarkdownParser().Parse("    ```\n    aaa\n    ```");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1480,7 +1480,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_104()
+        public void TestCase_105()
         {
             var doc = new MarkdownParser().Parse("```\naaa\n  ```");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1490,7 +1490,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_105()
+        public void TestCase_106()
         {
             var doc = new MarkdownParser().Parse("   ```\naaa\n   ```");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1500,7 +1500,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_106()
+        public void TestCase_107()
         {
             var doc = new MarkdownParser().Parse("```\naaa\n    ```");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1510,7 +1510,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_107()
+        public void TestCase_108()
         {
             var doc = new MarkdownParser().Parse("``` ```\naaa");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1524,7 +1524,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_108()
+        public void TestCase_109()
         {
             var doc = new MarkdownParser().Parse("~~~~~~\naaa\n~~~ ~~");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1534,7 +1534,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_109()
+        public void TestCase_110()
         {
             var doc = new MarkdownParser().Parse("foo\n```\nbar\n```\nbaz");
             Assert.AreEqual(3, doc.Elements.Count);
@@ -1548,7 +1548,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_110()
+        public void TestCase_111()
         {
             var doc = new MarkdownParser().Parse("foo\n---\n~~~\nbar\n~~~\n# baz");
             Assert.AreEqual(3, doc.Elements.Count);
@@ -1564,7 +1564,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_111()
+        public void TestCase_112()
         {
             var doc = new MarkdownParser().Parse("```ruby\ndef foo(x)\n  return 3\nend\n```");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1575,7 +1575,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_112()
+        public void TestCase_113()
         {
             var doc = new MarkdownParser().Parse("~~~~    ruby startline=3 $%@#$\ndef foo(x)\n  return 3\nend\n~~~~~~~");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1586,7 +1586,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_113()
+        public void TestCase_114()
         {
             var doc = new MarkdownParser().Parse("````;\n````");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1597,7 +1597,7 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_114()
+        public void TestCase_115()
         {
             var doc = new MarkdownParser().Parse("``` aa ```\nfoo");
             Assert.AreEqual(1, doc.Elements.Count);
@@ -1611,7 +1611,17 @@ namespace TestProject.MarkdownElementTest
         }
 
         [TestMethod]
-        public void TestCase_115()
+        public void TestCase_116()
+        {
+            var doc = new MarkdownParser().Parse("~~~ aa ``` ~~~\nfoo\n~~~");
+            Assert.AreEqual(1, doc.Elements.Count);
+            Assert.AreEqual(0, doc.LinkDefinition.Count);
+            Assert.AreEqual(BlockElementType.CodeBlock, doc.Elements[0].Type);
+            Assert.AreEqual("foo", (doc.Elements[0] as CodeBlock).Code);
+        }
+
+        [TestMethod]
+        public void TestCase_117()
         {
             var doc = new MarkdownParser().Parse("```\n```aaa\n```");
             Assert.AreEqual(1, doc.Elements.Count);
