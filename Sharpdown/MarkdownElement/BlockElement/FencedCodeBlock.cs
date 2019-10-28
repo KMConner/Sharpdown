@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Sharpdown.MarkdownElement.InlineElement;
 using System.Text.RegularExpressions;
@@ -150,11 +150,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
 
             string infoString = trimmed.Substring(fence);
 
-            if (trimmed[0] == '`' && infoString.Contains(trimmed[0]))
-            {
-                return false;
-            }
-            return true;
+            return trimmed[0] == '~' || !infoString.Contains(trimmed[0]);
         }
 
         /// <summary>

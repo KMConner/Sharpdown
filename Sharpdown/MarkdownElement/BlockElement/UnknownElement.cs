@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -76,15 +76,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
                 if (removed.Length > 0
                     && !lazy
                     && (removed[0] == '-' || removed[0] == '=')
-                    && removed.All(c => removed[0] == c))
+                    && removed.All(c => removed[0] == c)
+                    && !mayBeLinkReferenceDefinition)
                 {
-                    var match = linkDefinitionRegex.Match(string.Join("\n", content));
-                    if (match.Success && !IsBlank(match.Groups["label"].Value))
-                    {
-                        actualType = BlockElementType.LinkReferenceDefinition;
-                        return AddLineResult.NeedClose;
-                    }
-
                     actualType = BlockElementType.Heading;
                     headerLevel = removed[0] == '=' ? 1 : 2;
                     return AddLineResult.Consumed | AddLineResult.NeedClose;
@@ -98,6 +92,19 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     ? BlockElementType.LinkReferenceDefinition
                     : BlockElementType.Paragraph;
                 return AddLineResult.NeedClose;
+            }
+
+            if (mayBeLinkReferenceDefinition)
+            {
+                string removed = line.Trim(whiteSpaceChars);
+                if (removed.Length > 0
+                    && !lazy
+                    && (removed[0] == '-' || removed[0] == '=')
+                    && removed.All(c => removed[0] == c))
+                {
+                    actualType = BlockElementType.LinkReferenceDefinition;
+                    return AddLineResult.NeedClose;
+                }
             }
 
             content.Add(trimmed);

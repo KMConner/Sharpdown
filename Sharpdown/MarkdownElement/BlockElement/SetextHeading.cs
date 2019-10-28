@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
@@ -42,7 +42,7 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
 
             HeaderLevel = level;
-            content = string.Join("\r\n", elem.content).TrimEnd(new[] {' ', '\n', '\r'});
+            content = string.Join("\r\n", elem.content).TrimEnd(new[] { ' ', '\n', '\r', '\t' });
             warnings.AddRange(elem.Warnings);
         }
 

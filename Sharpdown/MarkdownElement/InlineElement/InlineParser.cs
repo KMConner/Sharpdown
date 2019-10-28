@@ -294,7 +294,8 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 if (infoNode.Value.CanOpen
                     && infoNode.Value.Type == firstClose.Value.Type
                     && ((infoNode.Value.DeliminatorLength + firstClose.Value.DeliminatorLength) % 3 != 0
-                        || !firstClose.Value.CanOpen))
+                        || infoNode.Value.DeliminatorLength % 3 == 0
+                        || (!firstClose.Value.CanOpen && !infoNode.Value.CanClose)))
                 {
                     startDelimNode = infoNode;
                     break;
@@ -834,7 +835,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 for (; current < wholeText.Length; current++)
                 {
                     char ch = wholeText[current];
-                    if (MarkdownElementBase.whiteSpaceChars.Contains(ch))
+                    if (MarkdownElementBase.lineBreaks.Contains(ch))
                     {
                         return -1;
                     }
@@ -849,6 +850,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         destination = wholeText.Substring(destinationStart + 1, current - destinationStart - 1);
                         break;
                     }
+                }
+
+                if (current >= wholeText.Length)
+                {
+                    return -1;
                 }
             }
             else
@@ -883,6 +889,11 @@ namespace Sharpdown.MarkdownElement.InlineElement
                             break;
                         }
                     }
+                }
+
+                if (parenDepth > 0)
+                {
+                    return -1;
                 }
             }
 
