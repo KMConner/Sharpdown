@@ -1,5 +1,6 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Collections.Generic;
+using System;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
@@ -8,6 +9,8 @@ namespace Sharpdown.MarkdownElement.BlockElement
     /// </summary>
     public class ListItem : ContainerElement
     {
+        private bool? isChecked;
+
         /// <summary>
         /// The index of the first letter in list block.
         /// </summary>
@@ -29,6 +32,9 @@ namespace Sharpdown.MarkdownElement.BlockElement
         /// </summary>
         internal char Deliminator { get; set; }
 
+        private bool IsTaskListSupported => parserConfig.IsTaskListExtensionEnabled &&
+            children.FirstOrDefault()?.Type == BlockElementType.Paragraph;
+
         /// <summary>
         /// Gets or sets the index of current list item.
         /// If the current list item is a bullet list item, this value is 0 by default.
@@ -42,6 +48,36 @@ namespace Sharpdown.MarkdownElement.BlockElement
         internal bool IsTight { get; private set; }
 
         internal bool IsLastBlank { get; private set; }
+
+        public bool? IsChecked
+        {
+            get
+            {
+                if (IsTaskListSupported)
+                {
+                    return isChecked;
+                }
+                else if (parserConfig.IsTaskListExtensionEnabled)
+                {
+                    return null;
+                }
+                else
+                {
+                    throw new InvalidOperationException();
+                }
+            }
+            set
+            {
+                if (IsTaskListSupported)
+                {
+                    isChecked = value;
+                }
+                else
+                {
+                    throw new InvalidOperationException();
+                }
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of <see cref="ListItem"/>
@@ -100,6 +136,17 @@ namespace Sharpdown.MarkdownElement.BlockElement
             }
 
             return base.AddLine(line, lazy, currentIndent);
+        }
+
+        internal override void ParseInline(Dictionary<string, LinkReferenceDefinition> linkDefinitions)
+        {
+            base.ParseInline(linkDefinitions);
+
+            if (IsTaskListSupported)
+            {
+                var firstParagraph = (Paragraph)children[0];
+                IsChecked = firstParagraph.ParseCheckBox();
+            }
         }
     }
 }

@@ -15,8 +15,4 @@
   <ItemGroup>
     <ProjectReference Include="..\Sharpdown\Sharpdown.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="MarkdownElementTest\GFMTest\" />
-  </ItemGroup>
 </Project>

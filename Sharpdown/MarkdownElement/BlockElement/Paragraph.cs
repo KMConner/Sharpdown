@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Sharpdown.MarkdownElement.InlineElement;
+using System.Linq;
 
 namespace Sharpdown.MarkdownElement.BlockElement
 {
@@ -72,6 +73,15 @@ namespace Sharpdown.MarkdownElement.BlockElement
         {
             var parser = new InlineParser(parserConfig, linkDefinitions);
             inlines.AddRange(parser.ParseInlineElements(string.Join("\r\n", contents)));
+        }
+
+        internal bool? ParseCheckBox()
+        {
+            if (inlines.FirstOrDefault()?.Type != InlineElementType.InlineText)
+            {
+                return null;
+            }
+            return ((InlineText)inlines[0]).ParseCheckBox();
         }
     }
 }

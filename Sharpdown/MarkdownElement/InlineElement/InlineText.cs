@@ -2147,7 +2147,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
         /// <summary>
         /// The content of the current element.
         /// </summary>
-        public string Content { get; private set; }
+        public string Content { get; internal set; }
 
         public override InlineElementType Type => InlineElementType.InlineText;
 
@@ -2231,7 +2231,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
                         }
 
                         if (entity.StartsWith("#", StringComparison.Ordinal) &&
-                            entity.Length<=8 &&
+                            entity.Length <= 8 &&
                             uint.TryParse(entity.Substring(1), out uint num2))
                         {
                             builder.Append(GetSecureChar(num2));
@@ -2264,6 +2264,25 @@ namespace Sharpdown.MarkdownElement.InlineElement
             }
 
             return (char)codePoint;
+        }
+
+        internal bool? ParseCheckBox()
+        {
+            string firstLine = Content.TrimStart();
+            if (firstLine.StartsWith("[x]", StringComparison.OrdinalIgnoreCase))
+            {
+                Content = firstLine.Substring(3);
+                return true;
+            }
+            else if (firstLine.StartsWith("[ ]", StringComparison.OrdinalIgnoreCase))
+            {
+                Content = firstLine.Substring(3);
+                return false;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
