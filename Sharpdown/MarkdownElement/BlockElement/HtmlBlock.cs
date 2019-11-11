@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -534,7 +534,13 @@ namespace Sharpdown.MarkdownElement.BlockElement
                     }
                 }
             }
-
+            if (parserConfig.IsDisallowedRawHtmlExtensionEnabled)
+            {
+                for (int i = 0; i < contents.Count; i++)
+                {
+                    contents[i] = EscapeDisallowedHtml(contents[i]);
+                }
+            }
             return this;
         }
 
@@ -542,5 +548,15 @@ namespace Sharpdown.MarkdownElement.BlockElement
         {
             inlines.Add(new LiteralText(Code, parserConfig));
         }
+
+        private static string EscapeDisallowedHtml(string html)
+        {
+            string ret = html;
+            foreach (var tag in InlineHtml.GfmDisallowedTags)
+            {
+                ret = Regex.Replace(ret, $@"\<({tag})", "&lt;$1", RegexOptions.IgnoreCase);
+            }
+            return ret;
+         }
     }
 }

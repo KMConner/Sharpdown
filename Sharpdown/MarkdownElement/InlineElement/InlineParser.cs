@@ -539,7 +539,7 @@ namespace Sharpdown.MarkdownElement.InlineElement
 
             // Inline html
             var htmlTagMatch = HtmlTagRegex.Match(text, index);
-            if (htmlTagMatch.Success && htmlTagMatch.Index == index)
+            if (htmlTagMatch.Success && htmlTagMatch.Index == index && IsHtmlTagAllowed(text, index))
             {
                 currentIndex += htmlTagMatch.Length;
                 return new InlineHtml(htmlTagMatch.Value, parserConfig);
@@ -1035,6 +1035,23 @@ namespace Sharpdown.MarkdownElement.InlineElement
                 default:
                     throw new ArgumentException();
             }
+        }
+
+        private bool IsHtmlTagAllowed(string text, int index)
+        {
+            if (!parserConfig.IsAutoLinkExtensionEnabled)
+            {
+                return true;
+            }
+            foreach (var tag in InlineHtml.GfmDisallowedTags)
+            {
+                if (text.Substring(index)
+                    .StartsWith("<" + tag, StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

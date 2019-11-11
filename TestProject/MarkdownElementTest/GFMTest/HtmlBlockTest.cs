@@ -14,7 +14,7 @@ namespace TestProject.MarkdownElementTest.GFMTest
 
         public HtmlBlockTest()
         {
-            parser = new MarkdownParser(ParserConfigBuilder.GithubFlavored.ToParserConfig());
+            parser = new MarkdownParser(ParserConfigBuilder.CommonMark.ToParserConfig());
         }
 
         [TestMethod]
